@@ -11,7 +11,8 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     overflow-x: hidden;
@@ -19,13 +20,16 @@ html, body {
 
 .full-page-container {
     display: flex;
-    height: 100vh; /* Takes full height of the browser */
-    width: 100vw;  /* Takes full width of the browser */
+    height: 100vh;
+    /* Takes full height of the browser */
+    width: 100vw;
+    /* Takes full width of the browser */
 }
 
 /* Left Side - Visuals */
 .visual-side {
-    flex: 1.2; /* Slightly wider than the form side */
+    flex: 1.2;
+    /* Slightly wider than the form side */
     background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') center center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -37,8 +41,11 @@ html, body {
 .visual-side::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.2); 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .hero-content {
@@ -84,8 +91,8 @@ html, body {
     margin-bottom: 40px;
 }
 
-input[type="text"], 
-input[type="email"], 
+input[type="text"],
+input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 14px 16px;
@@ -131,7 +138,8 @@ input:focus {
     margin-bottom: 25px;
 }
 
-.separator::before, .separator::after {
+.separator::before,
+.separator::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid var(--border-color);
@@ -163,7 +171,9 @@ input:focus {
     font-size: 0.95rem;
 }
 
-.btn-alt img { width: 20px; }
+.btn-alt img {
+    width: 20px;
+}
 
 .btn-alt.apple {
     background: var(--primary-black);
@@ -173,6 +183,11 @@ input:focus {
 
 /* Responsive adjustment for tablets/phones */
 @media (max-width: 1024px) {
-    .visual-side { display: none; }
-    .form-side { flex: 1; }
+    .visual-side {
+        display: none;
+    }
+
+    .form-side {
+        flex: 1;
+    }
 }
