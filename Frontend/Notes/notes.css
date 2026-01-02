@@ -1,0 +1,162 @@
+:root {
+    --primary: #6366f1;
+    --physics: #3b82f6;
+    --math: #ec4899;
+    --chemistry: #10b981;
+    --biology: #f59e0b;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+.library-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+/* Header & Upload */
+.library-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: slideDown 0.8s ease;
+}
+
+.library-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.library-header p { color: #64748b; margin-bottom: 2rem; }
+
+.upload-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+.upload-btn:hover { transform: scale(1.05); }
+
+/* Filter Navigation */
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    color: #64748b;
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Notes Grid */
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* Card Styling & Animations */
+.note-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    border: 1px solid transparent;
+}
+
+.note-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary);
+}
+
+.card-icon {
+    width: 60px;
+    height: 80px;
+    background: #fee2e2;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #ef4444;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.card-icon::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    border-width: 0 15px 15px 0;
+    border-style: solid;
+    border-color: transparent var(--bg) transparent transparent;
+}
+
+.card-info h3 { font-size: 1.1rem; margin-bottom: 10px; }
+
+.subject-tag {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Categorized Colors */
+.physics .subject-tag { background: #dbeafe; color: var(--physics); }
+.math .subject-tag { background: #fce7f3; color: var(--math); }
+.chemistry .subject-tag { background: #d1fae5; color: var(--chemistry); }
+.biology .subject-tag { background: #fef3c7; color: var(--biology); }
+
+.view-btn {
+    margin-top: 1.5rem;
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.view-btn:hover { color: #4338ca; }
+
+/* Keyframes */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
