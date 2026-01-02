@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Library | StudioControl</title>
+    <link rel="stylesheet" href="notes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main class="library-container">
+        <header class="library-header">
+            <h1>Subject Library</h1>
+            <p>Upload and organize your academic resources</p>
+            
+            <div class="upload-zone">
+                <input type="file" id="file-upload" hidden>
+                <label for="file-upload" class="upload-btn">
+                    <span>+ Upload New Note</span>
+                </label>
+            </div>
+        </header>
+
+        <nav class="filter-bar">
+            <button class="filter-btn active" onclick="filterNotes('all')">All Notes</button>
+            <button class="filter-btn" onclick="filterNotes('physics')">Physics</button>
+            <button class="filter-btn" onclick="filterNotes('math')">Mathematics</button>
+            <button class="filter-btn" onclick="filterNotes('chemistry')">Chemistry</button>
+            <button class="filter-btn" onclick="filterNotes('biology')">Biology</button>
+        </nav>
+
+        <section class="notes-grid" id="notesGrid">
+            <div class="note-card physics">
+                <div class="card-icon">PDF</div>
+                <div class="card-info">
+                    <h3>Quantum Mechanics Vol 1</h3>
+                    <span class="subject-tag">Physics</span>
+                </div>
+                <a href="#" class="view-btn">View Note</a>
+            </div>
+
+            <div class="note-card math">
+                <div class="card-icon">PDF</div>
+                <div class="card-info">
+                    <h3>Linear Algebra Basics</h3>
+                    <span class="subject-tag">Mathematics</span>
+                </div>
+                <a href="#" class="view-btn">View Note</a>
+            </div>
+
+            <div class="note-card chemistry">
+                <div class="card-icon">PDF</div>
+                <div class="card-info">
+                    <h3>Organic Synthesis</h3>
+                    <span class="subject-tag">Chemistry</span>
+                </div>
+                <a href="#" class="view-btn">View Note</a>
+            </div>
+
+            <div class="note-card physics">
+                <div class="card-icon">PDF</div>
+                <div class="card-info">
+                    <h3>Thermodynamics</h3>
+                    <span class="subject-tag">Physics</span>
+                </div>
+                <a href="#" class="view-btn">View Note</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function filterNotes(subject) {
+            const cards = document.querySelectorAll('.note-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            // Update button active state
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            cards.forEach(card => {
+                // Remove existing animation classes
+                card.style.display = 'flex';
+                card.classList.remove('fade-in');
+                
+                if (subject === 'all' || card.classList.contains(subject)) {
+                    // Show and animate
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    // Hide and animate
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
