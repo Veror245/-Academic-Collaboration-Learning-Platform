@@ -1,16 +1,446 @@
-<!-- landing page -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>StudyHub AI - Master Your Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- GENERAL RESET --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f172a;
+      color: white;
+      overflow-x: hidden;
+      /* Prevent horizontal scroll from bg blobs */
+    }
+
+    /* --- BACKGROUND BLOBS --- */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    /* Top Right Purple */
+    .shape-1 {
+      top: -100px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: #7f00ff;
+    }
+
+    /* Bottom Left Blue */
+    .shape-2 {
+      top: 600px;
+      left: -200px;
+      width: 500px;
+      height: 500px;
+      background: #00c6ff;
+    }
+
+    /* --- NAVBAR --- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      margin-left: 30px;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .btn-login {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-login:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 120px 50px 50px 50px;
+      /* Top padding for navbar */
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .hero-content {
+      flex: 1;
+      padding-right: 50px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .hero h1 span {
+      color: #4facfe;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      padding: 15px 40px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.5);
+    }
+
+    /* --- HERO IMAGE (CSS MOCKUP) --- */
+    .hero-visual {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-card {
+      width: 400px;
+      height: 500px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      position: relative;
+      transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+      box-shadow: -20px 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    /* Mockup Internals */
+    .mock-header {
+      height: 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .mock-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+      margin-right: 8px;
+    }
+
+    .mock-dot:nth-child(2) {
+      background: #f59e0b;
+    }
+
+    .mock-dot:nth-child(3) {
+      background: #22c55e;
+    }
+
+    .mock-chat {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .mock-bubble {
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      max-width: 80%;
+    }
+
+    .mock-bubble.left {
+      background: rgba(255, 255, 255, 0.1);
+      align-self: flex-start;
+    }
+
+    .mock-bubble.right {
+      background: #3b82f6;
+      align-self: flex-end;
+    }
+
+    .mock-input {
+      margin-top: auto;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      margin-top: 150px;
+    }
+
+    /* Floating Badge */
+    .float-badge {
+      position: absolute;
+      top: 50px;
+      right: -30px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .badge-icon {
+      background: #a855f7;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+
+    /* --- FEATURES GRID --- */
+    .features-section {
+      padding: 50px 50px 100px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .section-header p {
+      color: #94a3b8;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      transition: 0.3s;
+    }
+
+    .feature-box:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-10px);
+    }
+
+    .f-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #3b82f6;
+    }
+
+    .feature-box h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .feature-box p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 120px;
+      }
+
+      .hero-content {
+        padding-right: 0;
+        margin-bottom: 50px;
+      }
+
+      .app-card {
+        width: 300px;
+        height: 400px;
+      }
+
+      .navbar {
+        padding: 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      /* Simplified for mobile */
+    }
+  </style>
 </head>
 
 <body>
-  <a href="/Frontend/Student_Or_Admin/StudentOrAdmin.html">start</a>
+
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-atom"></i> StudyHub</div>
+    <div class="nav-links">
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">About</a>
+      <a href="#" class="btn-login">Login</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>The Ultimate Platform for <br> <span>Collaborative Learning</span></h1>
+      <p>Join virtual study rooms, solve problems instantly with AI, and share notes with your department. The future of
+        studying is here.</p>
+
+      <a href="/Frontend/Student_Or_Admin/StudentOrAdmin.html" class="cta-btn">Get Started Now</a>
+    </div>
+
+    <div class="hero-visual">
+      <div class="app-card">
+        <div class="mock-header">
+          <div class="mock-dot"></div>
+          <div class="mock-dot"></div>
+          <div class="mock-dot"></div>
+        </div>
+        <div class="mock-chat">
+          <div class="mock-bubble left">Can someone help with the Calculus PDF?</div>
+          <div class="mock-bubble right">Sure! I just uploaded the AI solution.</div>
+          <div class="mock-bubble left">Wow, the AI explanation is really clear!</div>
+          <div class="mock-bubble left"
+            style="width: 50%; height: 80px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.3);">
+          </div>
+        </div>
+        <div class="mock-input"></div>
+      </div>
+
+      <div class="float-badge">
+        <div class="badge-icon"><i class="fas fa-robot"></i></div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem;">AI Solver</div>
+          <div style="font-size: 0.75rem; color: #ccc;">Active Now</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="section-header">
+      <h2>Everything you need</h2>
+      <p>Tools designed to help you ace your exams.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-box">
+        <i class="fas fa-laptop-code f-icon"></i>
+        <h3>Study Rooms</h3>
+        <p>Dedicated rooms for CS, Mech, Civil, and more. Find your peers instantly.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-file-upload f-icon" style="color: #a855f7;"></i>
+        <h3>AI Analysis</h3>
+        <p>Upload any PDF or image. Our AI will analyze it and provide answers.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-comments f-icon" style="color: #4ade80;"></i>
+        <h3>Live Chat</h3>
+        <p>Discuss problems in real-time. Share files and code snippets easily.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-chart-line f-icon" style="color: #f472b6;"></i>
+        <h3>Track Progress</h3>
+        <p>Keep track of your study streak and downloaded resources in your profile.</p>
+      </div>
+    </div>
+  </section>
+
 </body>
 
 </html>
