@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Features</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- General Reset & Layout --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* --- Container --- */
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .section-subtitle {
+      color: #666;
+      margin-bottom: 50px;
+      font-size: 1.1rem;
+    }
+
+    /* --- Grid Layout --- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 0 20px;
+    }
+
+    /* --- Feature Card Styling --- */
+    .feature-card {
+      background: white;
+      border-radius: 15px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border-top: 4px solid transparent;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    /* --- Specific Colors for Borders on Hover --- */
+    .feature-card.study:hover {
+      border-color: #4facfe;
+    }
+
+    .feature-card.quiz:hover {
+      border-color: #ff6b6b;
+    }
+
+    .feature-card.notes:hover {
+      border-color: #43e97b;
+    }
+
+    .feature-card.profile:hover {
+      border-color: #f093fb;
+    }
+
+    /* --- Icons --- */
+    .icon-wrapper {
+      width: 70px;
+      height: 70px;
+      background: #f0f4f8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      font-size: 1.8rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Icon Colors */
+    .feature-card.study .icon-wrapper {
+      color: #4facfe;
+    }
+
+    .feature-card.quiz .icon-wrapper {
+      color: #ff6b6b;
+    }
+
+    .feature-card.notes .icon-wrapper {
+      color: #43e97b;
+    }
+
+    .feature-card.profile .icon-wrapper {
+      color: #f093fb;
+    }
+
+    .feature-card:hover .icon-wrapper {
+      color: white;
+    }
+
+    /* Hover Backgrounds for Icons */
+    .feature-card.study:hover .icon-wrapper {
+      background: #4facfe;
+    }
+
+    .feature-card.quiz:hover .icon-wrapper {
+      background: #ff6b6b;
+    }
+
+    .feature-card.notes:hover .icon-wrapper {
+      background: #43e97b;
+    }
+
+    .feature-card.profile:hover .icon-wrapper {
+      background: #f093fb;
+    }
+
+    /* --- Typography --- */
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .feature-card p {
+      color: #7f8c8d;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    /* --- Button (Optional) --- */
+    .btn-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+
+    /* Button Colors */
+    .feature-card.study .btn-link {
+      color: #4facfe;
+    }
+
+    .feature-card.quiz .btn-link {
+      color: #ff6b6b;
+    }
+
+    .feature-card.notes .btn-link {
+      color: #43e97b;
+    }
+
+    .feature-card.profile .btn-link {
+      color: #f093fb;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1 class="section-title">Why Choose Our App?</h1>
+    <p class="section-subtitle">Everything you need to master your studies in one place.</p>
+
+    <div class="features-grid">
+
+      <div class="feature-card study">
+        <div class="icon-wrapper">
+          <i class="fas fa-laptop-code"></i>
+        </div>
+        <h3>Study Room</h3>
+        <p>Join virtual rooms to collaborate with peers or focus solo with our Pomodoro timer and ambient music.</p>
+        <a href="#" class="btn-link">Enter Room &rarr;</a>
+      </div>
+
+      <div class="feature-card quiz">
+        <div class="icon-wrapper">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h3>Daily Quizzes</h3>
+        <p>Test your knowledge with AI-generated quizzes tailored to your syllabus and track your improvement.</p>
+        <a href="#" class="btn-link">Start Quiz &rarr;</a>
+      </div>
+
+      <div class="feature-card notes">
+        <div class="icon-wrapper">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <h3>Upload Notes</h3>
+        <p>Upload your PDFs or handwritten notes. Organize them securely and share them with your study group.</p>
+        <a href="#" class="btn-link">Upload Now &rarr;</a>
+      </div>
+
+      <div class="feature-card profile">
+        <div class="icon-wrapper">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h3>Your Profile</h3>
+        <p>Track your learning streak, manage your subscription, and customize your learning preferences.</p>
+        <a href="#" class="btn-link">View Profile &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>
