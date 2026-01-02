@@ -2,12 +2,11 @@ import enum
 from sqlalchemy import String, Text, ForeignKey, Boolean, DateTime, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
 from datetime import datetime, timezone
-from database import Base
+from backend.services.database import Base
 from typing import List, Optional
 
 class UserRole(str, enum.Enum):
     STUDENT = "student"
-    FACULTY = "faculty"
     ADMIN = "admin"
 
 class User(Base):

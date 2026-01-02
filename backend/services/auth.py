@@ -11,7 +11,6 @@ from passlib.context import CryptContext
 
 SECRET_KEY = "supersecret"  
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-
 pwd_hash = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_token(user: User, expires_in: int = 3600):
@@ -19,6 +18,7 @@ def create_token(user: User, expires_in: int = 3600):
     payload = {
         "sub": user.id,
         "email": user.email,
+        "role": user.role.value,
         "iat": int(time.time()),
         "exp": int(time.time()) + expires_in
     }
