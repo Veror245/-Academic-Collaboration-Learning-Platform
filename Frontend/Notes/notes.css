@@ -1,19 +1,28 @@
+/* Theme: Professional Dark Navy
+   Preserved Class Names: library-container, note-card, filter-btn, etc.
+*/
+
 :root {
     --primary: #6366f1;
     --physics: #3b82f6;
     --math: #ec4899;
     --chemistry: #10b981;
     --biology: #f59e0b;
-    --bg: #f8fafc;
-    --card-bg: #ffffff;
+    /* New Dark Palette */
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-white: #ffffff;
+    --text-muted: #94a3b8;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg);
-    color: #1e293b;
+    background: var(--bg-gradient);
+    background-attachment: fixed; /* Keeps gradient smooth during scroll */
+    color: var(--text-white);
     min-height: 100vh;
 }
 
@@ -27,25 +36,37 @@ body {
 .library-header {
     text-align: center;
     margin-bottom: 3rem;
-    animation: slideDown 0.8s ease;
+    animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.library-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-.library-header p { color: #64748b; margin-bottom: 2rem; }
+.library-header h1 { 
+    font-size: 2.5rem; 
+    margin-bottom: 0.5rem; 
+    color: var(--text-white);
+}
+
+.library-header p { 
+    color: var(--text-muted); 
+    margin-bottom: 2rem; 
+}
 
 .upload-btn {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 12px 28px;
     background: var(--primary);
     color: white;
     border-radius: 50px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    border: none;
 }
 
-.upload-btn:hover { transform: scale(1.05); }
+.upload-btn:hover { 
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
+}
 
 /* Filter Navigation */
 .filter-bar {
@@ -58,19 +79,25 @@ body {
 
 .filter-btn {
     padding: 10px 20px;
-    border: none;
-    background: white;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
-    color: #64748b;
+    color: var(--text-muted);
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
 }
 
 .filter-btn.active {
     background: var(--primary);
     color: white;
+    border-color: var(--primary);
     transform: translateY(-2px);
 }
 
@@ -84,26 +111,29 @@ body {
 /* Card Styling & Animations */
 .note-card {
     background: var(--card-bg);
-    padding: 20px;
-    border-radius: 20px;
+    backdrop-filter: blur(10px); /* Modern glass effect */
+    padding: 25px 20px;
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-    border: 1px solid transparent;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.6s ease-out backwards;
 }
 
 .note-card:hover {
     transform: translateY(-10px);
     border-color: var(--primary);
+    background: rgba(30, 41, 59, 0.9);
 }
 
 .card-icon {
-    width: 60px;
-    height: 80px;
-    background: #fee2e2;
+    width: 65px;
+    height: 85px;
+    background: rgba(239, 68, 68, 0.1); /* Subtle red tint */
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -112,32 +142,39 @@ body {
     color: #ef4444;
     margin-bottom: 1.5rem;
     position: relative;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+/* Folded Corner */
 .card-icon::after {
     content: '';
     position: absolute;
     top: 0; right: 0;
     border-width: 0 15px 15px 0;
     border-style: solid;
-    border-color: transparent var(--bg) transparent transparent;
+    border-color: transparent #0f172a transparent transparent;
 }
 
-.card-info h3 { font-size: 1.1rem; margin-bottom: 10px; }
+.card-info h3 { 
+    font-size: 1.15rem; 
+    margin-bottom: 10px; 
+    color: var(--text-white);
+}
 
 .subject-tag {
     font-size: 0.75rem;
     padding: 4px 12px;
     border-radius: 20px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Categorized Colors */
-.physics .subject-tag { background: #dbeafe; color: var(--physics); }
-.math .subject-tag { background: #fce7f3; color: var(--math); }
-.chemistry .subject-tag { background: #d1fae5; color: var(--chemistry); }
-.biology .subject-tag { background: #fef3c7; color: var(--biology); }
+/* Categorized Colors (Refined for Dark Mode) */
+.physics .subject-tag { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+.math .subject-tag { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+.chemistry .subject-tag { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.biology .subject-tag { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 
 .view-btn {
     margin-top: 1.5rem;
@@ -145,18 +182,28 @@ body {
     color: var(--primary);
     font-weight: 600;
     font-size: 0.9rem;
-    transition: color 0.3s;
+    transition: all 0.3s;
 }
 
-.view-btn:hover { color: #4338ca; }
+.view-btn:hover { 
+    color: var(--text-white); 
+    letter-spacing: 0.5px;
+}
 
 /* Keyframes */
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
+    from { opacity: 0; transform: translateY(-30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
+    from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .library-container { padding: 2rem 1rem; }
+    .library-header h1 { font-size: 2rem; }
+    .notes-grid { grid-template-columns: 1fr; }
 }
