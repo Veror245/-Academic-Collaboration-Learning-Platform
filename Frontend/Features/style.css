@@ -1,175 +1,239 @@
  @import url("https: //fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
  @import url("https: //cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
- /* --- General Reset & Layout --- */
+
+
+ /* RESET & BASE STYLES */
  * {
    margin: 0;
    padding: 0;
    box-sizing: border-box;
+   font-family: 'Poppins', sans-serif;
  }
 
  body {
-   font-family: 'Poppins', sans-serif;
-   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+   /* Replicating the dark purple/blue gradient from your image */
+   background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+   background-size: 400% 400%;
+   animation: gradientBG 15s ease infinite;
+   /* Subtle movement */
    min-height: 100vh;
+   color: #fff;
    display: flex;
-   align-items: center;
    justify-content: center;
-   padding: 20px;
+   align-items: center;
+   padding: 2rem;
  }
 
- /* --- Container --- */
+ @keyframes gradientBG {
+   0% {
+     background-position: 0% 50%;
+   }
+
+   50% {
+     background-position: 100% 50%;
+   }
+
+   100% {
+     background-position: 0% 50%;
+   }
+ }
+
  .container {
    max-width: 1200px;
    width: 100%;
+   display: flex;
+   flex-direction: column;
+   gap: 2rem;
+ }
+
+ /* HEADINGS */
+ .header-section {
    text-align: center;
+   margin-bottom: 1rem;
  }
 
  .section-title {
    font-size: 2.5rem;
-   color: #333;
-   margin-bottom: 10px;
    font-weight: 600;
+   margin-bottom: 0.5rem;
+   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
  }
 
  .section-subtitle {
-   color: #666;
-   margin-bottom: 50px;
-   font-size: 1.1rem;
+   font-size: 1rem;
+   color: #cbd5e1;
+   /* Light grey text */
  }
 
- /* --- Grid Layout --- */
+ /* --- NEW USER CARD --- */
+ .user-card-wrapper {
+   display: flex;
+   justify-content: center;
+   margin-bottom: 1rem;
+ }
+
+ .user-card {
+   /* Glassmorphism Effect */
+   background: rgba(255, 255, 255, 0.05);
+   backdrop-filter: blur(10px);
+   -webkit-backdrop-filter: blur(10px);
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+   border-radius: 20px;
+   padding: 1.5rem 2.5rem;
+   display: flex;
+   align-items: center;
+   gap: 1.5rem;
+   width: 100%;
+   max-width: 600px;
+   transition: transform 0.3s ease;
+ }
+
+ .user-card:hover {
+   transform: translateY(-5px);
+   border-color: rgba(255, 255, 255, 0.3);
+ }
+
+ .user-avatar {
+   width: 60px;
+   height: 60px;
+   background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-size: 1.5rem;
+   color: #fff;
+   box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+ }
+
+ .user-details h2 {
+   font-size: 1.5rem;
+   font-weight: 600;
+   color: #fff;
+ }
+
+ .user-details p {
+   font-size: 0.9rem;
+   color: #a0aec0;
+   margin-top: 2px;
+ }
+
+ .status-badge {
+   background: rgba(16, 185, 129, 0.2);
+   color: #6ee7b7;
+   padding: 4px 12px;
+   border-radius: 20px;
+   font-size: 0.75rem;
+   font-weight: 600;
+   margin-left: 10px;
+   border: 1px solid rgba(16, 185, 129, 0.3);
+ }
+
+ /* GRID LAYOUT */
  .features-grid {
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-   gap: 30px;
-   padding: 0 20px;
+   gap: 1.5rem;
  }
 
- /* --- Feature Card Styling --- */
+ /* FEATURE CARDS */
  .feature-card {
-   background: white;
-   border-radius: 15px;
-   padding: 40px 30px;
-   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+   /* Glassmorphism Effect */
+   background: rgba(255, 255, 255, 0.03);
+   backdrop-filter: blur(16px);
+   -webkit-backdrop-filter: blur(16px);
+   border: 1px solid rgba(255, 255, 255, 0.08);
+   cursor: pointer;
+   border-radius: 20px;
+   padding: 2rem;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
    transition: all 0.3s ease;
    position: relative;
    overflow: hidden;
-   border-top: 4px solid transparent;
  }
 
  .feature-card:hover {
-   transform: translateY(-10px);
-   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+   background: rgba(255, 255, 255, 0.08);
+   transform: translateY(-5px);
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+   border-color: rgba(255, 255, 255, 0.2);
  }
 
- /* --- Specific Colors for Borders on Hover --- */
- .feature-card.study:hover {
-   border-color: #4facfe;
- }
-
- .feature-card.quiz:hover {
-   border-color: #ff6b6b;
- }
-
- .feature-card.notes:hover {
-   border-color: #43e97b;
- }
-
- .feature-card.profile:hover {
-   border-color: #f093fb;
- }
-
- /* --- Icons --- */
  .icon-wrapper {
-   width: 70px;
-   height: 70px;
-   background: #f0f4f8;
-   border-radius: 50%;
+   font-size: 2rem;
+   margin-bottom: 1rem;
+   color: #fff;
+   background: rgba(255, 255, 255, 0.1);
+   width: 60px;
+   height: 60px;
    display: flex;
    align-items: center;
    justify-content: center;
-   margin: 0 auto 25px;
-   font-size: 1.8rem;
-   transition: background 0.3s ease, color 0.3s ease;
+   border-radius: 15px;
  }
 
- /* Icon Colors */
- .feature-card.study .icon-wrapper {
-   color: #4facfe;
- }
-
- .feature-card.quiz .icon-wrapper {
-   color: #ff6b6b;
- }
-
- .feature-card.notes .icon-wrapper {
-   color: #43e97b;
- }
-
- .feature-card.profile .icon-wrapper {
-   color: #f093fb;
- }
-
- .feature-card:hover .icon-wrapper {
-   color: white;
- }
-
- /* Hover Backgrounds for Icons */
- .feature-card.study:hover .icon-wrapper {
-   background: #4facfe;
- }
-
- .feature-card.quiz:hover .icon-wrapper {
-   background: #ff6b6b;
- }
-
- .feature-card.notes:hover .icon-wrapper {
-   background: #43e97b;
- }
-
- .feature-card.profile:hover .icon-wrapper {
-   background: #f093fb;
- }
-
- /* --- Typography --- */
  .feature-card h3 {
-   font-size: 1.5rem;
-   margin-bottom: 15px;
-   color: #2c3e50;
+   font-size: 1.25rem;
+   margin-bottom: 0.5rem;
  }
 
  .feature-card p {
-   color: #7f8c8d;
+   font-size: 0.9rem;
+   color: #cbd5e1;
    line-height: 1.6;
-   font-size: 0.95rem;
+   margin-bottom: 1.5rem;
+   flex-grow: 1;
  }
 
- /* --- Button (Optional) --- */
  .btn-link {
-   display: inline-block;
-   margin-top: 20px;
    text-decoration: none;
+   color: #fff;
    font-weight: 600;
    font-size: 0.9rem;
-   transition: color 0.3s;
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   transition: gap 0.3s ease;
  }
 
- /* Button Colors */
- .feature-card.study .btn-link {
-   color: #4facfe;
+ .btn-link:hover {
+   gap: 0.8rem;
+   color: #38bdf8;
+   /* Light blue accent on hover */
  }
 
- .feature-card.quiz .btn-link {
-   color: #ff6b6b;
+ /* Specific accent colors for icons */
+ .study .icon-wrapper {
+   color: #60a5fa;
  }
 
- .feature-card.notes .btn-link {
-   color: #43e97b;
+ .quiz .icon-wrapper {
+   color: #f472b6;
  }
 
- .feature-card.profile .btn-link {
-   color: #f093fb;
+ .notes .icon-wrapper {
+   color: #34d399;
  }
 
- 
+ .profile .icon-wrapper {
+   color: #fbbf24;
+ }
+
+ /* Responsive */
+ @media (max-width: 768px) {
+   .user-card {
+     flex-direction: column;
+     text-align: center;
+   }
+
+   .status-badge {
+     display: inline-block;
+     margin-top: 5px;
+     margin-left: 0;
+   }
+ }
