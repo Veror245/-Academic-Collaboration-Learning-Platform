@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- Reset & Base --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f172a;
+      /* Deep Slate */
+      color: white;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    /* --- Background Effects --- */
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      border-radius: 50%;
+      top: -100px;
+      left: -100px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* --- Main Container --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* --- Header --- */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header-left h1 {
+      font-size: 1.8rem;
+      font-weight: 500;
+    }
+
+    .back-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: white;
+    }
+
+    .btn-edit {
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-edit:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #60a5fa;
+    }
+
+    /* --- Profile Layout Grid --- */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 30px;
+    }
+
+    /* --- Card Styles --- */
+    .card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    /* LEFT COLUMN: Identity Card */
+    .cover-photo {
+      height: 120px;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    }
+
+    .profile-header {
+      text-align: center;
+      padding: 0 25px 30px;
+      margin-top: -50px;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid #1e293b;
+      object-fit: cover;
+      margin-bottom: 15px;
+      background: white;
+    }
+
+    .user-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .user-role {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .stat-divider {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .mini-stat {
+      text-align: center;
+    }
+
+    .mini-stat span {
+      display: block;
+    }
+
+    .ms-val {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .ms-lbl {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* RIGHT COLUMN: Info & Activity */
+    .section-title {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      /* Spacing between grid items */
+      padding: 25px;
+    }
+
+    .info-group {
+      margin-bottom: 5px;
+    }
+
+    .info-label {
+      display: block;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      /* Gray Label */
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 1.05rem;
+      color: white;
+      /* Bright White Value */
+      font-weight: 500;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      /* Subtle separator */
+    }
+
+    /* Activity List */
+    .activity-list {
+      padding: 0 25px 25px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .act-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .act-details h4 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .act-details p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .act-time {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Stack info on mobile */
+      .cover-photo {
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="container">
+
+    <header class="page-header">
+      <div class="header-left">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <h1>My Profile</h1>
+      </div>
+      <button class="btn-edit"><i class="fas fa-pen"></i> Edit Profile</button>
+    </header>
+
+    <div class="profile-grid">
+
+      <div class="left-col">
+        <div class="card">
+          <div class="cover-photo"></div>
+          <div class="profile-header">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="avatar">
+            <h2 class="user-name">Alex Johnson</h2>
+            <p class="user-role">Computer Science Student</p>
+            <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">Passionate about AI and Web Dev. Currently
+              preparing for finals.</p>
+          </div>
+
+          <div class="stat-divider">
+            <div class="mini-stat">
+              <span class="ms-val">12</span>
+              <span class="ms-lbl">Courses</span>
+            </div>
+            <div class="mini-stat">
+              <span class="ms-val">84%</span>
+              <span class="ms-lbl">Avg Score</span>
+            </div>
+            <div class="mini-stat">
+              <span class="ms-val">320</span>
+              <span class="ms-lbl">Hours</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px; padding: 25px;">
+          <h3 style="font-size: 1rem; margin-bottom: 15px;">Contact Information</h3>
+          <div
+            style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #cbd5e1; font-size: 0.9rem;">
+            <i class="fas fa-envelope" style="color: #64748b;"></i> alex.j@university.edu
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 0.9rem;">
+            <i class="fas fa-phone" style="color: #64748b;"></i> +1 (555) 123-4567
+          </div>
+        </div>
+      </div>
+
+      <div class="right-col">
+
+        <div class="card">
+          <div style="padding: 25px;">
+            <h3 class="section-title">General Information</h3>
+
+            <div class="info-grid">
+              <div class="info-group">
+                <span class="info-label">First Name</span>
+                <div class="info-value">Alex</div>
+              </div>
+              <div class="info-group">
+                <span class="info-label">Last Name</span>
+                <div class="info-value">Johnson</div>
+              </div>
+              <div class="info-group">
+                <span class="info-label">Department</span>
+                <div class="info-value">Computer Science</div>
+              </div>
+              <div class="info-group">
+                <span class="info-label">Year</span>
+                <div class="info-value">Year 3</div>
+              </div>
+              <div class="info-group" style="grid-column: span 2;">
+                <span class="info-label">Bio</span>
+                <div class="info-value" style="line-height: 1.6;">
+                  Passionate about AI and Web Development. Currently focusing on building scalable web applications and
+                  learning machine learning algorithms.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+          <div style="padding: 25px 25px 10px;">
+            <h3 class="section-title">Recent Activity</h3>
+          </div>
+
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="act-icon"><i class="fas fa-file-pdf"></i></div>
+              <div class="act-details">
+                <h4>Uploaded Calculus_Notes.pdf</h4>
+                <p>In Study Room: Computer Science</p>
+              </div>
+              <span class="act-time">2h ago</span>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background: rgba(16, 185, 129, 0.1); color: #34d399;"><i
+                  class="fas fa-check-circle"></i></div>
+              <div class="act-details">
+                <h4>Completed Daily Quiz</h4>
+                <p>Score: 9/10 • Algorithms</p>
+              </div>
+              <span class="act-time">5h ago</span>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background: rgba(168, 85, 247, 0.1); color: #c084fc;"><i
+                  class="fas fa-robot"></i></div>
+              <div class="act-details">
+                <h4>Used AI Solver</h4>
+                <p>Solved 3 problems in Mechanics</p>
+              </div>
+              <span class="act-time">1d ago</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

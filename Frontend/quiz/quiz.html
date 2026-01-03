@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Generator | StudioControl</title>
+    <link rel="stylesheet" href="quiz.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="quiz-builder-container">
+        <aside class="config-sidebar">
+            <div class="sidebar-header">
+                <h2>Quiz Generator</h2>
+                <p>Generate questions from your notes</p>
+            </div>
+
+            <div class="config-group">
+                <label>Selected Document</label>
+                <div class="doc-preview">
+                    <span>Physics_Notes_Final.pdf</span>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label>Page Range</label>
+                <div class="range-inputs">
+                    <input type="number" placeholder="From" min="1" value="1">
+                    <span>to</span>
+                    <input type="number" placeholder="To" min="1" value="10">
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label>Question Types</label>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mcq" checked>
+                    <label for="mcq">Multiple Choice (MCQs)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="objective" checked>
+                    <label for="objective">Objective (True/False)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="subjective">
+                    <label for="subjective">Subjective (Short Answer)</label>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label>Difficulty</label>
+                <select>
+                    <option>Easy</option>
+                    <option selected>Medium</option>
+                    <option>Hard</option>
+                </select>
+            </div>
+
+            <button class="btn-generate">Generate Quiz ✨</button>
+        </aside>
+
+        <main class="quiz-workspace">
+            <header class="workspace-header">
+                <div class="header-info">
+                    <h3>Quiz Preview</h3>
+                    <p>3 Questions Generated</p>
+                </div>
+                <button class="btn-outline">+ Add Question Manually</button>
+            </header>
+
+            <div class="question-list">
+                <div class="question-card">
+                    <div class="card-tag">MCQ</div>
+                    <div class="card-content">
+                        <input type="text" class="q-title" value="What is the primary law governing planetary motion?">
+                        <div class="options-grid">
+                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Newton's First Law"></div>
+                            <div class="option"><input type="radio" name="q1" checked> <input type="text" value="Kepler's Laws"></div>
+                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Ohm's Law"></div>
+                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Boyle's Law"></div>
+                        </div>
+                    </div>
+                    <button class="btn-del">&times;</button>
+                </div>
+
+                <div class="question-card subjective">
+                    <div class="card-tag">Subjective</div>
+                    <div class="card-content">
+                        <input type="text" class="q-title" value="Explain the concept of Dark Matter in your own words.">
+                        <textarea placeholder="The generated answer key will appear here for the admin to review..."></textarea>
+                    </div>
+                    <button class="btn-del">&times;</button>
+                </div>
+            </div>
+
+            <footer class="workspace-footer">
+                <button class="btn-save">Save & Publish Quiz</button>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
