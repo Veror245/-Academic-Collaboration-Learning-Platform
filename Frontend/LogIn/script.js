@@ -1,4 +1,3 @@
-
 const form = document.querySelector("form");
 const emailInput = document.querySelector('input[type="email"]');
 const passwordInput = document.querySelector('input[type="password"]');
@@ -6,30 +5,25 @@ const passwordInput = document.querySelector('input[type="password"]');
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const payload = {
-    username: emailInput.value,   // email mapped to username
-    password: passwordInput.value
-  };
+  const formData = new URLSearchParams();
+  formData.append("username", emailInput.value); // email → username
+  formData.append("password", passwordInput.value);
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/Authentication/login_auth_login_post", {
+    const response = await fetch("http://127.0.0.1:8000/auth/login", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: JSON.stringify(payload)
+      body: formData.toString()
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      // Save JWT token
       localStorage.setItem("token", data.access_token);
-
       alert("Login successful ✅");
-
-      // Redirect (optional)
-      // window.location.href = "/Frontend/Dashboard/index.html";
+      window.location.href = "/Frontend/Features/FeaturesPage.html";
     } else {
       alert(data.detail || "Invalid login credentials ❌");
     }
@@ -38,4 +32,3 @@ form.addEventListener("submit", async (e) => {
     alert("Backend server not running ❌");
   }
 });
-
