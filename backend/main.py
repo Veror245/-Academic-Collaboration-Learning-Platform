@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from backend.services.database import engine, SessionLocal, get_db
 from backend.services.models import Base, Room
 from backend.routers import auth, admin, student
@@ -31,6 +32,14 @@ def seed_rooms():
     db.close()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 seed_rooms()
 

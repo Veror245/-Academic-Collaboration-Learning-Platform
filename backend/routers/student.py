@@ -5,6 +5,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
 from backend.services import database, models, auth
+from backend.services import ai_services
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
@@ -50,10 +51,23 @@ def upload_resource(
     db.add(new_resource)
     db.commit()
     db.refresh(new_resource)
+    
+    try:
+        # 1. Run the AI processing (This might take 3-5 seconds)
+        summary = ai_services.process_document(file_path, new_resource.id)
+        
+        # 2. Update the database with the real summary
+        new_resource.ai_summary = summary # type: ignore
+        db.commit()
+        
+    except Exception as e:
+        print(f"AI Error: {e}")
+        new_resource.ai_summary = "Summary generation failed."
+        db.commit()
 
     return {"msg": "Upload successful", "resource_id": new_resource.id}
 
-# --- 2. LIST FILES ENDPOINT ---
+# 2. LIST FILES ENDPOINT
 @router.get("/room/{room_slug}/resources")
 def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
     # A. Find Room (Legacy Style)
