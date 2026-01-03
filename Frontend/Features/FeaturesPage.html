@@ -4,18 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Features</title>
+  <title>Student Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
 
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
   <div class="container">
-    <h1 class="section-title">Why Choose Our App?</h1>
-    <p class="section-subtitle">Everything you need to master your studies in one place.</p>
+
+    <div class="user-card-wrapper">
+      <div class="user-card">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-details">
+          <h2>Welcome, Alex! <span class="status-badge">Online</span></h2>
+          <p>Student ID: #883492 • Computer Science</p>
+        </div>
+      </div>
+    </div>
+    <div class="header-section">
+      <h1 class="section-title">Dashboard</h1>
+      <p class="section-subtitle">Everything you need to master your studies in one place.</p>
+    </div>
 
     <div class="features-grid">
 
@@ -24,7 +38,7 @@
           <i class="fas fa-laptop-code"></i>
         </div>
         <h3>Study Room</h3>
-        <p>Join virtual rooms to collaborate with peers or focus solo with our Pomodoro timer and ambient music.</p>
+        <p>Join virtual rooms to collaborate with peers or focus solo with our Pomodoro timer.</p>
         <a href="/Frontend/Study_Room/StudyRoom.html" class="btn-link">Enter Room &rarr;</a>
       </div>
 
@@ -33,7 +47,7 @@
           <i class="fas fa-brain"></i>
         </div>
         <h3>Daily Quizzes</h3>
-        <p>Test your knowledge with AI-generated quizzes tailored to your syllabus and track your improvement.</p>
+        <p>Test your knowledge with AI-generated quizzes tailored to your syllabus.</p>
         <a href="/Frontend/quiz/quiz.html" class="btn-link">Start Quiz &rarr;</a>
       </div>
 
@@ -42,7 +56,7 @@
           <i class="fas fa-file-upload"></i>
         </div>
         <h3>Upload Notes</h3>
-        <p>Upload your PDFs or handwritten notes. Organize them securely and share them with your study group.</p>
+        <p>Upload your PDFs or handwritten notes. Organize them securely.</p>
         <a href="/Frontend/Notes/notes.html" class="btn-link">Upload Now &rarr;</a>
       </div>
 
@@ -51,7 +65,7 @@
           <i class="fas fa-user-circle"></i>
         </div>
         <h3>Your Profile</h3>
-        <p>Track your learning streak, manage your subscription, and customize your learning preferences.</p>
+        <p>Track your learning streak, manage subscription, and preferences.</p>
         <a href="/Frontend/User_Profile/UserProfile.html" class="btn-link">View Profile &rarr;</a>
       </div>
 
