@@ -1,5 +1,5 @@
-from database import engine, SessionLocal, get_db
-from models import Base, Room
+from backend.services.database import engine, SessionLocal, get_db
+from backend.services.models import Base, Room
 
 # Create tables
 print("Creating database tables...")
