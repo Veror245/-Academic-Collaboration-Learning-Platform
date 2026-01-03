@@ -21,7 +21,17 @@ form.addEventListener("submit", async (e) => {
     const data = await response.json();
 
     if (response.ok) {
+
       localStorage.setItem("token", data.access_token);
+
+      // Store user info
+      localStorage.setItem("user_name", data.user.full_name);
+      localStorage.setItem("user_email", data.user.email);
+      localStorage.setItem("user_role", data.user.role);
+      localStorage.setItem("user_id", data.user.id);
+
+      console.log("Stored User:", data.user);
+
       alert("Login successful ✅");
       window.location.href = "/Frontend/Features/FeaturesPage.html";
     } else {
