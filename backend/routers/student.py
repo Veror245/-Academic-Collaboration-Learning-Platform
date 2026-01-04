@@ -65,7 +65,7 @@ def upload_resource(
         new_resource.ai_summary = "Summary generation failed."
         db.commit()
 
-    return {"msg": "Upload successful", "resource_id": new_resource.id}
+    return {"msg": "Upload successful", "resource_id": new_resource.id, "summary": new_resource.ai_summary}
 
 # 2. LIST FILES ENDPOINT
 @router.get("/room/{room_slug}/resources")
