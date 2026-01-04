@@ -1,7 +1,7 @@
 import shutil
 import os
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import List, Optional, Dict
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
 from backend.services import database, models, auth
@@ -13,6 +13,9 @@ from pydantic import BaseModel
 class ChatRequest(BaseModel):
     resource_id: int
     question: str
+    # New Field: A list of previous messages 
+    # Format: [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]
+    history: List[Dict[str, str]] = []
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
@@ -112,17 +115,18 @@ def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
 @router.post("/chat")
 def chat_with_resource(
     chat_data: ChatRequest,
-    user: models.User = Depends(auth.get_current_user), # Only logged-in users can chat
+    user: models.User = Depends(auth.get_current_user),
 ):
     try:
-        # Call the AI service
-        answer = ai_services.chat_with_document(chat_data.resource_id, chat_data.question)
-        
+        # Pass the history list to the function
+        answer = ai_services.chat_with_document(
+            chat_data.resource_id, 
+            chat_data.question, 
+            chat_data.history
+        )
         return {"answer": answer}
-        
     except Exception as e:
-        print(f"Chat Error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate answer")
+        raise HTTPException(status_code=500, detail=str(e))
     
 
 @router.post("/quiz/{resource_id}")

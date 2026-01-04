@@ -83,7 +83,7 @@ def process_document(file_path: str, resource_id: int):
 
 
 
-def chat_with_document(resource_id: int, question: str):
+def chat_with_document(resource_id: int, question: str, history: list = []):
     print(f"💬 Chatting with Resource {resource_id}: {question}")
     
     # 1. Connect to the existing Vector Database
@@ -91,6 +91,11 @@ def chat_with_document(resource_id: int, question: str):
         persist_directory=CHROMA_PATH,
         embedding_function=embedding_model
     )
+    
+    history_text = ""
+    for msg in history:
+        role = "User" if msg['role'] == 'user' else "AI"
+        history_text += f"{role}: {msg['content']}\n"
     
     # 2. Search for relevant context
     # We use a filter to ensure we ONLY search within the specific file the user is asking about
@@ -108,14 +113,28 @@ def chat_with_document(resource_id: int, question: str):
 
     # 4. Construct the Prompt for Gemma
     chat_prompt = f"""
-    You are a helpful teaching assistant. Answer the user's question based ONLY on the context provided below.
-    If the answer is not in the context, strictly say "I don't know based on this document."
+    You are a helpful teaching assistant.
+    
+    Instructions:
+    1. Answer the user's question using the 'Context from Document' below.
+    2. If the user refers to previous messages (like "what did you just say?", "elaborate on that"), use the 'Chat History'.
+    3. If the answer is nowhere to be found, say "I don't know."
+    
+    Chat History:
+    {history_text}
     
     Context from Document:
     {context_text}
     
     User Question: {question}
+    
+    Answer:
     """
+    
+    print("---------------- PROMPT DEBUG START ----------------")
+    print(chat_prompt)
+    print("---------------- PROMPT DEBUG END ----------------")
+    # ---------------------
     
     # 5. Get Answer
     response = llm.invoke(chat_prompt)
