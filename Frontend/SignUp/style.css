@@ -1,8 +1,15 @@
 :root {
-    --primary-black: #0d0d0d;
-    --border-color: #dbdbdb;
-    --text-muted: #717171;
+    --bg-dark: #050505;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --primary-accent: #6366f1;
+    /* Indigo */
+    --secondary-accent: #a855f7;
+    /* Purple */
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
     --font-main: 'Inter', sans-serif;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * {
@@ -11,68 +18,133 @@
     padding: 0;
 }
 
-html,
 body {
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    /* Prevents scrollbars from animations */
 }
 
+/* --- Background Animation (The Otherworldly Effect) --- */
+.ambient-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 20s infinite alternate;
+}
+
+.orb-1 {
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, var(--primary-accent), transparent);
+    top: -10%;
+    left: -10%;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, var(--secondary-accent), transparent);
+    bottom: -10%;
+    right: -10%;
+    animation-delay: -5s;
+}
+
+.orb-3 {
+    width: 30vw;
+    height: 30vw;
+    background: radial-gradient(circle, #ec4899, transparent);
+    /* Pink accent */
+    top: 40%;
+    left: 40%;
+    opacity: 0.4;
+    animation: float-reverse 25s infinite alternate;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(50px, 50px) scale(1.1);
+    }
+}
+
+@keyframes float-reverse {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(-50px, -30px) scale(0.9);
+    }
+}
+
+/* --- Layout --- */
 .full-page-container {
     display: flex;
     height: 100vh;
-    /* Takes full height of the browser */
     width: 100vw;
-    /* Takes full width of the browser */
+    position: relative;
+    z-index: 1;
 }
 
-/* Left Side - Visuals */
+/* --- Left Side --- */
 .visual-side {
     flex: 1.2;
-    /* Slightly wider than the form side */
-    background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') center center/cover no-repeat;
     display: flex;
     align-items: center;
-    padding: 0 8%;
+    justify-content: center;
+    padding: 8%;
     position: relative;
 }
 
-/* Dark overlay to make text pop against any image */
-.visual-side::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.glass-card {
     background: rgba(0, 0, 0, 0.2);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    color: white;
-    max-width: 500px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 3rem;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    max-width: 600px;
+    animation: slideInLeft 1s var(--ease-out);
 }
 
 .hero-content h1 {
-    font-family: var(--font-main);
-    font-size: 4rem;
+    font-size: 4.5rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 20px;
+    letter-spacing: -2px;
 }
 
 .hero-content p {
-    font-size: 1.5rem;
-    font-weight: 400;
-    opacity: 0.9;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    line-height: 1.6;
 }
 
-/* Right Side - Form */
+/* --- Right Side (Form) --- */
 .form-side {
     flex: 1;
-    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,119 +153,238 @@ body {
 
 .form-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 24px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideInUp 1s var(--ease-out) 0.2s backwards;
 }
 
-.form-container h2 {
+.form-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.form-header h2 {
     font-size: 2.5rem;
     font-weight: 700;
-    text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
+    color: #fff;
 }
 
-input[type="text"],
+.sub-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* --- Advanced Inputs --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
 input[type="email"],
-input[type="password"] {
+input[type="password"] ,
+input[type="text"]{
     width: 100%;
-    padding: 14px 16px;
-    margin-bottom: 15px;
-    border: 1.5px solid var(--border-color);
-    border-radius: 8px;
+    padding: 16px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    font-family: var(--font-main);
+    transition: all 0.3s ease;
+    z-index: 2;
+    position: relative;
 }
 
 input:focus {
     outline: none;
-    border-color: var(--primary-black);
+    border-bottom-color: rgba(255, 255, 255, 0.8);
 }
 
+/* Floating Label Magic */
+.input-wrapper label {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: 0.3s var(--ease-out);
+    font-size: 1rem;
+}
+
+/* Move label up when input has value or focus */
+input:focus~label,
+input:not(:placeholder-shown)~label {
+    top: -10px;
+    font-size: 0.8rem;
+    color: var(--primary-accent);
+    font-weight: 600;
+}
+
+/* Animated bottom bar */
+.glow-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+    transition: width 0.4s var(--ease-out);
+    box-shadow: 0 0 10px var(--primary-accent);
+}
+
+input:focus~.glow-bar {
+    width: 100%;
+}
+
+/* --- Checkbox --- */
 .checkbox-group {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 25px;
-    font-size: 0.9rem;
+    gap: 12px;
+    margin-bottom: 35px;
     color: var(--text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
+.custom-checkbox {
+    accent-color: var(--primary-accent);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* --- Button --- */
 .btn-main {
     width: 100%;
     padding: 16px;
-    background: var(--primary-black);
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-bottom: 25px;
-}
-
-.separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: var(--text-muted);
-    margin-bottom: 25px;
-}
-
-.separator::before,
-.separator::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.separator span {
-    padding: 0 10px;
-    font-size: 0.85rem;
-}
-
-.auth-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.btn-alt {
-    width: 100%;
-    padding: 12px;
-    background: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.95rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-alt img {
-    width: 20px;
+/* Button Shine Effect */
+.btn-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
 }
 
-.btn-alt.apple {
-    background: var(--primary-black);
+.btn-main:hover::before {
+    left: 100%;
+}
+
+.btn-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-main:active {
+    transform: scale(0.98);
+}
+
+/* --- Footer --- */
+.footer-links {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.link-highlight {
     color: white;
-    border: none;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    position: relative;
 }
 
-.have {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+.link-highlight::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: white;
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s var(--ease-out);
 }
 
-/* Responsive adjustment for tablets/phones */
+.link-highlight:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* --- Entrance Animations --- */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* --- Responsive --- */
 @media (max-width: 1024px) {
     .visual-side {
         display: none;
+        /* Hide visual on tablet/mobile focus */
     }
 
     .form-side {
-        flex: 1;
+        background: transparent;
+    }
+
+    .form-container {
+        backdrop-filter: blur(30px);
+        background: rgba(255, 255, 255, 0.05);
     }
 }

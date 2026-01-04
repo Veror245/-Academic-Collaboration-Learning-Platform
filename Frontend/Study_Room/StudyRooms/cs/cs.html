@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Room - Study & Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+
+  <div class="main-container">
+
+    <div class="glass-panel workspace-panel">
+      <div class="panel-header">
+        <a href="#" class="back-btn"><i class="fas fa-arrow-left"></i> Leave Room</a>
+        <h2>Problem Solver</h2>
+      </div>
+
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+        <h3 id="uploadText">Click or Drag PDF/Image Here</h3>
+        <p id="uploadSubtext">Supports .jpg, .png, .pdf</p>
+        <input type="file" id="fileInput" hidden accept=".pdf, image/*">
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <p>Analyzing document with AI...</p>
+      </div>
+
+      <div class="ai-result" id="aiResult">
+        <div class="ai-header">
+          <i class="fas fa-robot"></i> AI Summary
+        </div>
+        <div class="ai-content">
+          <p><strong>Analysis Complete:</strong></p>
+          <p>I have analyzed the file <strong><span id="fileNameDisplay">file.pdf</span></strong>.</p>
+          <br>
+          <p><strong>Concept Found:</strong> Differential Calculus.</p>
+          <p><strong>Solution:</strong> To solve this limit, apply L'Hôpital's rule since the limit results in an
+            indeterminate form 0/0. Differentiate the numerator and the denominator separately with respect to x.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-panel chat-panel">
+      <div class="chat-header">
+        <h3><i class="fas fa-laptop-code"></i> CS Room</h3>
+        <div class="live-indicator">
+          <div class="dot"></div> 12 Online
+        </div>
+      </div>
+
+      <div class="messages-area">
+        <div class="message incoming">
+          <div class="sender-name">Sarah M.</div>
+          <div class="bubble">Has anyone solved question 4 regarding the Binary Tree traversal?</div>
+        </div>
+
+        <div class="message outgoing">
+          <div class="bubble">Yes! You need to use recursion for that step.</div>
+        </div>
+
+        <div class="message incoming">
+          <div class="sender-name">Mike T.</div>
+          <div class="bubble">Can you share the code snippet?</div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" placeholder="Type a message...">
+        <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Kept your existing logic intact
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadText = document.getElementById('uploadText');
+    const uploadSubtext = document.getElementById('uploadSubtext');
+    const loader = document.getElementById('loader');
+    const aiResult = document.getElementById('aiResult');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+    fileInput.addEventListener('change', function (e) {
+      if (this.files && this.files[0]) handleFile(this.files[0]);
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+      uploadText.textContent = "Drop it here!";
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+      uploadText.textContent = "Click or Drag PDF/Image Here";
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      // Updated color for success icon to match theme
+      uploadText.innerHTML = `<i class="fas fa-check-circle" style="color:#a78bfa;"></i> File Selected`;
+      uploadSubtext.textContent = file.name;
+      aiResult.style.display = 'none';
+      loader.style.display = 'block';
+      setTimeout(() => {
+        loader.style.display = 'none';
+        aiResult.style.display = 'block';
+        fileNameDisplay.textContent = file.name;
+      }, 2000);
+    }
+  </script>
+</body>
+
+</html>
