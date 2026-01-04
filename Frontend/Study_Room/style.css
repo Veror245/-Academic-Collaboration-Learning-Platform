@@ -212,3 +212,32 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* Ensure the shapes don't physically block clicks */
+.bg-shape {
+    pointer-events: none !important; 
+    z-index: -1;
+}
+
+/* Ensure the cards are 'clickable' objects */
+.room-card {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    display: flex; /* Ensures the inner content doesn't break clicking */
+}
+/* This is the most important part */
+.bg-shape {
+    pointer-events: none !important; /* Makes shapes "ghost-like" so clicks pass through */
+    z-index: -1 !important;
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+}
+
+.room-card {
+    pointer-events: auto !important; /* Forces the card to accept clicks */
+    cursor: pointer !important;
+    position: relative;
+    z-index: 20;
+}
