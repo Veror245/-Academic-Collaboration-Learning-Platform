@@ -1,5 +1,6 @@
 import getpass
 import os
+import json
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
@@ -81,4 +82,106 @@ def process_document(file_path: str, resource_id: int):
     return summary
 
 
+
+def chat_with_document(resource_id: int, question: str):
+    print(f"💬 Chatting with Resource {resource_id}: {question}")
     
+    # 1. Connect to the existing Vector Database
+    vector_store = Chroma(
+        persist_directory=CHROMA_PATH,
+        embedding_function=embedding_model
+    )
+    
+    # 2. Search for relevant context
+    # We use a filter to ensure we ONLY search within the specific file the user is asking about
+    results = vector_store.similarity_search(
+        question, 
+        k=3, # Retrieve top 3 matching chunks
+        filter={"resource_id": resource_id} # type: ignore
+    )
+    
+    # 3. Combine the retrieved chunks into one block of text
+    context_text = "\n\n".join([doc.page_content for doc in results])
+    
+    if not context_text:
+        return "I couldn't find any relevant information in this document."
+
+    # 4. Construct the Prompt for Gemma
+    chat_prompt = f"""
+    You are a helpful teaching assistant. Answer the user's question based ONLY on the context provided below.
+    If the answer is not in the context, strictly say "I don't know based on this document."
+    
+    Context from Document:
+    {context_text}
+    
+    User Question: {question}
+    """
+    
+    # 5. Get Answer
+    response = llm.invoke(chat_prompt)
+    return response.content
+
+def generate_quiz(resource_id: int):
+    print(f"📝 Generating Quiz for Resource {resource_id}")
+    
+    # 1. Get Context
+    vector_store = Chroma(
+        persist_directory=CHROMA_PATH,
+        embedding_function=embedding_model
+    )
+    
+    results = vector_store.similarity_search(
+        "key concepts definitions", 
+        k=4, 
+        filter={"resource_id": resource_id} # type: ignore
+    )
+    
+    context_text = "\n\n".join([doc.page_content for doc in results])
+    
+    # 2. Strict JSON Prompt
+    quiz_prompt = f"""
+    You are a quiz generator. Create 5 multiple-choice questions based on the text.
+    
+    STRICT OUTPUT FORMAT:
+    Return ONLY a raw JSON array. Do not use Markdown.
+    
+    [
+        {{
+            "question": "Question text?",
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "answer": "Option A"
+        }}
+    ]
+    
+    Rules:
+    1. Ensure there is a comma between every item in the "options" list.
+    2. Do not include explanations.
+    
+    Context:
+    {context_text}
+    """
+    
+    # 3. Retry Loop (The Safety Net)
+    # If the AI messes up the JSON, we try again (up to 3 times)
+    for attempt in range(3):
+        try:
+            print(f"🔄 Attempt {attempt+1} to generate quiz...")
+            response = llm.invoke(quiz_prompt)
+            content = response.content.strip() # type: ignore
+            
+            # Clean Markdown wrappers
+            if content.startswith("```json"):
+                content = content.replace("```json", "").replace("```", "")
+            
+            # Try to parse
+            quiz_data = json.loads(content)
+            print("✅ Quiz generated successfully!")
+            return quiz_data
+            
+        except json.JSONDecodeError:
+            print(f"❌ JSON Error on attempt {attempt+1}. Retrying...")
+            continue # Try again
+            
+    # If all 3 fail, return an empty list so the app doesn't crash
+    print("🚨 All attempts failed.")
+    return []

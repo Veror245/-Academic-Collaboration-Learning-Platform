@@ -6,6 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, s
 from sqlalchemy.orm import Session
 from backend.services import database, models, auth
 from backend.services import ai_services
+from pydantic import BaseModel 
+
+
+#Define the Input Format
+class ChatRequest(BaseModel):
+    resource_id: int
+    question: str
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
@@ -100,3 +107,28 @@ def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
         }
         for resource, full_name in results
     ]
+    
+
+@router.post("/chat")
+def chat_with_resource(
+    chat_data: ChatRequest,
+    user: models.User = Depends(auth.get_current_user), # Only logged-in users can chat
+):
+    try:
+        # Call the AI service
+        answer = ai_services.chat_with_document(chat_data.resource_id, chat_data.question)
+        
+        return {"answer": answer}
+        
+    except Exception as e:
+        print(f"Chat Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate answer")
+    
+
+@router.post("/quiz/{resource_id}")
+def get_quiz(resource_id: int, user: models.User = Depends(auth.get_current_user)):
+    try:
+        quiz = ai_services.generate_quiz(resource_id)
+        return {"quiz": quiz}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
