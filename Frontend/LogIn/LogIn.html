@@ -4,43 +4,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LogIn</title>
+  <title>Login | Ethereal Access</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
   <main class="full-page-container">
+
+    <div class="ambient-light">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
     <section class="visual-side">
-      <div class="hero-content">
-        <h1>Already Have An Account? Log In</h1>
-        <p>Share your artwork and Get projects!</p>
+      <div class="glass-card hero-content">
+        <h1>Welcome Back.</h1>
+        <p>Enter the realm where your artwork comes alive. Share, discover, and build.</p>
       </div>
     </section>
 
     <section class="form-side">
-      <div class="form-container">
-        <h2>Log In</h2>
+      <div class="form-container glass-panel">
+        <div class="form-header">
+          <h2>Log In</h2>
+          <p class="sub-text">Enter your credentials to access your account.</p>
+        </div>
+
         <form>
           <div class="input-group">
-            <input type="email" placeholder="Email address" required>
-            <input type="password" placeholder="Password" required>
+            <div class="input-wrapper">
+              <input type="email" placeholder=" " required id="email">
+              <label for="email">Email address</label>
+              <div class="glow-bar"></div>
+            </div>
+
+            <div class="input-wrapper">
+              <input type="password" placeholder=" " required id="password">
+              <label for="password">Password</label>
+              <div class="glow-bar"></div>
+            </div>
           </div>
 
           <div class="checkbox-group">
-            <input type="checkbox" id="terms">
+            <input type="checkbox" id="terms" class="custom-checkbox">
             <label for="terms">Accept Terms & Conditions</label>
           </div>
 
-          <button type="submit" class="btn-main">Log In &rarr;</button>
+          <button type="submit" class="btn-main">
+            <span>Log In</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
         </form>
 
-        <div class="dont-have">
-          <span href="">Don't have an Account?</span>
-          <a href="/Frontend/SignUp/SignUp.html">Sign Up</a>
+        <div class="footer-links">
+          <span>Don't have an Account?</span>
+          <a href="/Frontend/SignUp/SignUp.html" class="link-highlight">Sign Up</a>
         </div>
-
-
       </div>
     </section>
   </main>

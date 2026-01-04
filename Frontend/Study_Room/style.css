@@ -1,6 +1,19 @@
-@import url("https: //fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-/* --- Reset & Base --- */
+/* --- Theme Variables based on your Image --- */
+:root {
+  /* The deep background color from the left side of your image */
+  --bg-dark: #0f0c19;
+  /* The bright purple accent from the 'Log In' button */
+  --accent-purple: #7c3aed;
+  --accent-glow: #8b5cf6;
+  /* Very dark card background */
+  --card-bg: rgba(20, 15, 30, 0.6);
+  --card-border: rgba(124, 58, 237, 0.15);
+  --text-main: #ffffff;
+  --text-muted: #9ca3af;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,204 +21,194 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #0f172a;
-  /* Dark Slate Base */
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   padding: 40px 20px;
-  /* Added padding for scrolling on smaller screens */
+  overflow-x: hidden;
+  color: var(--text-main);
 }
 
-/* --- Illustrated Background Blobs --- */
-/* Fixed position so they stay in place while scrolling */
+/* --- Ambient Background Glows --- */
 .bg-shape {
   position: fixed;
   border-radius: 50%;
-  filter: blur(150px);
+  filter: blur(120px);
   z-index: -1;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
+/* Top Left - Deep Blue/Indigo Glow */
 .shape-1 {
-  top: -10%;
+  top: -20%;
   left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
-}
-
-.shape-2 {
-  bottom: -10%;
-  right: -10%;
   width: 60vw;
   height: 60vw;
-  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  background: radial-gradient(circle, #2e1065 0%, transparent 70%);
+}
+
+/* Bottom Right - Purple/Pink Glow */
+.shape-2 {
+  bottom: -20%;
+  right: -10%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle, #4c1d95 0%, transparent 70%);
 }
 
 /* --- Main Container --- */
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   z-index: 1;
 }
 
 .header {
-  text-align: center;
+  text-align: left;
+  /* Aligned left like the 'Welcome Back' text */
   margin-bottom: 50px;
 }
 
 .header h1 {
-  color: white;
-  font-size: 2.5rem;
+  font-size: 3rem;
+  font-weight: 700;
   margin-bottom: 10px;
-  font-weight: 600;
+  background: linear-gradient(to right, #fff, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .header p {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   font-size: 1.1rem;
+  font-weight: 300;
 }
 
-/* --- Grid Layout for Subjects --- */
+/* --- Grid Layout --- */
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
-}
-
-/* --- Subject Card --- */
-.room-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 25px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
 }
 
-/* Hover Effect */
-.room-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+/* --- The Card Design (Matched to Image) --- */
+.room-card {
+  background: var(--card-bg);
+  /* Heavy blur for that premium glass look */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  /* Subtle purple border */
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Icon styling */
+/* Hover Effect: Glow like the 'Log In' button */
+.room-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-purple);
+  box-shadow: 0 10px 40px rgba(124, 58, 237, 0.25);
+  /* Purple Glow */
+  background: rgba(30, 27, 46, 0.8);
+}
+
+/* --- Icons --- */
 .icon-box {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
+  transition: 0.3s;
+  background: rgba(255, 255, 255, 0.05);
+  /* Dark subtle background */
 }
 
-/* Specific Colors for Subjects */
+/* Icon Colors - Made slightly pastel to fit dark theme */
 .cs .icon-box {
-  background: rgba(59, 130, 246, 0.2);
   color: #60a5fa;
 }
 
+/* Blue */
 .ece .icon-box {
-  background: rgba(245, 158, 11, 0.2);
   color: #fbbf24;
 }
 
+/* Amber */
 .mech .icon-box {
-  background: rgba(239, 68, 68, 0.2);
   color: #f87171;
 }
 
+/* Red */
 .civil .icon-box {
-  background: rgba(16, 185, 129, 0.2);
   color: #34d399;
 }
 
+/* Emerald */
 .science .icon-box {
-  background: rgba(139, 92, 246, 0.2);
   color: #a78bfa;
 }
 
+/* Purple */
 .mgmt .icon-box {
-  background: rgba(236, 72, 153, 0.2);
   color: #f472b6;
 }
 
-/* Text Styling */
+/* Pink */
+
+.room-card:hover .icon-box {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* --- Text Styling --- */
 .card-content {
   flex-grow: 1;
 }
 
 .card-title {
-  color: white;
+  color: var(--text-main);
   font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .card-subtitle {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
-/* Live Status Badge */
-.live-badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 0.75rem;
-  color: #4ade80;
-  /* Bright Green */
-  background: rgba(74, 222, 128, 0.15);
-  padding: 4px 10px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  background-color: #4ade80;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #4ade80;
-}
-
-/* Arrow Icon on Hover */
+/* --- Arrow Icon --- */
 .arrow-icon {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.2);
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .room-card:hover .arrow-icon {
   transform: translateX(5px);
-  color: white;
+  color: var(--accent-glow);
 }
 
-/* Mobile Adjustments */
-@media (max-width: 600px) {
+/* --- Mobile --- */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
   .room-grid {
     grid-template-columns: 1fr;
-    /* Single column on mobile */
-  }
-
-  .header h1 {
-    font-size: 2rem;
   }
 }
-

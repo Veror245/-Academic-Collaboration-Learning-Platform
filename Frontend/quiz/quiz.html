@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-   
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz Generator | StudioControl</title>
+    <title>AI Quiz Generator</title>
     <link rel="stylesheet" href="quiz.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div class="quiz-builder-container">
-        <aside class="config-sidebar">
-            <div class="sidebar-header">
-                <h2>Quiz Generator</h2>
+
+    <div class="app-container">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>Quiz Generator</h1>
                 <p>Generate questions from your notes</p>
             </div>
 
-            <div class="config-group">
+            <div class="form-group">
                 <label>Selected Document</label>
-                <div class="doc-preview">
-                    <span>Physics_Notes_Final.pdf</span>
+                <div class="file-display">
+                    📄 Physics_Notes_Final.pdf
                 </div>
             </div>
 
-            <div class="config-group">
+            <div class="form-group">
                 <label>Page Range</label>
                 <div class="range-inputs">
-                    <input type="number" placeholder="From" min="1" value="1">
+                    <input type="number" value="1">
                     <span>to</span>
-                    <input type="number" placeholder="To" min="1" value="10">
+                    <input type="number" value="10">
                 </div>
             </div>
 
-            <div class="config-group">
+            <div class="form-group">
                 <label>Question Types</label>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="mcq" checked>
-                    <label for="mcq">Multiple Choice (MCQs)</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="objective" checked>
-                    <label for="objective">Objective (True/False)</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="subjective">
-                    <label for="subjective">Subjective (Short Answer)</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Multiple Choice (MCQs)
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> Objective (True/False)
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> Subjective (Short Answer)
+                    </label>
                 </div>
             </div>
 
-            <div class="config-group">
+            <div class="form-group">
                 <label>Difficulty</label>
                 <select>
                     <option>Easy</option>
@@ -57,48 +58,54 @@
                 </select>
             </div>
 
-            <button class="btn-generate">Generate Quiz ✨</button>
+            <button class="btn-generate">
+                Generate Quiz
+            </button>
         </aside>
 
-        <main class="quiz-workspace">
-            <header class="workspace-header">
-                <div class="header-info">
-                    <h3>Quiz Preview</h3>
-                    <p>3 Questions Generated</p>
-                </div>
-                <button class="btn-outline">+ Add Question Manually</button>
-            </header>
+        <main class="main-content">
+            <div class="header">
+                <h2>Quiz Preview</h2>
+                <p>3 Questions Generated</p>
+            </div>
 
-            <div class="question-list">
-                <div class="question-card">
-                    <div class="card-tag">MCQ</div>
-                    <div class="card-content">
-                        <input type="text" class="q-title" value="What is the primary law governing planetary motion?">
-                        <div class="options-grid">
-                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Newton's First Law"></div>
-                            <div class="option"><input type="radio" name="q1" checked> <input type="text" value="Kepler's Laws"></div>
-                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Ohm's Law"></div>
-                            <div class="option"><input type="radio" name="q1"> <input type="text" value="Boyle's Law"></div>
-                        </div>
-                    </div>
-                    <button class="btn-del">&times;</button>
-                </div>
+            <div class="card">
+                <button class="close-btn">&times;</button>
+                <span class="tag tag-mcq">MCQ</span>
+                <h3 class="question-text">What is the primary law governing planetary motion?</h3>
 
-                <div class="question-card subjective">
-                    <div class="card-tag">Subjective</div>
-                    <div class="card-content">
-                        <input type="text" class="q-title" value="Explain the concept of Dark Matter in your own words.">
-                        <textarea placeholder="The generated answer key will appear here for the admin to review..."></textarea>
+                <div class="options-grid">
+                    <div class="option">
+                        <div class="radio-circle"></div>
+                        <span>Newton's First Law</span>
                     </div>
-                    <button class="btn-del">&times;</button>
+                    <div class="option selected">
+                        <div class="radio-circle"></div>
+                        <span>Kepler's Laws</span>
+                    </div>
+                    <div class="option">
+                        <div class="radio-circle"></div>
+                        <span>Ohm's Law</span>
+                    </div>
+                    <div class="option">
+                        <div class="radio-circle"></div>
+                        <span>Boyle's Law</span>
+                    </div>
                 </div>
             </div>
 
-            <footer class="workspace-footer">
-                <button class="btn-save">Save & Publish Quiz</button>
-            </footer>
+            <div class="card">
+                <button class="close-btn">&times;</button>
+                <span class="tag tag-sub">Subjective</span>
+                <h3 class="question-text">Explain the concept of Dark Matter in your own words.</h3>
+                <textarea class="subjective-area" placeholder="The generated answer key will..."></textarea>
+            </div>
+
+            <button class="btn-save">Save & Publish Quiz</button>
         </main>
+
     </div>
-    <script src="script.js"></script>
+
 </body>
+
 </html>
