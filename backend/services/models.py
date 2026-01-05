@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import String, Text, ForeignKey, Boolean, DateTime, Enum as SAEnum
+from sqlalchemy import Integer, String, Text, ForeignKey, Boolean, DateTime, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
 from datetime import datetime, timezone
 from backend.services.database import Base
@@ -23,6 +23,7 @@ class User(Base):
     
     uploads: Mapped[List["Resource"]] = relationship(back_populates="uploader")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user")
+    votes: Mapped[list["Vote"]] = relationship(back_populates="user")
     tokens: Mapped[List["Token"]] = relationship(back_populates="user")
 
 # Active Login Tokens
@@ -62,7 +63,8 @@ class Resource(Base):
 
     uploader: Mapped["User"] = relationship(back_populates="uploads")
     room: Mapped["Room"] = relationship(back_populates="resources")
-    comments: Mapped[List["Comment"]] = relationship(back_populates="resource")
+    comments: Mapped[list["Comment"]] = relationship(back_populates="resource", cascade="all, delete-orphan")
+    votes: Mapped[list["Vote"]] = relationship(back_populates="resource", cascade="all, delete-orphan")
 
 # Comments 
 class Comment(Base):
@@ -78,3 +80,17 @@ class Comment(Base):
 
     user: Mapped["User"] = relationship(back_populates="comments")
     resource: Mapped["Resource"] = relationship(back_populates="comments")
+
+class Vote(Base):
+    __tablename__ = "votes"
+
+    # Composite Primary Key (User + Resource)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    resource_id: Mapped[int] = mapped_column(ForeignKey("resources.id"), primary_key=True)
+    
+    # 1 for Upvote, -1 for Downvote
+    value: Mapped[int] = mapped_column(Integer)
+
+    # Relationships
+    user: Mapped["User"] = relationship(back_populates="votes")
+    resource: Mapped["Resource"] = relationship(back_populates="votes")
