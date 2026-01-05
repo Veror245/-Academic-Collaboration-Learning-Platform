@@ -219,6 +219,10 @@ body {
   }
 }
 
+.in_file {
+  display: none;
+}
+
 /* --- Chat Panel --- */
 .chat-panel {
   display: flex;
