@@ -4,9 +4,11 @@ from datetime import datetime, timezone
 from typing import List, Optional, Dict
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from backend.services import database, models, auth
 from backend.services import ai_services
 from pydantic import BaseModel 
+from backend.services.models import Comment, Vote
 
 
 #Define the Input Format
@@ -16,6 +18,28 @@ class ChatRequest(BaseModel):
     # New Field: A list of previous messages 
     # Format: [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]
     history: List[Dict[str, str]] = []
+
+class CommentCreate(BaseModel):
+    resource_id: int
+    content: str
+
+class VoteCreate(BaseModel):
+    resource_id: int
+    vote_type: int # 1 = Upvote, -1 = Downvote
+
+class MyUploadResponse(BaseModel):
+    id: int
+    filename: str
+    created_at: datetime
+
+# The Main Profile Response
+class UserProfileResponse(BaseModel):
+    id: int
+    full_name: str
+    email: str
+    role: str
+    karma_score: int # Total upvotes received
+    uploads: List[MyUploadResponse]
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
@@ -136,3 +160,126 @@ def get_quiz(resource_id: int, user: models.User = Depends(auth.get_current_user
         return {"quiz": quiz}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/comment")
+def add_comment(
+    comment_data: CommentCreate,
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    new_comment = models.Comment(
+        content=comment_data.content,
+        user_id=user.id,
+        resource_id=comment_data.resource_id,
+        is_verified=False
+    )
+    db.add(new_comment)
+    db.commit()
+    return {"msg": "Comment added!"}
+
+@router.get("/comments/{resource_id}")
+def get_comments(resource_id: int, db: Session = Depends(database.get_db)):
+    results = (
+        db.query(models.Comment, models.User.full_name)
+        .join(models.User, models.Comment.user_id == models.User.id)
+        .filter(models.Comment.resource_id == resource_id)
+        
+        # --- THE SORTING MAGIC ---
+        # 1. Verified comments FIRST (True > False)
+        # 2. Then Newest comments (created_at DESC)
+        .order_by(models.Comment.is_verified.desc(), models.Comment.created_at.desc())
+        # -------------------------
+        
+        .all()
+    )
+    
+    return [
+        {
+            "id": c.id,
+            "text": c.content,
+            "user": user_name,
+            "is_verified": c.is_verified,
+            "created_at": c.created_at
+        }
+        for c, user_name in results
+    ]
+
+@router.post("/vote")
+def vote_resource(
+    vote_data: VoteCreate,
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    # 1. Check if user already voted on this file
+    existing_vote = db.query(models.Vote).filter(
+        models.Vote.user_id == user.id,
+        models.Vote.resource_id == vote_data.resource_id
+    ).first()
+
+    if existing_vote:
+        # 2. Logic: If clicking the SAME button -> Remove Vote (Toggle Off)
+        if existing_vote.value == vote_data.vote_type:
+            db.delete(existing_vote)
+            msg = "Vote removed"
+        else:
+            # 3. Logic: If clicking DIFFERENT button -> Switch Vote (Up to Down)
+            existing_vote.value = vote_data.vote_type
+            msg = "Vote updated"
+    else:
+        # 4. Logic: New Vote
+        new_vote = models.Vote(
+            user_id=user.id,
+            resource_id=vote_data.resource_id,
+            value=vote_data.vote_type
+        )
+        db.add(new_vote)
+        msg = "Vote added"
+
+    db.commit()
+    
+    # 5. Return the new Total Score instantly (for UI updates)
+    total_score = db.query(func.sum(models.Vote.value)).filter(
+        models.Vote.resource_id == vote_data.resource_id
+    ).scalar() or 0
+    
+    return {"msg": msg, "new_score": total_score}
+
+@router.get("/me", response_model=UserProfileResponse)
+def get_my_profile(
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    # 1. Get all resources uploaded by this user
+    my_uploads = db.query(models.Resource).filter(
+        models.Resource.uploader_id == user.id
+    ).order_by(models.Resource.created_at.desc()).all()
+    
+    # 2. Calculate "Karma" (Total upvotes received on MY notes)
+    # We loop through uploads and sum the votes for each.
+    total_karma = 0
+    for resource in my_uploads:
+        # Get sum of votes for this specific resource
+        score = db.query(func.sum(models.Vote.value)).filter(
+            models.Vote.resource_id == resource.id
+        ).scalar() # .scalar() returns the single number (or None)
+        
+        if score:
+            total_karma += score
+
+    # 3. Return the formatted profile
+    return {
+        "id": user.id,
+        "full_name": user.full_name,
+        "email": user.email,
+        "role": getattr(user, "role", "student"), # Fallback if 'role' column doesn't exist yet
+        "karma_score": total_karma,
+        "uploads": [
+            {
+                "id": res.id,
+                "filename": res.title,
+                "created_at": res.created_at
+            }
+            for res in my_uploads
+        ]
+    }
