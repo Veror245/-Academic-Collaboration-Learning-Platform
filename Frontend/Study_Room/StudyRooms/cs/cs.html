@@ -16,18 +16,17 @@
   <div class="bg-shape shape-2"></div>
 
   <div class="main-container">
-
     <div class="glass-panel workspace-panel">
       <div class="panel-header">
         <a href="#" class="back-btn"><i class="fas fa-arrow-left"></i> Leave Room</a>
         <h2>Problem Solver</h2>
       </div>
 
-      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-zone" id="dropZone">
         <i class="fas fa-cloud-upload-alt upload-icon"></i>
         <h3 id="uploadText">Click or Drag PDF/Image Here</h3>
         <p id="uploadSubtext">Supports .jpg, .png, .pdf</p>
-        <input type="file" id="fileInput" hidden accept=".pdf, image/*">
+        <input type="file" id="fileInput" class="in_file">
       </div>
 
       <div class="loader" id="loader">
@@ -40,12 +39,6 @@
           <i class="fas fa-robot"></i> AI Summary
         </div>
         <div class="ai-content">
-          <p><strong>Analysis Complete:</strong></p>
-          <p>I have analyzed the file <strong><span id="fileNameDisplay">file.pdf</span></strong>.</p>
-          <br>
-          <p><strong>Concept Found:</strong> Differential Calculus.</p>
-          <p><strong>Solution:</strong> To solve this limit, apply L'Hôpital's rule since the limit results in an
-            indeterminate form 0/0. Differentiate the numerator and the denominator separately with respect to x.</p>
         </div>
       </div>
     </div>
@@ -57,78 +50,104 @@
           <div class="dot"></div> 12 Online
         </div>
       </div>
-
       <div class="messages-area">
         <div class="message incoming">
           <div class="sender-name">Sarah M.</div>
-          <div class="bubble">Has anyone solved question 4 regarding the Binary Tree traversal?</div>
-        </div>
-
-        <div class="message outgoing">
-          <div class="bubble">Yes! You need to use recursion for that step.</div>
-        </div>
-
-        <div class="message incoming">
-          <div class="sender-name">Mike T.</div>
-          <div class="bubble">Can you share the code snippet?</div>
+          <div class="bubble">Has anyone solved question 4?</div>
         </div>
       </div>
-
       <div class="chat-input-area">
         <input type="text" class="chat-input" placeholder="Type a message...">
-        <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+        <button type="button" class="send-btn">
+          <i class="fas fa-paper-plane"></i>
+        </button>
       </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
   <script>
-    // Kept your existing logic intact
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const uploadText = document.getElementById('uploadText');
-    const uploadSubtext = document.getElementById('uploadSubtext');
     const loader = document.getElementById('loader');
     const aiResult = document.getElementById('aiResult');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const aiContentDiv = document.querySelector('.ai-content');
 
-    fileInput.addEventListener('change', function (e) {
-      if (this.files && this.files[0]) handleFile(this.files[0]);
+    const BACKEND_URL = "http://127.0.0.1:8000/student/upload";
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        handleFile(fileInput.files[0]);
+      }
     });
+
+    dropZone.addEventListener('click', () => fileInput.click());
 
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('dragover');
-      uploadText.textContent = "Drop it here!";
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-      uploadText.textContent = "Click or Drag PDF/Image Here";
     });
 
     dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
       dropZone.classList.remove('dragover');
       if (e.dataTransfer.files.length) {
-        fileInput.files = e.dataTransfer.files;
         handleFile(e.dataTransfer.files[0]);
       }
     });
 
-    function handleFile(file) {
-      // Updated color for success icon to match theme
-      uploadText.innerHTML = `<i class="fas fa-check-circle" style="color:#a78bfa;"></i> File Selected`;
-      uploadSubtext.textContent = file.name;
-      aiResult.style.display = 'none';
-      loader.style.display = 'block';
-      setTimeout(() => {
-        loader.style.display = 'none';
-        aiResult.style.display = 'block';
-        fileNameDisplay.textContent = file.name;
-      }, 2000);
+    async function handleFile(file) {
+      // alert("Handler triggered ✅");
+
+      let token = localStorage.getItem("token") || localStorage.getItem("access_token");
+      if (!token) {
+        alert("Not logged in");
+        return;
+      }
+
+      uploadText.textContent = "Uploading...";
+      loader.style.display = "block";
+      aiResult.style.display = "none";
+
+      const formData = new FormData();
+      formData.append("title", file.name);
+      formData.append("room_slug", "cs");
+      formData.append("tags", "AI Upload");
+      formData.append("file", file);
+
+      try {
+        const response = await fetch(BACKEND_URL, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "accept": "application/json"
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(text);
+        }
+
+        const data = await response.json();
+
+        loader.style.display = "none";
+        aiResult.style.display = "block";
+        uploadText.textContent = "Upload complete";
+
+        aiContentDiv.innerHTML = `
+        <p><strong>Summary:</strong></p>
+        <div>${data.summary}</div>
+      `;
+
+      } catch (err) {
+        loader.style.display = "none";
+        alert("Upload failed: " + err.message);
+      }
     }
   </script>
+
 </body>
 
 </html>
