@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile - Dashboard</title>
+  <title>User Profile - StudyHub</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -73,10 +73,10 @@
       color: white;
     }
 
-    .btn-edit {
-      background: rgba(59, 130, 246, 0.1);
-      color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.2);
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.2);
       padding: 10px 25px;
       border-radius: 8px;
       font-weight: 500;
@@ -87,9 +87,9 @@
       gap: 8px;
     }
 
-    .btn-edit:hover {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: #60a5fa;
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #f87171;
     }
 
     /* --- Profile Layout Grid --- */
@@ -140,6 +140,7 @@
       color: #94a3b8;
       font-size: 0.9rem;
       margin-bottom: 20px;
+      text-transform: capitalize;
     }
 
     .stat-divider {
@@ -160,6 +161,7 @@
     .ms-val {
       font-weight: 600;
       font-size: 1.1rem;
+      color: #60a5fa;
     }
 
     .ms-lbl {
@@ -182,7 +184,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 25px;
-      /* Spacing between grid items */
       padding: 25px;
     }
 
@@ -194,7 +195,6 @@
       display: block;
       font-size: 0.8rem;
       color: #94a3b8;
-      /* Gray Label */
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 5px;
@@ -203,11 +203,9 @@
     .info-value {
       font-size: 1.05rem;
       color: white;
-      /* Bright White Value */
       font-weight: 500;
       padding-bottom: 5px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      /* Subtle separator */
     }
 
     /* Activity List */
@@ -256,6 +254,12 @@
       color: #64748b;
     }
 
+    .loading-text {
+      color: #94a3b8;
+      text-align: center;
+      padding: 20px;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
       .profile-grid {
@@ -266,7 +270,6 @@
         grid-template-columns: 1fr;
       }
 
-      /* Stack info on mobile */
       .cover-photo {
         height: 100px;
       }
@@ -282,11 +285,10 @@
 
     <header class="page-header">
       <div class="header-left">
-        <a href="/Frontend//Features/FeaturesPage.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to
-          Home</a>
+        <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
         <h1>My Profile</h1>
       </div>
-      <button class="btn-edit"><i class="fas fa-pen"></i> Edit Profile</button>
+      <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </header>
 
     <div class="profile-grid">
@@ -295,25 +297,19 @@
         <div class="card">
           <div class="cover-photo"></div>
           <div class="profile-header">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="avatar">
-            <h2 class="user-name">Alex Johnson</h2>
-            <p class="user-role">Computer Science Student</p>
-            <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">Passionate about AI and Web Dev. Currently
-              preparing for finals.</p>
+            <img id="profile-avatar" src="" alt="Profile" class="avatar">
+            <h2 id="profile-name" class="user-name">Loading...</h2>
+            <p id="profile-role" class="user-role">...</p>
           </div>
 
           <div class="stat-divider">
             <div class="mini-stat">
-              <span class="ms-val">12</span>
-              <span class="ms-lbl">Courses</span>
+              <span id="stat-karma" class="ms-val">0</span>
+              <span class="ms-lbl">Profile Liked</span>
             </div>
             <div class="mini-stat">
-              <span class="ms-val">84%</span>
-              <span class="ms-lbl">Avg Score</span>
-            </div>
-            <div class="mini-stat">
-              <span class="ms-val">320</span>
-              <span class="ms-lbl">Hours</span>
+              <span id="stat-uploads" class="ms-val">0</span>
+              <span class="ms-lbl">Uploads</span>
             </div>
           </div>
         </div>
@@ -322,10 +318,7 @@
           <h3 style="font-size: 1rem; margin-bottom: 15px;">Contact Information</h3>
           <div
             style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #cbd5e1; font-size: 0.9rem;">
-            <i class="fas fa-envelope" style="color: #64748b;"></i> alex.j@university.edu
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 0.9rem;">
-            <i class="fas fa-phone" style="color: #64748b;"></i> +1 (555) 123-4567
+            <i class="fas fa-envelope" style="color: #64748b;"></i> <span id="profile-email">...</span>
           </div>
         </div>
       </div>
@@ -334,31 +327,24 @@
 
         <div class="card">
           <div style="padding: 25px;">
-            <h3 class="section-title">General Information</h3>
+            <h3 class="section-title">Account Details</h3>
 
             <div class="info-grid">
               <div class="info-group">
-                <span class="info-label">First Name</span>
-                <div class="info-value">Alex</div>
+                <span class="info-label">Full Name</span>
+                <div id="detail-name" class="info-value">...</div>
               </div>
               <div class="info-group">
-                <span class="info-label">Last Name</span>
-                <div class="info-value">Johnson</div>
+                <span class="info-label">User ID</span>
+                <div id="detail-id" class="info-value">...</div>
               </div>
               <div class="info-group">
-                <span class="info-label">Department</span>
-                <div class="info-value">Computer Science</div>
+                <span class="info-label">Role</span>
+                <div id="detail-role" class="info-value">...</div>
               </div>
               <div class="info-group">
-                <span class="info-label">Year</span>
-                <div class="info-value">Year 3</div>
-              </div>
-              <div class="info-group" style="grid-column: span 2;">
-                <span class="info-label">Bio</span>
-                <div class="info-value" style="line-height: 1.6;">
-                  Passionate about AI and Web Development. Currently focusing on building scalable web applications and
-                  learning machine learning algorithms.
-                </div>
+                <span class="info-label">Email</span>
+                <div id="detail-email" class="info-value">...</div>
               </div>
             </div>
           </div>
@@ -366,44 +352,130 @@
 
         <div class="card" style="margin-top: 20px;">
           <div style="padding: 25px 25px 10px;">
-            <h3 class="section-title">Recent Activity</h3>
+            <h3 class="section-title">My Uploads</h3>
           </div>
 
-          <div class="activity-list">
-            <div class="activity-item">
-              <div class="act-icon"><i class="fas fa-file-pdf"></i></div>
-              <div class="act-details">
-                <h4>Uploaded Calculus_Notes.pdf</h4>
-                <p>In Study Room: Computer Science</p>
-              </div>
-              <span class="act-time">2h ago</span>
-            </div>
-
-            <div class="activity-item">
-              <div class="act-icon" style="background: rgba(16, 185, 129, 0.1); color: #34d399;"><i
-                  class="fas fa-check-circle"></i></div>
-              <div class="act-details">
-                <h4>Completed Daily Quiz</h4>
-                <p>Score: 9/10 • Algorithms</p>
-              </div>
-              <span class="act-time">5h ago</span>
-            </div>
-
-            <div class="activity-item">
-              <div class="act-icon" style="background: rgba(168, 85, 247, 0.1); color: #c084fc;"><i
-                  class="fas fa-robot"></i></div>
-              <div class="act-details">
-                <h4>Used AI Solver</h4>
-                <p>Solved 3 problems in Mechanics</p>
-              </div>
-              <span class="act-time">1d ago</span>
-            </div>
+          <div id="uploads-list" class="activity-list">
+            <p class="loading-text">Loading uploads...</p>
           </div>
         </div>
 
       </div>
     </div>
   </div>
+
+  <script>
+    // --- Configuration ---
+    const API_BASE_URL = "http://127.0.0.1:8000";
+
+    // Check for Auth Token
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You are not logged in.");
+      window.location.href = "/Frontend/LogIn/LogIn.html"; // Adjust to your actual login page
+    }
+
+    // --- Main Fetch Function ---
+    async function fetchProfile() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/student/me`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+        renderProfile(data);
+
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Session expired or error loading profile.");
+        // Optional: logoutUser();
+      }
+    }
+
+    // --- Render Function ---
+    function renderProfile(user) {
+      // 1. Identity Section
+      document.getElementById("profile-name").textContent = user.full_name;
+      document.getElementById("profile-role").textContent = user.role;
+
+      // Generate Avatar using DiceBear based on name
+      const seed = user.full_name.replace(/\s+/g, '');
+      document.getElementById("profile-avatar").src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+
+      // 2. Stats
+      document.getElementById("stat-karma").textContent = user.karma_score;
+      document.getElementById("stat-uploads").textContent = user.uploads.length;
+      document.getElementById("profile-email").textContent = user.email;
+
+      // 3. Account Details Section
+      document.getElementById("detail-name").textContent = user.full_name;
+      document.getElementById("detail-id").textContent = "#" + user.id;
+      document.getElementById("detail-role").textContent = user.role;
+      document.getElementById("detail-email").textContent = user.email;
+
+      // 4. Uploads List
+      const uploadsContainer = document.getElementById("uploads-list");
+      uploadsContainer.innerHTML = ""; // Clear loading text
+
+      if (user.uploads.length === 0) {
+        uploadsContainer.innerHTML = `<p style="color:#64748b; text-align:center; padding:10px;">No uploads yet.</p>`;
+        return;
+      }
+
+      user.uploads.forEach(file => {
+        // Format Date
+        const dateObj = new Date(file.created_at);
+        const timeAgo = timeSince(dateObj); // Helper function for "2h ago"
+
+        const itemHTML = `
+          <div class="activity-item">
+            <div class="act-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="act-details">
+              <h4>${file.filename}</h4>
+              <p>Uploaded to StudyHub</p>
+            </div>
+            <span class="act-time">${timeAgo}</span>
+          </div>
+        `;
+        uploadsContainer.innerHTML += itemHTML;
+      });
+    }
+
+    // --- Helper: Time Since (e.g., "2 hours ago") ---
+    function timeSince(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + " years ago";
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + " months ago";
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + " days ago";
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + "h ago";
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + "m ago";
+      return Math.floor(seconds) + "s ago";
+    }
+
+    // --- Logout Function ---
+    function logoutUser() {
+      localStorage.removeItem("token");
+      window.location.href = "/Frontend/LogIn/LogIn.html"; // Change to your login page
+    }
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", fetchProfile);
+
+  </script>
 </body>
 
 </html>
