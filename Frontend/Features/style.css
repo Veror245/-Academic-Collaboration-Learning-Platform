@@ -71,6 +71,7 @@
    display: flex;
    justify-content: center;
    margin-bottom: 1rem;
+   cursor: pointer;
  }
 
  .user-card {
@@ -80,7 +81,7 @@
    -webkit-backdrop-filter: blur(10px);
    border: 1px solid rgba(255, 255, 255, 0.1);
    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-
+    text-decoration: none;
    border-radius: 20px;
    padding: 1.5rem 2.5rem;
    display: flex;
