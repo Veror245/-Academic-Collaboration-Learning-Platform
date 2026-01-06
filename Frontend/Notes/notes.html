@@ -1,104 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Library | StudioControl</title>
-    <link rel="stylesheet" href="notes.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- 1. RESET & VARIABLES --- */
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+        }
+
+        /* --- 2. LAYOUT --- */
+        .library-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- 3. HEADER SECTION --- */
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+        }
+
+        .header-content h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+        }
+
+        /* --- 4. FILTER BAR --- */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            /* Space for scrollbar if needed */
+        }
+
+        .filter-btn {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .filter-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* --- 5. GRID & CARDS --- */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Top Accent Line */
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .note-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(239, 68, 68, 0.1);
+            /* Red tint for PDF */
+            color: #ef4444;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .card-info h3 {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .subject-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .card-meta {
+            margin-top: auto;
+            /* Pushes footer to bottom */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .date-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            padding: 5px;
+        }
+
+        .action-btn:hover {
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        /* --- 6. MODAL STYLING --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            width: 90%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-cancel:hover {
+            color: white;
+        }
+
+        /* --- Add this to your CSS <style> block --- */
+
+        /* Hide the default ugly file input */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Create a custom clickable label */
+        .custom-file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            /* Dark background */
+            border: 2px dashed #334155;
+            /* Dashed border */
+            border-radius: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .custom-file-upload:hover {
+            border-color: var(--primary);
+            /* Blue border on hover */
+            color: white;
+            background: rgba(59, 130, 246, 0.1);
+            /* Slight blue tint */
+        }
+
+        .custom-file-upload i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .file-name-display {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #10b981;
+            /* Green when file selected */
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .library-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .upload-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     <main class="library-container">
+
         <header class="library-header">
-            <h1>Subject Library</h1>
-            <p>Upload and organize your academic resources</p>
-            
-            <div class="upload-zone">
-                <input type="file" id="file-upload" hidden>
-                <label for="file-upload" class="upload-btn">
-                    <span>+ Upload New Note</span>
-                </label>
+            <div class="header-content">
+                <h1>My Notes</h1>
+                <p id="user-welcome">Loading user library...</p>
             </div>
+
+            <button onclick="openUploadModal()" class="upload-btn">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Note
+            </button>
         </header>
 
         <nav class="filter-bar">
-            <button class="filter-btn active" onclick="filterNotes('all')">All Notes</button>
-            <button class="filter-btn" onclick="filterNotes('physics')">Physics</button>
-            <button class="filter-btn" onclick="filterNotes('math')">Mathematics</button>
-            <button class="filter-btn" onclick="filterNotes('chemistry')">Chemistry</button>
-            <button class="filter-btn" onclick="filterNotes('biology')">Biology</button>
+            <button class="filter-btn active" onclick="filterNotes('all')">All</button>
+            <button class="filter-btn" onclick="filterNotes('Computer Science')">Computer Science</button>
+            <button class="filter-btn" onclick="filterNotes('Electronics & Comm')">Electronics & Comm</button>
+            <button class="filter-btn" onclick="filterNotes('Mechanical Engineering')">Mechanical Eng</button>
+            <button class="filter-btn" onclick="filterNotes('Civil Engineering')">Civil Eng</button>
+            <button class="filter-btn" onclick="filterNotes('Basic Science')">Basic Science</button>
+            <button class="filter-btn" onclick="filterNotes('Management & Arts')">Management & Arts</button>
         </nav>
 
         <section class="notes-grid" id="notesGrid">
-            <div class="note-card physics">
-                <div class="card-icon">PDF</div>
-                <div class="card-info">
-                    <h3>Quantum Mechanics Vol 1</h3>
-                    <span class="subject-tag">Physics</span>
-                </div>
-                <a href="#" class="view-btn">View Note</a>
-            </div>
-
-            <div class="note-card math">
-                <div class="card-icon">PDF</div>
-                <div class="card-info">
-                    <h3>Linear Algebra Basics</h3>
-                    <span class="subject-tag">Mathematics</span>
-                </div>
-                <a href="#" class="view-btn">View Note</a>
-            </div>
-
-            <div class="note-card chemistry">
-                <div class="card-icon">PDF</div>
-                <div class="card-info">
-                    <h3>Organic Synthesis</h3>
-                    <span class="subject-tag">Chemistry</span>
-                </div>
-                <a href="#" class="view-btn">View Note</a>
-            </div>
-
-            <div class="note-card physics">
-                <div class="card-icon">PDF</div>
-                <div class="card-info">
-                    <h3>Thermodynamics</h3>
-                    <span class="subject-tag">Physics</span>
-                </div>
-                <a href="#" class="view-btn">View Note</a>
-            </div>
         </section>
+
     </main>
 
-    <script>
-        function filterNotes(subject) {
-            const cards = document.querySelectorAll('.note-card');
-            const buttons = document.querySelectorAll('.filter-btn');
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <h2><i class="fas fa-file-upload" style="color:var(--primary); margin-right:10px;"></i>Upload Note</h2>
 
-            // Update button active state
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="noteTitle" class="form-control" placeholder="e.g. Chapter 4 Summary">
+            </div>
 
-            cards.forEach(card => {
-                // Remove existing animation classes
-                card.style.display = 'flex';
-                card.classList.remove('fade-in');
-                
-                if (subject === 'all' || card.classList.contains(subject)) {
-                    // Show and animate
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'scale(1)';
-                    }, 10);
-                } else {
-                    // Hide and animate
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.8)';
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 300);
-                }
-            });
-        }
-    </script>
+            <div class="form-group">
+                <label>Subject</label>
+                <select id="noteSubject" class="form-control">
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Electronics & Comm">Electronics & Communication</option>
+                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    <option value="Civil Engineering">Civil Engineering</option>
+                    <option value="Basic Science">Basic Science</option>
+                    <option value="Management & Arts">Management & Arts</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>PDF File</label>
+
+                <input type="file" id="fileInput" accept="application/pdf" onchange="updateFileName()">
+
+                <label for="fileInput" class="custom-file-upload" id="fileLabel">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Click to choose a PDF</span>
+                    <div id="fileNameDisplay" class="file-name-display"></div>
+                </label>
+
+                <small style="color:#64748b; margin-top:8px; display:block; text-align:center;">
+                    Max size: 3MB (LocalStorage limit)
+                </small>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeUploadModal()">Cancel</button>
+                <button class="upload-btn" onclick="saveNote()" style="padding:10px 25px;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
