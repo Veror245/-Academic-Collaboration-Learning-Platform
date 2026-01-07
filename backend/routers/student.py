@@ -108,15 +108,18 @@ def upload_resource(
 
 # 2. LIST FILES ENDPOINT
 @router.get("/room/{room_slug}/resources")
-def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
-    # A. Find Room (Legacy Style)
+def get_room_resources(
+    room_slug: str, 
+    user: models.User = Depends(auth.get_current_user), # <--- ADDED: To check their personal vote
+    db: Session = Depends(database.get_db)
+):
+    # A. Find Room
     room = db.query(models.Room).filter(models.Room.slug == room_slug).first()
     
     if not room:
         raise HTTPException(404, detail="Room not found")
 
-    # B. Fetch Resources with Uploader Name (Legacy Style)
-    # Logic: Query Resource and User.full_name, Join them, Filter by Room
+    # B. Fetch Resources with Uploader Name
     results = (
         db.query(models.Resource, models.User.full_name)
         .join(models.User, models.Resource.uploader_id == models.User.id)
@@ -125,20 +128,37 @@ def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
         .all()
     )
     
-    # Format the output cleanly
-    # In legacy query, 'results' is a list of tuples: (ResourceObject, "John Doe")
-    return [
-        {
+    # C. Format the output + Add Vote Data
+    final_output = []
+    
+    for resource, full_name in results:
+        # 1. Calculate Total Score (Sum of all votes)
+        total_score = db.query(func.sum(models.Vote.value))\
+            .filter(models.Vote.resource_id == resource.id)\
+            .scalar() or 0  # Default to 0 if no votes exist
+            
+        # 2. Check if the CURRENT user has voted
+        existing_vote = db.query(models.Vote).filter(
+            models.Vote.resource_id == resource.id,
+            models.Vote.user_id == user.id
+        ).first()
+        
+        current_user_vote = existing_vote.value if existing_vote else 0
+
+        final_output.append({
             "id": resource.id,
             "title": resource.title,
             "file_path": resource.file_path,
             "tags": resource.tags,
             "ai_summary": resource.ai_summary,
-            "uploader": full_name,  # Extracted from the join
-            "created_at": resource.created_at
-        }
-        for resource, full_name in results
-    ]
+            "uploader": full_name,
+            "created_at": resource.created_at,
+            # --- NEW FIELDS ---
+            "score": total_score,        # Send total votes to frontend
+            "user_vote": current_user_vote # Send 1 (up), -1 (down), or 0 (none)
+        })
+
+    return final_output
     
 
 @router.post("/chat")
