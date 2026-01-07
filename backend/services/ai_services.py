@@ -7,6 +7,8 @@ from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
+import random
+import re
 
 load_dotenv()
 
@@ -150,35 +152,53 @@ def generate_quiz(resource_id: int):
     )
     
     results = vector_store.similarity_search(
-        "key concepts definitions", 
-        k=4, 
+        "summary main concepts definitions core ideas facts importance syllabus", 
+        k=20,  # <--- Grab a huge bucket of text
         filter={"resource_id": resource_id} # type: ignore
     )
     
-    context_text = "\n\n".join([doc.page_content for doc in results])
+    num_chunks_to_use = min(5, len(results)) # Safety check if PDF is small
+    selected_docs = random.sample(results, num_chunks_to_use)
     
-    # 2. Strict JSON Prompt
+    raw_text = "\n\n".join([doc.page_content for doc in selected_docs])
+    # Remove excessive newlines and multiple spaces
+    context_text = re.sub(r'\s+', ' ', raw_text).strip()
+    
+    print(context_text)
+    
+    print(f"🎲 Selected {num_chunks_to_use} random chunks for context.")
+    
     quiz_prompt = f"""
-    You are a quiz generator. Create 5 multiple-choice questions based on the text.
+    You are an expert teacher creating a quiz. 
+    Analyze the text below and create 5 multiple-choice questions.
+
+    CRITICAL INSTRUCTIONS:
+    1. IGNORE course codes (like "STAT-MD-CC1", "SEC2-2", etc.). Do NOT ask what a course code means.
+    2. Focus ONLY on the *concepts*, *definitions*, and *topics* described in the text.
+    3. You MUST provide 4 options for every question.
+    4. You MUST provide the correct answer.
+    5. Ensure there is a comma between every item in the "options" list.
+    6. Do not include explanations.
+    7. Return the quiz in the JSON FORMAT ONLY DO NOT RETURN IN MARKDOWN OR ANY OTHER FORMATTING.
+    8. PROVIDE MAXIMUM 5 QUESTIONS.
+    9. If you cannot generate 5 questions based on the text, generate as many as you can BUT NOT MORE THAN 5.
+    10. STRICTLY FOLLOW THE FORMAT GIVEN BELOW.
+    11. DO NOT RESPOND WITH ANYTHING OTHER THAN THE JSON.
     
-    STRICT OUTPUT FORMAT:
-    Return ONLY a raw JSON array. Do not use Markdown.
-    
+
+    STRICT JSON STRUCTURE (Use this format, but replace the content):
     [
         {{
-            "question": "Question text?",
+            "question": "Write the first question here based on the text?",
             "options": ["Option A", "Option B", "Option C", "Option D"],
             "answer": "Option A"
         }}
     ]
-    
-    Rules:
-    1. Ensure there is a comma between every item in the "options" list.
-    2. Do not include explanations.
-    
-    Context:
+
+    CONTEXT TO USE (The real content):
     {context_text}
     """
+
     
     # 3. Retry Loop (The Safety Net)
     # If the AI messes up the JSON, we try again (up to 3 times)
@@ -188,18 +208,35 @@ def generate_quiz(resource_id: int):
             response = llm.invoke(quiz_prompt)
             content = response.content.strip() # type: ignore
             
+            print(f"🤖 RAW AI REPLY: {content[:200]}...")
+            
             # Clean Markdown wrappers
-            if content.startswith("```json"):
-                content = content.replace("```json", "").replace("```", "")
+            json_match = re.search(r'(\[.*\]|\{.*\})', content, re.DOTALL)
             
-            # Try to parse
-            quiz_data = json.loads(content)
-            print("✅ Quiz generated successfully!")
-            return quiz_data
+            if json_match:
+                json_str = json_match.group(0)
+                quiz_data = json.loads(json_str)
+                
+                if not quiz_data or "options" not in quiz_data[0]:
+                    raise ValueError("AI returned JSON missing 'options' field")
+                
+                # Handle edge case: If AI returned {"quiz": [...]}, extract the list
+                if isinstance(quiz_data, dict):
+                    # Look for any key that holds a list
+                    for key, value in quiz_data.items():
+                        if isinstance(value, list):
+                            quiz_data = value
+                            break
+                            
+                print("✅ Quiz generated successfully!")
+                return quiz_data[:5]
+            else:
+                print(f"⚠️ No JSON found. Raw Content: {content}")
+                continue
             
-        except json.JSONDecodeError:
-            print(f"❌ JSON Error on attempt {attempt+1}. Retrying...")
-            continue # Try again
+        except Exception as e:
+            print(f"❌ Error on attempt {attempt+1}: {e}")
+            continue
             
     # If all 3 fail, return an empty list so the app doesn't crash
     print("🚨 All attempts failed.")
