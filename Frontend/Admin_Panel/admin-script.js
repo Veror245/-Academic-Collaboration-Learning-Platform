@@ -14,7 +14,7 @@ async function loadResources() {
     const token = getAuthToken();
 
     if (!token) {
-        window.location.href = "admin_login.html";
+        window.location.href = "/Frontend/Admin_login/adminLogin.html";
         return;
     }
 
