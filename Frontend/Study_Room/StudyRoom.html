@@ -392,24 +392,62 @@
 
         // 1. LOAD NOTES
         async function loadRoom(slug, btnElement) {
-            // Update UI
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
+                // 1. Get the token safely
+                const token = localStorage.getItem('token');
 
-            const grid = document.getElementById('notesGrid');
-            grid.innerHTML = '<p style="color:#64748b;">Fetching resources...</p>';
+                // OPTIONAL: Redirect if not logged in
+                if (!token) {
+                    alert("You are not logged in. Redirecting to login...");
+                    window.location.href = "../Login/login.html"; // Adjust path to your login page
+                    return;
+                }
 
-            try {
-                const response = await fetch(`${API_BASE}/student/room/${slug}/resources`);
-                if (!response.ok) throw new Error("Failed to fetch");
+                // Update UI Buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                if (btnElement) btnElement.classList.add('active');
 
-                const notes = await response.json();
-                renderNotes(notes);
-            } catch (err) {
-                console.error(err);
-                grid.innerHTML = '<p style="color:#ef4444;">Error loading notes. Is the backend running?</p>';
+                const grid = document.getElementById('notesGrid');
+                grid.innerHTML = '<p style="color:#64748b;">Fetching resources...</p>';
+
+                try {
+                    // 2. FETCH WITH HEADERS (The Fix)
+                    const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`, // <--- THIS IS KEY
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    // Error Handling
+                    if (response.status === 401) {
+                        throw new Error("Session expired or invalid. Please login again.");
+                    }
+                    if (!response.ok) {
+                        throw new Error(`Server Error: ${response.status}`);
+                    }
+
+                    const notes = await response.json();
+                    renderNotes(notes);
+
+                } catch (err) {
+                    console.error(err);
+
+                    // If 401, maybe clear token and redirect?
+                    if (err.message.includes("Session expired")) {
+                        localStorage.removeItem('token');
+                        setTimeout(() => window.location.href = "../Login/login.html", 2000);
+                    }
+
+                    grid.innerHTML = `
+                    <div style="text-align:center; color:#ef4444;">
+                        <i class="fas fa-lock" style="font-size:2rem; margin-bottom:10px;"></i><br>
+                        <strong>Access Denied</strong><br>
+                        <small>${err.message}</small>
+                    </div>
+                `;
+                }
             }
-        }
 
         function renderNotes(notes) {
             const grid = document.getElementById('notesGrid');
