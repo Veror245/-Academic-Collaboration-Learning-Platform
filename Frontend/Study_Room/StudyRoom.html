@@ -344,6 +344,14 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+
+        /* Add this inside your <style> block, specifically near .vote-btn */
+
+        .vote-btn.active {
+            color: var(--primary);
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
     </style>
 </head>
 
@@ -392,62 +400,62 @@
 
         // 1. LOAD NOTES
         async function loadRoom(slug, btnElement) {
-                // 1. Get the token safely
-                const token = localStorage.getItem('token');
+            // 1. Get the token safely
+            const token = localStorage.getItem('token');
 
-                // OPTIONAL: Redirect if not logged in
-                if (!token) {
-                    alert("You are not logged in. Redirecting to login...");
-                    window.location.href = "../Login/login.html"; // Adjust path to your login page
-                    return;
+            // OPTIONAL: Redirect if not logged in
+            if (!token) {
+                alert("You are not logged in. Redirecting to login...");
+                window.location.href = "../Login/login.html"; // Adjust path to your login page
+                return;
+            }
+
+            // Update UI Buttons
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+
+            const grid = document.getElementById('notesGrid');
+            grid.innerHTML = '<p style="color:#64748b;">Fetching resources...</p>';
+
+            try {
+                // 2. FETCH WITH HEADERS (The Fix)
+                const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // <--- THIS IS KEY
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Error Handling
+                if (response.status === 401) {
+                    throw new Error("Session expired or invalid. Please login again.");
+                }
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
                 }
 
-                // Update UI Buttons
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                if (btnElement) btnElement.classList.add('active');
+                const notes = await response.json();
+                renderNotes(notes);
 
-                const grid = document.getElementById('notesGrid');
-                grid.innerHTML = '<p style="color:#64748b;">Fetching resources...</p>';
+            } catch (err) {
+                console.error(err);
 
-                try {
-                    // 2. FETCH WITH HEADERS (The Fix)
-                    const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`, // <--- THIS IS KEY
-                            'Content-Type': 'application/json'
-                        }
-                    });
+                // If 401, maybe clear token and redirect?
+                if (err.message.includes("Session expired")) {
+                    localStorage.removeItem('token');
+                    setTimeout(() => window.location.href = "../Login/login.html", 2000);
+                }
 
-                    // Error Handling
-                    if (response.status === 401) {
-                        throw new Error("Session expired or invalid. Please login again.");
-                    }
-                    if (!response.ok) {
-                        throw new Error(`Server Error: ${response.status}`);
-                    }
-
-                    const notes = await response.json();
-                    renderNotes(notes);
-
-                } catch (err) {
-                    console.error(err);
-
-                    // If 401, maybe clear token and redirect?
-                    if (err.message.includes("Session expired")) {
-                        localStorage.removeItem('token');
-                        setTimeout(() => window.location.href = "../Login/login.html", 2000);
-                    }
-
-                    grid.innerHTML = `
+                grid.innerHTML = `
                     <div style="text-align:center; color:#ef4444;">
                         <i class="fas fa-lock" style="font-size:2rem; margin-bottom:10px;"></i><br>
                         <strong>Access Denied</strong><br>
                         <small>${err.message}</small>
                     </div>
                 `;
-                }
             }
+        }
 
         function renderNotes(notes) {
             const grid = document.getElementById('notesGrid');
@@ -465,6 +473,11 @@
                 // Construct file URL
                 const fileUrl = `${API_BASE}/${note.file_path}`;
 
+                // --- NEW LOGIC: Determine Active State ---
+                // user_vote: 1 (up), -1 (down), 0 (none)
+                const upActive = note.user_vote === 1 ? 'active' : '';
+                const downActive = note.user_vote === -1 ? 'active' : '';
+
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
@@ -481,14 +494,20 @@
                     <div class="card-footer">
                         <div class="interaction-group">
                             <div class="vote-box">
-                                <button class="vote-btn" onclick="handleVote(${note.id}, 1, this)"><i class="fas fa-arrow-up"></i></button>
-                                <span class="vote-count" id="score-${note.id}">--</span>
-                                <button class="vote-btn" onclick="handleVote(${note.id}, -1, this)"><i class="fas fa-arrow-down"></i></button>
+                                <button class="vote-btn ${upActive}" id="upbtn-${note.id}" onclick="handleVote(${note.id}, 1)">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                
+                                <span class="vote-count" id="score-${note.id}">${note.score}</span>
+                                
+                                <button class="vote-btn ${downActive}" id="downbtn-${note.id}" onclick="handleVote(${note.id}, -1)">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
                             </div>
                             
                            <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title}', '${note.file_path}')">
-                <i class="far fa-comment-alt"></i> Discuss
-            </button>
+                                <i class="far fa-comment-alt"></i> Discuss
+                            </button>
                         </div>
 
                         <a href="${fileUrl}" target="_blank" class="download-link">
@@ -541,7 +560,7 @@
         }
 
         // 3. VOTING
-        async function handleVote(resourceId, type, btn) {
+        async function handleVote(resourceId, type) {
             const token = localStorage.getItem('token');
             if (!token) return alert("Please login to vote");
 
@@ -555,10 +574,37 @@
                     body: JSON.stringify({ resource_id: resourceId, vote_type: type })
                 });
 
-                const data = await res.json();
                 if (res.ok) {
-                    // Update score in UI immediately
+                    const data = await res.json();
+
+                    // 1. Update the number
                     document.getElementById(`score-${resourceId}`).innerText = data.new_score;
+
+                    // 2. Update the button colors immediately
+                    const upBtn = document.getElementById(`upbtn-${resourceId}`);
+                    const downBtn = document.getElementById(`downbtn-${resourceId}`);
+
+                    // Clear both first
+                    upBtn.classList.remove('active');
+                    downBtn.classList.remove('active');
+
+                    // If the backend returns the new user_vote status, use it. 
+                    // Assuming your backend logic toggles votes:
+                    // If I clicked UP and now I'm UPVOTED, light it up.
+                    // (You might need to adjust this logic depending on if your backend allows un-voting)
+
+                    if (type === 1) {
+                        // If we clicked up, and the score increased or we are enforcing upvote
+                        // Ideally backend returns 'user_vote' status in response. 
+                        // For now, we assume success means it's active unless it was a toggle-off.
+                        // Simple UI logic: Just set active based on clicked type for visual feedback
+                        upBtn.classList.add('active');
+                    } else if (type === -1) {
+                        downBtn.classList.add('active');
+                    }
+
+                    // Note: For perfect sync, your vote API response should return { new_score: X, current_user_vote: Y }
+                    // If it only returns score, the simple logic above works for basic feedback.
                 }
             } catch (err) {
                 console.error("Vote failed", err);
