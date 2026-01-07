@@ -4,18 +4,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discussion & Preview | StudyHub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>Neural Stream | StudyHub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* --- 1. THEME VARIABLES --- */
     :root {
-      --bg-dark: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: rgba(255, 255, 255, 0.08);
-      --primary: #3b82f6;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg-dark: #050505;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+      --neon-green: #00ff9d;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
     }
 
     * {
@@ -25,99 +37,187 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
       background-color: var(--bg-dark);
-      color: var(--text-main);
+      color: var(--text-primary);
+      font-family: var(--font-body);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      /* Prevent body scroll */
+      position: relative;
     }
 
-    /* --- Header --- */
+    /* --- BACKGROUND FX --- */
+    .bg-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.05;
+      /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
+    }
+
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -2;
+      opacity: 0.3;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+      top: -20%;
+      left: -10%;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+      bottom: -20%;
+      right: -10%;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(30px, 20px);
+      }
+    }
+
+    /* --- HEADER --- */
     .header {
-      height: 60px;
-      padding: 0 20px;
+      height: 70px;
+      padding: 0 30px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
-      background: var(--bg-dark);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(5, 5, 5, 0.6);
+      backdrop-filter: blur(12px);
+      z-index: 10;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
 
     .back-btn {
-      color: var(--text-muted);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-cyan);
+      background: var(--glass-surface);
+      transition: all 0.3s ease;
       text-decoration: none;
-      font-size: 1.1rem;
-      transition: color 0.3s;
     }
 
     .back-btn:hover {
-      color: white;
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 15px var(--neon-cyan);
     }
 
     h1 {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: white;
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #fff;
+      max-width: 500px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 400px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     }
 
-    /* Like Button Styling */
+    /* Like Button */
     .like-btn {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 8px 16px;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      padding: 8px 20px;
+      border-radius: 50px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      font-family: var(--font-heading);
       font-weight: 600;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
     }
 
     .like-btn:hover {
-      background: var(--primary);
-      color: white;
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      background: rgba(0, 255, 157, 0.05);
     }
 
     .like-btn.liked {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+      background: var(--neon-green);
+      border-color: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
     }
 
-    /* --- Main Layout (Split View) --- */
+    /* --- MAIN LAYOUT --- */
     .main-content {
       display: flex;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 70px);
+      padding: 20px;
+      gap: 20px;
     }
 
-    /* PDF Section (Left) */
+    /* --- PDF VIEWER (Left) --- */
     .pdf-section {
       flex: 1;
-      /* Takes remaining space */
       background: #000;
-      border-right: 1px solid var(--card-border);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
       position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Decoration line at top of PDF viewer */
+    .pdf-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      z-index: 2;
     }
 
     iframe {
       width: 100%;
       height: 100%;
       border: none;
+      filter: contrast(1.1);
+      /* Slight contrast boost for readability */
     }
 
     .pdf-placeholder {
@@ -125,107 +225,165 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    /* Comment Section (Right) */
-    .discussion-section {
-      width: 400px;
-      /* Fixed width for comments */
+      color: var(--neon-cyan);
+      font-family: var(--font-heading);
+      letter-spacing: 2px;
+      text-transform: uppercase;
       display: flex;
       flex-direction: column;
-      background: var(--card-bg);
-    }
-
-    .comments-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 15px;
     }
 
-    /* Input Area (Bottom of Right Panel) */
-    .input-area {
-      padding: 20px;
-      border-top: 1px solid var(--card-border);
-      background: var(--bg-dark);
+    /* --- DISCUSSION (Right) --- */
+    .discussion-section {
+      width: 420px;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
-    textarea {
-      width: 100%;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: white;
-      border-radius: 8px;
-      padding: 10px;
-      font-family: inherit;
-      resize: none;
-      height: 50px;
-      outline: none;
-      margin-bottom: 10px;
+    /* Comments List */
+    .comments-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* Custom Scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: var(--glass-border) transparent;
     }
 
-    textarea:focus {
-      border-color: var(--primary);
+    .comments-container::-webkit-scrollbar {
+      width: 5px;
     }
 
-    .post-btn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
+    .comments-container::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 5px;
     }
 
-    /* Comment Card Style */
+    /* Comment Cards */
     .comment-card {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      padding: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border-left: 2px solid var(--glass-border);
+      border-radius: 4px 12px 12px 4px;
+      padding: 15px;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .comment-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: var(--neon-purple);
+      transform: translateX(5px);
     }
 
     .user-name {
-      color: var(--primary);
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: block;
+      color: var(--neon-cyan);
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .timestamp {
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      font-weight: 400;
     }
 
     .comment-body {
       color: #e2e8f0;
-      font-size: 0.9rem;
-      line-height: 1.4;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-weight: 300;
     }
 
-    .timestamp {
-      font-size: 0.7rem;
-      color: #64748b;
-      float: right;
+    /* Input Area */
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0 0 20px 20px;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: white;
+      border-radius: 12px;
+      padding: 15px;
+      font-family: var(--font-body);
+      resize: none;
+      height: 60px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--neon-purple);
+      background: rgba(188, 19, 254, 0.05);
+      box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+    }
+
+    .post-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--neon-purple);
+      border: 1px solid var(--neon-purple);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .post-btn:hover {
+      background: var(--neon-purple);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .main-content {
         flex-direction: column;
+        height: auto;
+        padding-bottom: 0;
       }
 
       .pdf-section {
-        height: 40vh;
-        border-right: none;
-        border-bottom: 1px solid var(--card-border);
+        height: 50vh;
+        width: 100%;
+        border-radius: 12px;
       }
 
       .discussion-section {
         width: 100%;
-        height: 60vh;
+        height: 50vh;
+        border-radius: 12px 12px 0 0;
+      }
+
+      body {
+        overflow-y: auto;
       }
     }
   </style>
@@ -233,15 +391,19 @@
 
 <body>
 
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
   <header class="header">
     <div class="header-left">
-      <a href="../Study_Room/StudyRoom.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-      <h1 id="pageTitle">Loading Note...</h1>
+      <a href="../Study_Room/StudyRoom.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <h1 id="pageTitle">Initializing Stream...</h1>
     </div>
 
     <button class="like-btn" id="likeBtn" onclick="handleLike()">
-      <i class="far fa-thumbs-up" id="likeIcon"></i>
-      <span id="voteCount">--</span> Likes
+      <i class="far fa-heart" id="likeIcon"></i>
+      <span id="voteCount">--</span>
     </button>
   </header>
 
@@ -249,18 +411,20 @@
     <section class="pdf-section">
       <iframe id="pdfViewer" src=""></iframe>
       <div class="pdf-placeholder" id="pdfPlaceholder">
-        <i class="fas fa-spinner fa-spin"></i> Loading PDF...
+        <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem;"></i>
+        <span>Accessing Secure Data...</span>
       </div>
     </section>
 
     <section class="discussion-section">
       <div class="comments-container" id="commentsList">
-        <p style="color:var(--text-muted); text-align:center; margin-top:20px;">Loading comments...</p>
+        <p style="color:var(--text-secondary); text-align:center; font-family: monospace; margin-top:20px;">Fetching
+          Logs...</p>
       </div>
 
       <div class="input-area">
-        <textarea id="commentInput" placeholder="Ask a question..."></textarea>
-        <button onclick="postComment()" class="post-btn">Post Comment</button>
+        <textarea id="commentInput" placeholder="Enter discussion protocol..."></textarea>
+        <button onclick="postComment()" class="post-btn">Transmit</button>
       </div>
     </section>
   </div>
@@ -293,16 +457,14 @@
         document.getElementById('pdfPlaceholder').style.display = 'none';
       };
     } else {
-      document.getElementById('pdfPlaceholder').innerText = "PDF file not found.";
+      document.getElementById('pdfPlaceholder').innerHTML = "<span style='color:var(--neon-purple)'>FILE NOT FOUND</span>";
     }
 
     // Initial Load
     fetchComments();
 
-    // Note: Since backend doesn't give us specific vote count for single ID easily, 
-    // we initialize with 'Vote' text or you can pass score in URL. 
-    // For now, clicking the button will fetch the fresh score.
-    document.getElementById('voteCount').innerText = "Vote";
+    // Init Vote Button text
+    document.getElementById('voteCount').innerText = "VOTE";
 
 
     // --- FUNCTIONS ---
@@ -310,7 +472,7 @@
     // 3. Like/Vote Function
     async function handleLike() {
       const token = localStorage.getItem('token');
-      if (!token) return alert("Please log in to vote.");
+      if (!token) return alert("Authentication required to vote.");
 
       try {
         const res = await fetch(`${API_BASE}/student/vote`, {
@@ -319,7 +481,6 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          // Sending '1' for Upvote. 
           body: JSON.stringify({ resource_id: resourceId, vote_type: 1 })
         });
 
@@ -333,7 +494,6 @@
           const btn = document.getElementById('likeBtn');
           const icon = document.getElementById('likeIcon');
 
-          // If message says "added" or "updated", make it solid. If "removed", make it outline.
           if (data.msg.includes("removed")) {
             btn.classList.remove('liked');
             icon.classList.remove('fas');
@@ -359,7 +519,7 @@
 
         list.innerHTML = '';
         if (comments.length === 0) {
-          list.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No comments yet.<br>Start the discussion!</div>';
+          list.innerHTML = '<div style="text-align:center; color:var(--text-secondary); padding:20px; font-family:monospace;">No data logs found.<br>Initialize discussion.</div>';
           return;
         }
 
@@ -368,11 +528,10 @@
           const div = document.createElement('div');
           div.className = 'comment-card';
           div.innerHTML = `
-            <span class="user-name">
-                ${c.user} 
-                ${c.is_verified ? '<i class="fas fa-check-circle" style="color:#10b981; font-size:0.8em;"></i>' : ''}
+            <div class="user-name">
+                <span>${c.user} ${c.is_verified ? '<i class="fas fa-check-circle" style="color:var(--neon-green); font-size:0.8em;"></i>' : ''}</span>
                 <span class="timestamp">${date}</span>
-            </span>
+            </div>
             <div class="comment-body">${c.text}</div>
           `;
           list.appendChild(div);
@@ -382,7 +541,7 @@
         list.scrollTop = list.scrollHeight;
 
       } catch (err) {
-        list.innerHTML = '<p style="color:#ef4444; text-align:center;">Error loading comments.</p>';
+        list.innerHTML = '<p style="color:var(--neon-red); text-align:center;">Error retrieving logs.</p>';
       }
     }
 
@@ -410,7 +569,7 @@
           fetchComments();
         }
       } catch (err) {
-        alert("Failed to post.");
+        alert("Transmission failed.");
       }
     }
   </script>

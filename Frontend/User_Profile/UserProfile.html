@@ -4,12 +4,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile - StudyHub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>User Profile | Neural Grid</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* --- Reset & Base --- */
+    /* --- 1. THEME VARIABLES --- */
+    :root {
+      --bg-dark: #050505;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+      --neon-green: #00ff9d;
+      --neon-red: #ff0055;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -17,208 +38,295 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #0f172a;
-      /* Deep Slate */
-      color: white;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-body);
       min-height: 100vh;
-      padding: 40px 20px;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* --- Background Effects --- */
-    .bg-glow {
+    /* --- BACKGROUND FX --- */
+    .bg-noise {
       position: fixed;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
-      border-radius: 50%;
-      top: -100px;
-      left: -100px;
-      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
+      z-index: -1;
+      opacity: 0.05;
+      /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
     }
 
-    /* --- Main Container --- */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -2;
+      opacity: 0.4;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+      top: -10%;
+      left: -10%;
+    }
+
+    .blob-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(50px, 30px);
+      }
+    }
+
+    /* --- LAYOUT --- */
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      width: 100%;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* --- Header --- */
+    /* --- HEADER --- */
     .page-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .header-left h1 {
-      font-size: 1.8rem;
-      font-weight: 500;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
     }
 
     .back-link {
-      color: #94a3b8;
+      color: var(--neon-cyan);
       text-decoration: none;
       font-size: 0.9rem;
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 5px;
-      transition: color 0.3s;
+      transition: all 0.3s;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .back-link:hover {
-      color: white;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      gap: 12px;
     }
 
     .btn-logout {
-      background: rgba(239, 68, 68, 0.1);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.2);
+      background: rgba(255, 0, 85, 0.1);
+      color: var(--neon-red);
+      border: 1px solid var(--neon-red);
       padding: 10px 25px;
-      border-radius: 8px;
-      font-weight: 500;
+      border-radius: 50px;
+      font-family: var(--font-heading);
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       align-items: center;
       gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.8rem;
     }
 
     .btn-logout:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: #f87171;
+      background: var(--neon-red);
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
     }
 
-    /* --- Profile Layout Grid --- */
+    /* --- GRID --- */
     .profile-grid {
       display: grid;
       grid-template-columns: 350px 1fr;
       gap: 30px;
     }
 
-    /* --- Card Styles --- */
-    .card {
-      background: rgba(30, 41, 59, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
+    /* --- CARDS --- */
+    .glass-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
       overflow: hidden;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
     }
 
-    /* LEFT COLUMN: Identity Card */
+    /* --- LEFT COL: IDENTITY --- */
     .cover-photo {
       height: 120px;
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      background: linear-gradient(135deg, rgba(188, 19, 254, 0.2) 0%, rgba(0, 243, 255, 0.2) 100%);
+      position: relative;
+    }
+
+    /* Grid lines on cover photo */
+    .cover-photo::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(var(--glass-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.3;
     }
 
     .profile-header {
       text-align: center;
       padding: 0 25px 30px;
-      margin-top: -50px;
+      margin-top: -60px;
+      position: relative;
     }
 
     .avatar {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      border: 4px solid #1e293b;
+      border: 2px solid var(--neon-cyan);
+      padding: 4px;
+      background: #000;
       object-fit: cover;
       margin-bottom: 15px;
-      background: white;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
     }
 
     .user-name {
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
       margin-bottom: 5px;
+      color: #fff;
     }
 
     .user-role {
-      color: #94a3b8;
+      color: var(--neon-purple);
       font-size: 0.9rem;
-      margin-bottom: 20px;
-      text-transform: capitalize;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
     }
 
     .stat-divider {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid var(--glass-border);
       padding: 20px;
       display: flex;
       justify-content: space-around;
+      background: rgba(0, 0, 0, 0.2);
     }
 
     .mini-stat {
       text-align: center;
     }
 
-    .mini-stat span {
+    .ms-val {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #fff;
       display: block;
     }
 
-    .ms-val {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #60a5fa;
-    }
-
     .ms-lbl {
-      font-size: 0.75rem;
-      color: #94a3b8;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
       text-transform: uppercase;
-      margin-top: 2px;
+      letter-spacing: 1px;
+      margin-top: 5px;
+      display: block;
     }
 
-    /* RIGHT COLUMN: Info & Activity */
+    /* --- RIGHT COL: DETAILS --- */
+    .section-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
     .section-title {
+      font-family: var(--font-heading);
       font-size: 1.1rem;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: #e2e8f0;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 25px;
-      padding: 25px;
+      gap: 30px;
+      padding: 30px;
     }
 
     .info-group {
-      margin-bottom: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .info-label {
-      display: block;
-      font-size: 0.8rem;
-      color: #94a3b8;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 5px;
+      letter-spacing: 1px;
     }
 
     .info-value {
-      font-size: 1.05rem;
-      color: white;
-      font-weight: 500;
-      padding-bottom: 5px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 1.1rem;
+      color: #fff;
+      font-family: var(--font-heading);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--glass-border);
     }
 
-    /* Activity List */
+    /* --- ACTIVITY LIST --- */
     .activity-list {
-      padding: 0 25px 25px;
+      padding: 0;
     }
 
     .activity-item {
       display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      align-items: center;
+      gap: 20px;
+      padding: 20px 30px;
+      border-bottom: 1px solid var(--glass-border);
+      transition: background 0.3s ease;
+    }
+
+    .activity-item:hover {
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .activity-item:last-child {
@@ -226,38 +334,47 @@
     }
 
     .act-icon {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: rgba(59, 130, 246, 0.1);
-      color: #60a5fa;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: rgba(0, 243, 255, 0.1);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      color: var(--neon-cyan);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
     }
 
     .act-details h4 {
-      font-size: 0.95rem;
-      font-weight: 500;
+      font-family: var(--font-heading);
+      font-size: 1rem;
       margin-bottom: 4px;
+      color: #fff;
     }
 
     .act-details p {
-      font-size: 0.85rem;
-      color: #94a3b8;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: monospace;
     }
 
     .act-time {
       margin-left: auto;
       font-size: 0.75rem;
-      color: #64748b;
+      color: var(--neon-purple);
+      font-family: monospace;
+      border: 1px solid rgba(188, 19, 254, 0.3);
+      padding: 4px 8px;
+      border-radius: 4px;
     }
 
     .loading-text {
-      color: #94a3b8;
+      color: var(--text-secondary);
       text-align: center;
-      padding: 20px;
+      padding: 40px;
+      font-family: monospace;
     }
 
     /* Responsive */
@@ -269,94 +386,89 @@
       .info-grid {
         grid-template-columns: 1fr;
       }
-
-      .cover-photo {
-        height: 100px;
-      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="bg-glow"></div>
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
   <div class="container">
 
     <header class="page-header">
       <div class="header-left">
-        <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
-        <h1>My Profile</h1>
+        <a href="javascript:history.back()" class="back-link"><i class="fas fa-chevron-left"></i> Return</a>
+        <h1>User Profile</h1>
       </div>
-      <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <button class="btn-logout" onclick="logoutUser()">
+        <i class="fas fa-power-off"></i> Terminate Session
+      </button>
     </header>
 
     <div class="profile-grid">
 
       <div class="left-col">
-        <div class="card">
+        <div class="glass-card">
           <div class="cover-photo"></div>
           <div class="profile-header">
             <img id="profile-avatar" src="" alt="Profile" class="avatar">
-            <h2 id="profile-name" class="user-name">Loading...</h2>
+            <h2 id="profile-name" class="user-name">Identifying...</h2>
             <p id="profile-role" class="user-role">...</p>
           </div>
 
           <div class="stat-divider">
             <div class="mini-stat">
               <span id="stat-karma" class="ms-val">0</span>
-              <span class="ms-lbl">Profile Liked</span>
+              <span class="ms-lbl">Karma Score</span>
             </div>
             <div class="mini-stat">
               <span id="stat-uploads" class="ms-val">0</span>
-              <span class="ms-lbl">Uploads</span>
+              <span class="ms-lbl">Data Uploads</span>
             </div>
           </div>
-        </div>
 
-        <div class="card" style="margin-top: 20px; padding: 25px;">
-          <h3 style="font-size: 1rem; margin-bottom: 15px;">Contact Information</h3>
-          <div
-            style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #cbd5e1; font-size: 0.9rem;">
-            <i class="fas fa-envelope" style="color: #64748b;"></i> <span id="profile-email">...</span>
+          <div style="padding: 25px;">
+            <h3 class="section-title" style="font-size: 0.9rem; margin-bottom: 15px;">Contact Protocol</h3>
+            <div style="display: flex; align-items: center; gap: 10px; color: #fff;">
+              <i class="fas fa-envelope" style="color: var(--neon-cyan);"></i>
+              <span id="profile-email" style="font-family: monospace;">...</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="right-col">
 
-        <div class="card">
-          <div style="padding: 25px;">
-            <h3 class="section-title">Account Details</h3>
-
-            <div class="info-grid">
-              <div class="info-group">
-                <span class="info-label">Full Name</span>
-                <div id="detail-name" class="info-value">...</div>
-              </div>
-              <div class="info-group">
-                <span class="info-label">User ID</span>
-                <div id="detail-id" class="info-value">...</div>
-              </div>
-              <div class="info-group">
-                <span class="info-label">Role</span>
-                <div id="detail-role" class="info-value">...</div>
-              </div>
-              <div class="info-group">
-                <span class="info-label">Email</span>
-                <div id="detail-email" class="info-value">...</div>
-              </div>
+        <div class="glass-card" style="margin-bottom: 30px;">
+          <div class="section-header">
+            <h3 class="section-title">Account Parameters</h3>
+          </div>
+          <div class="info-grid">
+            <div class="info-group">
+              <span class="info-label">Full Name</span>
+              <div id="detail-name" class="info-value">...</div>
+            </div>
+            <div class="info-group">
+              <span class="info-label">Clearance Role</span>
+              <div id="detail-role" class="info-value">...</div>
+            </div>
+            <div class="info-group">
+              <span class="info-label">Email Address</span>
+              <div id="detail-email" class="info-value">...</div>
             </div>
           </div>
         </div>
 
-        <div class="card" style="margin-top: 20px;">
-          <div style="padding: 25px 25px 10px;">
-            <h3 class="section-title">My Uploads</h3>
+        <div class="glass-card">
+          <div class="section-header">
+            <h3 class="section-title">Transmission Log</h3>
           </div>
 
           <div id="uploads-list" class="activity-list">
-            <p class="loading-text">Loading uploads...</p>
+            <p class="loading-text">Scanning Data Logs...</p>
           </div>
         </div>
 
@@ -372,8 +484,8 @@
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("You are not logged in.");
-      window.location.href = "/Frontend/LogIn/LogIn.html"; // Adjust to your actual login page
+      alert("Access Denied. Redirecting to Login.");
+      window.location.href = "/Frontend/LogIn/LogIn.html";
     }
 
     // --- Main Fetch Function ---
@@ -396,8 +508,7 @@
 
       } catch (error) {
         console.error("Error:", error);
-        alert("Session expired or error loading profile.");
-        // Optional: logoutUser();
+        alert("Session expired or connection lost.");
       }
     }
 
@@ -407,7 +518,7 @@
       document.getElementById("profile-name").textContent = user.full_name;
       document.getElementById("profile-role").textContent = user.role;
 
-      // Generate Avatar using DiceBear based on name
+      // Generate Avatar
       const seed = user.full_name.replace(/\s+/g, '');
       document.getElementById("profile-avatar").src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
 
@@ -418,30 +529,29 @@
 
       // 3. Account Details Section
       document.getElementById("detail-name").textContent = user.full_name;
-      document.getElementById("detail-id").textContent = "#" + user.id;
+      // Removed ID display logic here to match HTML removal
       document.getElementById("detail-role").textContent = user.role;
       document.getElementById("detail-email").textContent = user.email;
 
       // 4. Uploads List
       const uploadsContainer = document.getElementById("uploads-list");
-      uploadsContainer.innerHTML = ""; // Clear loading text
+      uploadsContainer.innerHTML = "";
 
       if (user.uploads.length === 0) {
-        uploadsContainer.innerHTML = `<p style="color:#64748b; text-align:center; padding:10px;">No uploads yet.</p>`;
+        uploadsContainer.innerHTML = `<p class="loading-text">No transmission logs found.</p>`;
         return;
       }
 
       user.uploads.forEach(file => {
-        // Format Date
         const dateObj = new Date(file.created_at);
-        const timeAgo = timeSince(dateObj); // Helper function for "2h ago"
+        const timeAgo = timeSince(dateObj);
 
         const itemHTML = `
           <div class="activity-item">
-            <div class="act-icon"><i class="fas fa-file-pdf"></i></div>
+            <div class="act-icon"><i class="fas fa-file-code"></i></div>
             <div class="act-details">
               <h4>${file.filename}</h4>
-              <p>Uploaded to StudyHub</p>
+              <p>Uploaded to Neural Grid</p>
             </div>
             <span class="act-time">${timeAgo}</span>
           </div>
@@ -450,15 +560,15 @@
       });
     }
 
-    // --- Helper: Time Since (e.g., "2 hours ago") ---
+    // --- Helper: Time Since ---
     function timeSince(date) {
       const seconds = Math.floor((new Date() - date) / 1000);
       let interval = seconds / 31536000;
-      if (interval > 1) return Math.floor(interval) + " years ago";
+      if (interval > 1) return Math.floor(interval) + "y ago";
       interval = seconds / 2592000;
-      if (interval > 1) return Math.floor(interval) + " months ago";
+      if (interval > 1) return Math.floor(interval) + "mo ago";
       interval = seconds / 86400;
-      if (interval > 1) return Math.floor(interval) + " days ago";
+      if (interval > 1) return Math.floor(interval) + "d ago";
       interval = seconds / 3600;
       if (interval > 1) return Math.floor(interval) + "h ago";
       interval = seconds / 60;
@@ -469,7 +579,7 @@
     // --- Logout Function ---
     function logoutUser() {
       localStorage.removeItem("token");
-      window.location.href = "/Frontend/LogIn/LogIn.html"; // Change to your login page
+      window.location.href = "/Frontend/LogIn/LogIn.html";
     }
 
     // Initialize

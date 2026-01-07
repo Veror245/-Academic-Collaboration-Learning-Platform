@@ -4,22 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyHub | Room Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>StudyHub | Neural Grid</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- 1. RESET & VARIABLES --- */
+        /* --- 1. THEME VARIABLES --- */
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.6);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
-            --success: #10b981;
+            --bg-dark: #050505;
+            --glass-surface: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #00ff9d;
+            --neon-red: #ff0055;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -29,229 +38,374 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-dark);
-            color: var(--text-main);
+            color: var(--text-primary);
+            font-family: var(--font-body);
             min-height: 100vh;
-            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* --- 2. LAYOUT --- */
+        /* --- 2. BACKGROUND FX --- */
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -2;
+            opacity: 0.4;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+            top: -10%;
+            left: -10%;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 30px);
+            }
+        }
+
+        /* --- 3. LAYOUT --- */
         .library-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* --- 3. HEADER SECTION --- */
+        /* --- 4. HEADER --- */
         .library-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             margin-bottom: 40px;
-            border-bottom: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--glass-border);
             padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .header-content h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            background: linear-gradient(to right, #fff, #94a3b8);
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
         }
 
         .header-content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 5px;
+            color: var(--text-secondary);
+            font-family: monospace;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
 
+        /* Upload Button */
         .upload-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
             padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 500;
+            border-radius: 50px;
+            font-family: var(--font-heading);
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
         }
 
         .upload-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-glow);
         }
 
-        /* --- 4. FILTER BAR --- */
+        /* --- 5. FILTER BAR --- */
         .filter-bar {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 40px;
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-cyan) transparent;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .filter-bar::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
         }
 
         .filter-btn {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--card-border);
-            color: var(--text-muted);
-            padding: 8px 20px;
-            border-radius: 20px;
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
         }
 
-        .filter-btn:hover,
+        .filter-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
         .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px var(--primary-glow);
+            background: rgba(188, 19, 254, 0.15);
+            color: var(--neon-purple);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
         }
 
-        /* --- 5. GRID & CARDS --- */
+        /* --- 6. GRID & CARDS --- */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
         }
 
         .note-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(16px);
             position: relative;
             overflow: hidden;
         }
 
         .note-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(59, 130, 246, 0.3);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
+        /* Card Header */
         .card-header {
             display: flex;
             align-items: flex-start;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .card-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--neon-cyan);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
 
         .card-info h3 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 5px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
             color: #fff;
+            line-height: 1.3;
         }
 
         .uploader-name {
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            font-family: monospace;
         }
 
+        /* AI Summary Box */
         .ai-summary {
             font-size: 0.85rem;
-            color: #cbd5e1;
-            background: rgba(15, 23, 42, 0.4);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--primary);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            color: #d1d5db;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 2px solid var(--neon-purple);
+            font-family: monospace;
+            line-height: 1.6;
         }
 
-        /* Card Footer: Likes & Comments */
+        .ai-summary i {
+            color: var(--neon-purple);
+        }
+
+        /* Footer */
         .card-footer {
             margin-top: auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--glass-border);
         }
 
         .interaction-group {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
+        /* Vote Box */
         .vote-box {
             display: flex;
             align-items: center;
             gap: 8px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 5px 10px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
         }
 
         .vote-btn {
             background: none;
             border: none;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .vote-btn:hover {
-            color: var(--primary);
-        }
-
-        .vote-count {
-            font-weight: bold;
-            font-size: 0.9rem;
             color: #fff;
         }
 
+        /* Active Vote States */
+        .vote-btn.active {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        #upbtn-\$ {
+            note.id
+        }
+
+        .active,
+        .vote-btn.active:first-child {
+            color: var(--neon-green);
+        }
+
+        #downbtn-\$ {
+            note.id
+        }
+
+        .active,
+        .vote-btn.active:last-child {
+            color: var(--neon-red);
+        }
+
+        .vote-count {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: #fff;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Comment Button */
         .comment-btn {
             background: none;
             border: none;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             cursor: pointer;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+
+        .comment-btn:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Download Link */
+        .download-link {
+            text-decoration: none;
+            color: var(--neon-cyan);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .comment-btn:hover {
-            color: #fff;
+        .download-link:hover {
+            text-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        .download-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        /* --- 6. MODALS --- */
+        /* --- 7. MODALS (Glassmorphism) --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -260,174 +414,209 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
 
         .modal {
-            background: #1e293b;
-            border: 1px solid var(--card-border);
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--neon-cyan);
             width: 90%;
             max-width: 500px;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            max-height: 85vh;
-            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
+            position: relative;
         }
 
-        /* Form Styling */
-        .form-group {
+        .modal h2 {
+            font-family: var(--font-heading);
+            color: #fff;
             margin-bottom: 20px;
+            font-size: 1.5rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
 
-        .form-control {
+        .form-control,
+        select {
             width: 100%;
             padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             outline: none;
+            margin-bottom: 15px;
+            font-family: var(--font-body);
         }
 
         .form-control:focus {
-            border-color: var(--primary);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
         }
 
-        /* Comment Section in Modal */
-        .comments-list {
-            margin-top: 20px;
-            border-top: 1px solid var(--card-border);
-            padding-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .comment-item {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .comment-user {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 0.85rem;
-        }
-
-        .comment-text {
-            font-size: 0.9rem;
-            margin-top: 2px;
-            color: #e2e8f0;
+        input[type="file"]::file-selector-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
         }
 
         .modal-actions {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
             justify-content: flex-end;
+            margin-top: 20px;
         }
 
         .btn-cancel {
             background: transparent;
-            color: var(--text-muted);
-            border: none;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
             padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
+            transition: 0.3s;
         }
 
-        /* Add this inside your <style> block, specifically near .vote-btn */
+        .btn-cancel:hover {
+            border-color: #fff;
+            color: #fff;
+        }
 
-        .vote-btn.active {
-            color: var(--primary);
-            transform: scale(1.1);
-            text-shadow: 0 0 10px var(--primary-glow);
+        .btn-confirm {
+            background: var(--neon-cyan);
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .btn-confirm:hover {
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
         }
     </style>
 </head>
 
 <body>
 
+    <div class="bg-noise"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
     <main class="library-container">
 
         <header class="library-header">
             <div class="header-content">
-                <h1>Study Rooms</h1>
-                <p id="room-description">Collaborate, Share Notes, and Rate Resources.</p>
+                <h1>Study<span class="text-gradient">Rooms</span></h1>
+                <p id="room-description">SYNC // COLLABORATE // EVOLVE</p>
             </div>
-            <a href="/Frontend/UploadNotes/UploadNotes.html" style="text-decoration: none;">
-                <button class="upload-btn">
-                    <i class="fas fa-cloud-upload-alt"></i> Upload Note
-                </button>
-            </a>
+
+            <button class="upload-btn" onclick="openModal('uploadModal')">
+                <i class="fas fa-satellite-dish"></i> Upload Data
+            </button>
         </header>
 
         <nav class="filter-bar">
             <button class="filter-btn active" onclick="loadRoom('cs', this)">Computer Science</button>
-            <button class="filter-btn" onclick="loadRoom('ece', this)">Electronics & Comm</button>
-            <button class="filter-btn" onclick="loadRoom('mech', this)">Mechanical Eng</button>
+            <button class="filter-btn" onclick="loadRoom('ece', this)">Electronics</button>
+            <button class="filter-btn" onclick="loadRoom('mech', this)">Mechanical</button>
             <button class="filter-btn" onclick="loadRoom('civil', this)">Civil Eng</button>
             <button class="filter-btn" onclick="loadRoom('science', this)">Basic Science</button>
             <button class="filter-btn" onclick="loadRoom('hum', this)">Management</button>
         </nav>
 
         <section class="notes-grid" id="notesGrid">
-            <p style="color:#64748b;">Loading notes...</p>
+            <p style="color: var(--text-secondary); font-family: monospace;">Initializing Scan...</p>
         </section>
 
     </main>
 
-
-
+    <div id="uploadModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Upload Neural Note</h2>
+            <form onsubmit="handleUpload(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="noteTitle" class="form-control" placeholder="Enter resource title..."
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Subject Stream</label>
+                    <select id="noteSubject" class="form-control">
+                        <option value="cs">Computer Science</option>
+                        <option value="ece">Electronics</option>
+                        <option value="mech">Mechanical</option>
+                        <option value="civil">Civil</option>
+                        <option value="science">Basic Science</option>
+                        <option value="hum">Management</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <input type="text" id="noteTags" class="form-control" placeholder="e.g. #algo #exam">
+                </div>
+                <div class="form-group">
+                    <label>File Attachment</label>
+                    <input type="file" id="fileInput" class="form-control" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('uploadModal')">Abort</button>
+                    <button type="submit" class="btn-confirm">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
-        const API_BASE = "http://127.0.0.1:8000"; // Adjust if your port differs
-        let currentResourceIDForComments = null;
+        const API_BASE = "http://127.0.0.1:8000";
 
-        // On Load
         document.addEventListener('DOMContentLoaded', () => {
-            loadRoom('cs', document.querySelector('.filter-btn')); // Load default room
+            loadRoom('cs', document.querySelector('.filter-btn'));
         });
 
         // 1. LOAD NOTES
         async function loadRoom(slug, btnElement) {
-            // 1. Get the token safely
             const token = localStorage.getItem('token');
 
-            // OPTIONAL: Redirect if not logged in
             if (!token) {
                 alert("You are not logged in. Redirecting to login...");
-                window.location.href = "../Login/login.html"; // Adjust path to your login page
+                window.location.href = "../Login/login.html";
                 return;
             }
 
-            // Update UI Buttons
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
 
             const grid = document.getElementById('notesGrid');
-            grid.innerHTML = '<p style="color:#64748b;">Fetching resources...</p>';
+            grid.innerHTML = '<p style="color:#64748b;">Scanning neural pathways...</p>';
 
             try {
-                // 2. FETCH WITH HEADERS (The Fix)
                 const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`, // <--- THIS IS KEY
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
 
-                // Error Handling
                 if (response.status === 401) {
                     throw new Error("Session expired or invalid. Please login again.");
                 }
@@ -440,8 +629,6 @@
 
             } catch (err) {
                 console.error(err);
-
-                // If 401, maybe clear token and redirect?
                 if (err.message.includes("Session expired")) {
                     localStorage.removeItem('token');
                     setTimeout(() => window.location.href = "../Login/login.html", 2000);
@@ -462,7 +649,7 @@
             grid.innerHTML = '';
 
             if (notes.length === 0) {
-                grid.innerHTML = '<p style="color:#64748b;">No notes found in this room.</p>';
+                grid.innerHTML = '<p style="color: var(--text-secondary);">No data found in this sector.</p>';
                 return;
             }
 
@@ -470,25 +657,23 @@
                 const card = document.createElement('div');
                 card.className = 'note-card';
 
-                // Construct file URL
                 const fileUrl = `${API_BASE}/${note.file_path}`;
 
-                // --- NEW LOGIC: Determine Active State ---
-                // user_vote: 1 (up), -1 (down), 0 (none)
                 const upActive = note.user_vote === 1 ? 'active' : '';
                 const downActive = note.user_vote === -1 ? 'active' : '';
 
+                // RESTORED: goToComments() logic is back in the onclick
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
                         <div class="card-info">
                             <h3>${note.title}</h3>
-                            <div class="uploader-name">by ${note.uploader}</div>
+                            <div class="uploader-name">ID: ${note.uploader}</div>
                         </div>
                     </div>
                     
                     <div class="ai-summary">
-                        <i class="fas fa-robot" style="margin-right:5px;"></i> ${note.ai_summary || "Processing AI Summary..."}
+                        <i class="fas fa-microchip" style="margin-right:5px;"></i> ${note.ai_summary || "Analyzing content..."}
                     </div>
 
                     <div class="card-footer">
@@ -505,13 +690,13 @@
                                 </button>
                             </div>
                             
-                           <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title}', '${note.file_path}')">
-                                <i class="far fa-comment-alt"></i> Discuss
+                            <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.file_path.replace(/'/g, "\\'")}')">
+                                <i class="far fa-comment-dots"></i> Discuss
                             </button>
                         </div>
 
                         <a href="${fileUrl}" target="_blank" class="download-link">
-                            <i class="fas fa-external-link-alt"></i> Open
+                            <i class="fas fa-external-link-alt"></i> Access
                         </a>
                     </div>
                 `;
@@ -548,7 +733,6 @@
                 if (res.ok) {
                     alert("Upload Successful!");
                     closeModal('uploadModal');
-                    // Refresh current room if it matches upload
                     loadRoom(room_slug, null);
                 } else {
                     const data = await res.json();
@@ -576,103 +760,30 @@
 
                 if (res.ok) {
                     const data = await res.json();
-
-                    // 1. Update the number
                     document.getElementById(`score-${resourceId}`).innerText = data.new_score;
 
-                    // 2. Update the button colors immediately
                     const upBtn = document.getElementById(`upbtn-${resourceId}`);
                     const downBtn = document.getElementById(`downbtn-${resourceId}`);
 
-                    // Clear both first
                     upBtn.classList.remove('active');
                     downBtn.classList.remove('active');
 
-                    // If the backend returns the new user_vote status, use it. 
-                    // Assuming your backend logic toggles votes:
-                    // If I clicked UP and now I'm UPVOTED, light it up.
-                    // (You might need to adjust this logic depending on if your backend allows un-voting)
-
                     if (type === 1) {
-                        // If we clicked up, and the score increased or we are enforcing upvote
-                        // Ideally backend returns 'user_vote' status in response. 
-                        // For now, we assume success means it's active unless it was a toggle-off.
-                        // Simple UI logic: Just set active based on clicked type for visual feedback
                         upBtn.classList.add('active');
                     } else if (type === -1) {
                         downBtn.classList.add('active');
                     }
-
-                    // Note: For perfect sync, your vote API response should return { new_score: X, current_user_vote: Y }
-                    // If it only returns score, the simple logic above works for basic feedback.
                 }
             } catch (err) {
                 console.error("Vote failed", err);
             }
         }
 
-        /* IN script tag at bottom of study_room.html */
-
+        // 4. RESTORED COMMENT NAVIGATION (Replaces Modal Logic)
         function goToComments(id, title, filePath) {
-            // Pass ID, Title, AND FilePath in the URL
             const cleanTitle = encodeURIComponent(title);
             const cleanPath = encodeURIComponent(filePath);
-
-            // Adjust path if your comments.html is inside a subfolder
             window.location.href = `/Frontend/comments/comments.html?id=${id}&title=${cleanTitle}&path=${cleanPath}`;
-        }
-
-        // 4. COMMENTS
-        async function openComments(resourceId, title) {
-            currentResourceIDForComments = resourceId;
-            document.getElementById('commentModalTitle').innerText = `Comments: ${title}`;
-            openModal('commentsModal');
-
-            const list = document.getElementById('commentsList');
-            list.innerHTML = "Loading...";
-
-            try {
-                const res = await fetch(`${API_BASE}/student/comments/${resourceId}`);
-                const comments = await res.json();
-
-                list.innerHTML = '';
-                comments.forEach(c => {
-                    const div = document.createElement('div');
-                    div.className = 'comment-item';
-                    div.innerHTML = `
-                        <div class="comment-user">${c.user} <span style="color:#64748b; font-weight:400; font-size:0.75rem;">• ${new Date(c.created_at).toLocaleDateString()}</span></div>
-                        <div class="comment-text">${c.text}</div>
-                    `;
-                    list.appendChild(div);
-                });
-            } catch (err) {
-                list.innerText = "Error loading comments.";
-            }
-        }
-
-        async function postComment() {
-            const content = document.getElementById('newComment').value;
-            if (!content) return;
-
-            const token = localStorage.getItem('token');
-
-            try {
-                const res = await fetch(`${API_BASE}/student/comment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ resource_id: currentResourceIDForComments, content: content })
-                });
-
-                if (res.ok) {
-                    document.getElementById('newComment').value = '';
-                    openComments(currentResourceIDForComments, "..."); // Reload comments
-                }
-            } catch (err) {
-                alert("Failed to post comment");
-            }
         }
 
         // 5. UTILS
