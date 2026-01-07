@@ -63,11 +63,16 @@ def upload_resource(
     
     if not room:
         raise HTTPException(404, detail="Invalid Study Room")
+    
+    room_folder = os.path.join(UPLOAD_DIR, room_slug)
+    
+    # Create the folder if it doesn't exist yet
+    os.makedirs(room_folder, exist_ok=True)
 
     # C. Save File Locally
     timestamp = int(datetime.now(timezone.utc).timestamp())
     clean_filename = f"{timestamp}_{file.filename.replace(' ', '_')}" # type: ignore
-    file_path = os.path.join(UPLOAD_DIR, clean_filename)
+    file_path = os.path.join(room_folder, clean_filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -75,7 +80,7 @@ def upload_resource(
     # D. Save Entry to Database
     new_resource = models.Resource(
         title=title,
-        file_path=f"static/uploads/{clean_filename}", # Relative path for frontend
+        file_path=f"static/uploads/{room_slug}/{clean_filename}", # Relative path for frontend
         tags=tags,
         uploader_id=user.id,
         room_id=room.id,
