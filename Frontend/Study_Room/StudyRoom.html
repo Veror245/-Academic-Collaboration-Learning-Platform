@@ -448,9 +448,9 @@
                                 <button class="vote-btn" onclick="handleVote(${note.id}, -1, this)"><i class="fas fa-arrow-down"></i></button>
                             </div>
                             
-                           <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title}')">
-    <i class="far fa-comment-alt"></i> Comments
-</button>
+                           <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title}', '${note.file_path}')">
+                <i class="far fa-comment-alt"></i> Discuss
+            </button>
                         </div>
 
                         <a href="${fileUrl}" target="_blank" class="download-link">
@@ -527,11 +527,15 @@
             }
         }
 
-        function goToComments(id, title) {
-            // OLD: window.location.href = `comments.html?...`
+        /* IN script tag at bottom of study_room.html */
 
-            // NEW: Point to the folder "comments" first
-            window.location.href = `/Frontend/comments/comments.html?id=${id}&title=${encodeURIComponent(title)}`;
+        function goToComments(id, title, filePath) {
+            // Pass ID, Title, AND FilePath in the URL
+            const cleanTitle = encodeURIComponent(title);
+            const cleanPath = encodeURIComponent(filePath);
+
+            // Adjust path if your comments.html is inside a subfolder
+            window.location.href = `/Frontend/comments/comments.html?id=${id}&title=${cleanTitle}&path=${cleanPath}`;
         }
 
         // 4. COMMENTS
