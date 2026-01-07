@@ -21,7 +21,7 @@ CHROMA_PATH = "chroma_db"  # Folder where vector data will be saved locally
 
 # Initialize the Gemini Model (The "Brain")
 llm = ChatGoogleGenerativeAI(
-    model="gemma-3-1b-it",  # Fast and cheap model
+    model="gemma-3-27b-it",  # Fast and cheap model
     temperature=0.3
 )
 
