@@ -1,359 +1,358 @@
+/* --- CSS VARIABLES & RESET --- */
+:root {
+    --bg-dark: #0f172a;
+    /* Deep Main Background */
+    --bg-panel: #1e293b;
+    /* Sidebar/Card Background */
+    --bg-input: #334155;
+    /* Input Background */
+    --primary: #3b82f6;
+    /* Bright Blue */
+    --primary-hover: #2563eb;
+    --success: #10b981;
+    /* Green */
+    --success-hover: #059669;
+    --text-main: #f8fafc;
+    /* White text */
+    --text-muted: #94a3b8;
+    /* Grey text */
+    --border: #334155;
+    --radius: 12px;
+    --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Prevents double scrollbars on desktop */
+}
+
+/* --- LAYOUT --- */
+.app-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 320px;
+    background-color: var(--bg-dark);
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.brand h1 {
+    color: var(--primary);
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.brand p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Form Elements */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+}
+
+/* File Upload Mock */
+.file-display {
+    border: 1px dashed var(--primary);
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Page Range Layout */
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.range-inputs span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Checkboxes */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 16px;
+    height: 16px;
+}
+
+/* Sidebar Bottom Button */
+.btn-generate {
+    margin-top: auto;
+    /* Pushes button to bottom */
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-generate:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    position: relative;
+    background-color: #0b1120;
+    /* Slightly darker than sidebar for contrast */
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Question Cards */
+.card {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: var(--text-muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.tag-mcq {
+    background-color: var(--primary);
+    color: white;
+}
+
+.tag-sub {
+    background-color: #6366f1;
+    color: white;
+}
+
+.question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* MCQ Grid */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 columns */
+    gap: 16px;
+}
+
+.option {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.option:hover {
+    border-color: var(--text-muted);
+}
+
+.option.selected {
+    border-color: #d946ef;
+    /* Pinkish highlight from image */
+}
+
+.radio-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+}
+
+.option.selected .radio-circle {
+    border-color: #d946ef;
+    background-color: #d946ef;
+    box-shadow: inset 0 0 0 3px var(--bg-dark);
+}
+
+/* Subjective Input */
+.subjective-area {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    font-family: var(--font);
+}
+
+/* Save Button */
+.btn-save {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background-color: var(--success);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.btn-save:hover {
+    background-color: var(--success-hover);
+    transform: translateY(-2px);
+}
 
 
- /* --- CSS VARIABLES & RESET --- */
- :root {
-     --bg-dark: #0f172a;
-     /* Deep Main Background */
-     --bg-panel: #1e293b;
-     /* Sidebar/Card Background */
-     --bg-input: #334155;
-     /* Input Background */
-     --primary: #3b82f6;
-     /* Bright Blue */
-     --primary-hover: #2563eb;
-     --success: #10b981;
-     /* Green */
-     --success-hover: #059669;
-     --text-main: #f8fafc;
-     /* White text */
-     --text-muted: #94a3b8;
-     /* Grey text */
-     --border: #334155;
-     --radius: 12px;
-     --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
- }
 
- * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
- }
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 768px) {
+    body {
+        height: auto;
+        overflow-y: auto;
+    }
 
- body {
-     font-family: var(--font);
-     background-color: var(--bg-dark);
-     color: var(--text-main);
-     height: 100vh;
-     display: flex;
-     flex-direction: column;
-     overflow: hidden;
-     /* Prevents double scrollbars on desktop */
- }
+    .app-container {
+        flex-direction: column;
+    }
 
- /* --- LAYOUT --- */
- .app-container {
-     display: flex;
-     height: 100%;
-     width: 100%;
- }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
 
- /* --- SIDEBAR --- */
- .sidebar {
-     width: 320px;
-     background-color: var(--bg-dark);
-     border-right: 1px solid var(--border);
-     padding: 24px;
-     display: flex;
-     flex-direction: column;
-     gap: 24px;
-     overflow-y: auto;
-     flex-shrink: 0;
- }
+    .main-content {
+        padding: 16px;
+    }
 
- .brand h1 {
-     color: var(--primary);
-     font-size: 1.25rem;
-     margin-bottom: 4px;
- }
+    .options-grid {
+        grid-template-columns: 1fr;
+        /* Stack options on mobile */
+    }
 
- .brand p {
-     color: var(--text-muted);
-     font-size: 0.85rem;
- }
+    .btn-save {
+        position: static;
+        /* Not floating on mobile, sits at bottom of content */
+        width: 100%;
+        margin-top: 24px;
+    }
 
- /* Form Elements */
- .form-group {
-     display: flex;
-     flex-direction: column;
-     gap: 8px;
- }
-
- label {
-     font-size: 0.75rem;
-     text-transform: uppercase;
-     letter-spacing: 0.05em;
-     color: var(--text-muted);
-     font-weight: 600;
- }
-
- input[type="text"],
- input[type="number"],
- select,
- textarea {
-     background-color: var(--bg-dark);
-     border: 1px solid var(--border);
-     color: var(--text-main);
-     padding: 10px 12px;
-     border-radius: 8px;
-     font-size: 0.9rem;
-     width: 100%;
-     outline: none;
-     transition: border-color 0.2s;
- }
-
- input:focus,
- select:focus,
- textarea:focus {
-     border-color: var(--primary);
- }
-
- /* File Upload Mock */
- .file-display {
-     border: 1px dashed var(--primary);
-     background: rgba(59, 130, 246, 0.1);
-     color: var(--primary);
-     padding: 10px;
-     border-radius: 8px;
-     font-size: 0.9rem;
-     display: flex;
-     align-items: center;
-     gap: 8px;
- }
-
- /* Page Range Layout */
- .range-inputs {
-     display: flex;
-     align-items: center;
-     gap: 10px;
- }
-
- .range-inputs span {
-     font-size: 0.8rem;
-     color: var(--text-muted);
- }
-
- /* Checkboxes */
- .checkbox-group {
-     display: flex;
-     flex-direction: column;
-     gap: 10px;
- }
-
- .checkbox-item {
-     display: flex;
-     align-items: center;
-     gap: 10px;
-     font-size: 0.9rem;
-     cursor: pointer;
- }
-
- input[type="checkbox"] {
-     accent-color: var(--primary);
-     width: 16px;
-     height: 16px;
- }
-
- /* Sidebar Bottom Button */
- .btn-generate {
-     margin-top: auto;
-     /* Pushes button to bottom */
-     background-color: var(--primary);
-     color: white;
-     border: none;
-     padding: 12px;
-     border-radius: 8px;
-     font-weight: 600;
-     cursor: pointer;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     gap: 8px;
-     transition: background 0.2s;
- }
-
- .btn-generate:hover {
-     background-color: var(--primary-hover);
- }
-
- /* --- MAIN CONTENT --- */
- .main-content {
-     flex: 1;
-     padding: 32px;
-     overflow-y: auto;
-     position: relative;
-     background-color: #0b1120;
-     /* Slightly darker than sidebar for contrast */
- }
-
- .header {
-     margin-bottom: 24px;
- }
-
- .header h2 {
-     font-size: 1.5rem;
-     margin-bottom: 4px;
- }
-
- .header p {
-     color: var(--text-muted);
-     font-size: 0.9rem;
- }
-
- /* Question Cards */
- .card {
-     background-color: var(--bg-panel);
-     border: 1px solid var(--border);
-     border-radius: var(--radius);
-     padding: 24px;
-     margin-bottom: 24px;
-     position: relative;
-     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
- }
-
- .close-btn {
-     position: absolute;
-     top: 16px;
-     right: 16px;
-     color: var(--text-muted);
-     cursor: pointer;
-     background: none;
-     border: none;
-     font-size: 1.2rem;
- }
-
- .tag {
-     display: inline-block;
-     padding: 4px 10px;
-     border-radius: 20px;
-     font-size: 0.7rem;
-     font-weight: 700;
-     text-transform: uppercase;
-     margin-bottom: 12px;
- }
-
- .tag-mcq {
-     background-color: var(--primary);
-     color: white;
- }
-
- .tag-sub {
-     background-color: #6366f1;
-     color: white;
- }
-
- .question-text {
-     font-size: 1.1rem;
-     font-weight: 600;
-     margin-bottom: 20px;
- }
-
- /* MCQ Grid */
- .options-grid {
-     display: grid;
-     grid-template-columns: 1fr 1fr;
-     /* 2 columns */
-     gap: 16px;
- }
-
- .option {
-     background-color: var(--bg-dark);
-     border: 1px solid var(--border);
-     padding: 12px 16px;
-     border-radius: 8px;
-     display: flex;
-     align-items: center;
-     gap: 12px;
-     cursor: pointer;
-     transition: border-color 0.2s;
- }
-
- .option:hover {
-     border-color: var(--text-muted);
- }
-
- .option.selected {
-     border-color: #d946ef;
-     /* Pinkish highlight from image */
- }
-
- .radio-circle {
-     width: 16px;
-     height: 16px;
-     border-radius: 50%;
-     border: 2px solid var(--text-muted);
- }
-
- .option.selected .radio-circle {
-     border-color: #d946ef;
-     background-color: #d946ef;
-     box-shadow: inset 0 0 0 3px var(--bg-dark);
- }
-
- /* Subjective Input */
- .subjective-area {
-     width: 100%;
-     height: 80px;
-     resize: none;
-     font-family: var(--font);
- }
-
- /* Save Button */
- .btn-save {
-     position: fixed;
-     bottom: 32px;
-     right: 32px;
-     background-color: var(--success);
-     color: white;
-     padding: 12px 24px;
-     border-radius: 8px;
-     border: none;
-     font-weight: 600;
-     cursor: pointer;
-     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-     transition: transform 0.2s;
- }
-
- .btn-save:hover {
-     background-color: var(--success-hover);
-     transform: translateY(-2px);
- }
-
- /* --- RESPONSIVE DESIGN --- */
- @media (max-width: 768px) {
-     body {
-         height: auto;
-         overflow-y: auto;
-     }
-
-     .app-container {
-         flex-direction: column;
-     }
-
-     .sidebar {
-         width: 100%;
-         height: auto;
-         border-right: none;
-         border-bottom: 1px solid var(--border);
-     }
-
-     .main-content {
-         padding: 16px;
-     }
-
-     .options-grid {
-         grid-template-columns: 1fr;
-         /* Stack options on mobile */
-     }
-
-     .btn-save {
-         position: static;
-         /* Not floating on mobile, sits at bottom of content */
-         width: 100%;
-         margin-top: 24px;
-     }
-
-     .btn-generate {
-         margin-top: 24px;
-     }
- }
-
+    .btn-generate {
+        margin-top: 24px;
+    }
+}

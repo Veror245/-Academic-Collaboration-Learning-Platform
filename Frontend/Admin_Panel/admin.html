@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,13 @@
     <link rel="stylesheet" href="admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard-wrapper">
         <nav class="sidebar">
             <div class="logo">StudioAdmin</div>
             <ul class="nav-links">
                 <li class="active"><a href="#overview">Overview</a></li>
-                <li><a href="#content-moderation">Note Moderation</a></li>
-                <li><a href="#study-rooms">Study Rooms</a></li>
-                <li><a href="#chat-moderation">Chat Filter</a></li>
-                <li><a href="#">User Management</a></li>
             </ul>
             <div class="user-profile">
                 <div class="avatar">AD</div>
@@ -30,126 +28,45 @@
         <main class="main-content">
             <header class="top-bar">
                 <h1>Admin Control Panel</h1>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search resources...">
-                </div>
+                <button onclick="logout()"
+                    style="background:none; border:none; cursor:pointer; color:#ef4444; font-weight:600;">Logout</button>
             </header>
 
             <section class="stats-grid" id="overview">
                 <div class="stat-card">
-                    <h3>Pending Notes</h3>
-                    <p class="count">24</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Rooms</h3>
-                    <p class="count">12</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Flagged Chats</h3>
-                    <p class="count danger-text">8</p>
+                    <h3>Total Uploads</h3>
+                    <p class="count" id="total-count">0</p>
                 </div>
             </section>
 
             <section id="content-moderation" class="panel-section">
                 <div class="section-header">
-                    <h2>Content Moderation (PDF/Notes)</h2>
+                    <h2>Student Uploads (All Rooms)</h2>
                 </div>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>File Name</th>
+                            <th>File Details</th>
                             <th>Uploader</th>
                             <th>Type</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Organic_Chemistry_Vol1.pdf</td>
-                            <td>Alex River</td>
-                            <td>PDF</td>
-                            <td><span class="status-pending">Pending</span></td>
-                            <td>
-                                <button class="btn btn-approve">Approve</button>
-                                <button class="btn btn-reject">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Final_Exam_Review.docx</td>
-                            <td>Sarah Jenkins</td>
-                            <td>Note</td>
-                            <td><span class="status-approved">Approved</span></td>
-                            <td>
-                                <button class="btn btn-view">View</button>
-                                <button class="btn btn-delete">Delete</button>
-                            </td>
-                        </tr>
+                    <tbody id="resource-table-body">
                     </tbody>
                 </table>
             </section>
-
-            <section id="chat-moderation" class="panel-section">
-                <div class="section-header">
-                    <h2>Chat Filter & Cuss Word Manager</h2>
-                </div>
-                <div class="chat-mod-grid">
-                    <div class="filter-manager">
-                        <h3>Keyword Blacklist</h3>
-                        <p class="sub-text">Add words to be automatically redacted from discussions.</p>
-                        <div class="tag-container">
-                            <span class="word-tag">badword1 <button>&times;</button></span>
-                            <span class="word-tag">spam_link <button>&times;</button></span>
-                            <span class="word-tag">offensive_term <button>&times;</button></span>
-                            <input type="text" placeholder="Add new..." class="inline-input">
-                        </div>
-                    </div>
-
-                    <div class="flagged-messages">
-                        <h3>Flagged Messages Queue</h3>
-                        <div class="message-list">
-                            <div class="msg-item flagged">
-                                <div class="msg-meta"><strong>User99</strong> in <em>Math Room</em> • 2m ago</div>
-                                <p class="msg-text">"This professor is so [CENSORED] annoying."</p>
-                                <div class="msg-actions">
-                                    <button class="btn btn-view">Warn</button>
-                                    <button class="btn btn-reject">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="study-rooms" class="panel-section">
-                <div class="section-header">
-                    <h2>Group Study Room Control</h2>
-                </div>
-                <div class="room-grid">
-                    <div class="room-card">
-                        <div class="room-info">
-                            <h4>Calculus Study Group</h4>
-                            <p>Active: 14 participants</p>
-                        </div>
-                        <div class="room-controls">
-                            <span class="status-online">Active</span>
-                            <button class="btn btn-reject">Force Shutdown</button>
-                        </div>
-                    </div>
-                    <div class="room-card">
-                        <div class="room-info">
-                            <h4>Art History Review</h4>
-                            <p>Active: 0 participants</p>
-                        </div>
-                        <div class="room-controls">
-                            <span class="status-offline">Idle</span>
-                            <button class="btn btn-view">Set Private</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
+
     <script src="admin-script.js"></script>
+    <script>
+        function logout() {
+            localStorage.removeItem('access_token');
+            window.location.href = 'admin_login.html';
+        }
+    </script>
 </body>
+
 </html>

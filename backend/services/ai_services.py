@@ -103,7 +103,7 @@ def chat_with_document(resource_id: int, question: str, history: list = []):
     # We use a filter to ensure we ONLY search within the specific file the user is asking about
     results = vector_store.similarity_search(
         question, 
-        k=3, # Retrieve top 3 matching chunks
+        k=10, # Retrieve top 3 matching chunks
         filter={"resource_id": resource_id} # type: ignore
     )
     
@@ -184,6 +184,7 @@ def generate_quiz(resource_id: int):
     9. If you cannot generate 5 questions based on the text, generate as many as you can BUT NOT MORE THAN 5.
     10. STRICTLY FOLLOW THE FORMAT GIVEN BELOW.
     11. DO NOT RESPOND WITH ANYTHING OTHER THAN THE JSON.
+    12. MAKE SURE THE ANSWER IS NOT ALWAYS OPTION B.
     
 
     STRICT JSON STRUCTURE (Use this format, but replace the content):

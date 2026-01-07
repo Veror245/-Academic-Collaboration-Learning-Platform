@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudioControl | Admin Login</title>
+  <link rel="stylesheet" href="admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Specific styles for the login page layout */
+    body.login-page {
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .login-subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      /* Ensures padding doesn't break width */
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #0f172a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+
+    .btn-login:hover {
+      background-color: #1e293b;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+      display: none;
+      /* Hidden by default */
+    }
+  </style>
+</head>
+
+<body class="login-page">
+
+  <div class="login-card">
+    <span class="login-logo">StudioAdmin</span>
+    <p class="login-subtitle">Sign in to manage the platform</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" class="form-input" placeholder="admin_user" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-login">Sign In</button>
+      <p id="errorMsg" class="error-message">Invalid credentials. Please try again.</p>
+    </form>
+  </div>
+
+  <script>
+    const LOGIN_URL = "http://127.0.0.1:8000/auth/login"; // CHECK THIS: Update if your auth route is different (e.g., /login)
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById('username').value;
+      const passwordInput = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const submitBtn = document.querySelector('.btn-login');
+
+      // Reset UI
+      errorMsg.style.display = 'none';
+      submitBtn.textContent = "Signing in...";
+      submitBtn.disabled = true;
+
+      // FastAPI OAuth2PasswordRequestForm expects form-data, not JSON usually.
+      // We create a URLSearchParams object to send data as application/x-www-form-urlencoded
+      const formData = new URLSearchParams();
+      formData.append('username', usernameInput);
+      formData.append('password', passwordInput);
+
+      try {
+        const response = await fetch(LOGIN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // 1. SAVE THE TOKEN
+          // This is the most important step. We store the token so admin_panel.html can use it.
+          localStorage.setItem('access_token', data.access_token);
+
+          // Optional: Save user info if your API sends it
+          // localStorage.setItem('user_role', 'admin');
+
+          // 2. REDIRECT
+          window.location.href = '/Frontend/Admin_Panel/admin.html';
+        } else {
+          // Login failed
+          errorMsg.textContent = "Invalid username or password.";
+          errorMsg.style.display = 'block';
+          submitBtn.textContent = "Sign In";
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMsg.textContent = "Server error. Is the backend running?";
+        errorMsg.style.display = 'block';
+        submitBtn.textContent = "Sign In";
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

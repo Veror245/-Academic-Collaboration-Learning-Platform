@@ -1,112 +1,128 @@
-/**
- * StudioControl - Admin Dashboard Logic
- * Features: Stat Counter, Tag Management, Sidebar Sync, and Row Actions
- */
+const API_BASE_URL = "http://127.0.0.1:8000";
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. STAT COUNTER ANIMATION
-    // Makes the numbers "roll up" when the dashboard loads
-    const animateCounters = () => {
-        const counters = document.querySelectorAll('.count');
-        counters.forEach(counter => {
-            const target = +counter.innerText.replace(/\D/g, '');
-            const count = 0;
-            const speed = 200; 
-            
-            const updateCount = () => {
-                const current = +counter.innerText;
-                const increment = target / speed;
+// Rooms to scan
+const ROOM_SLUGS = ["cs", "ece", "mech", "civil", "science", "hum"];
 
-                if (current < target) {
-                    counter.innerText = Math.ceil(current + increment);
-                    setTimeout(updateCount, 1);
-                } else {
-                    counter.innerText = target.toLocaleString();
-                }
-            };
-            updateCount();
-        });
-    };
-    animateCounters();
+function getAuthToken() {
+    return localStorage.getItem("access_token");
+}
 
-    // 2. SIDEBAR NAVIGATION
-    const navLinks = document.querySelectorAll('.nav-links li');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            navLinks.forEach(li => li.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+// MAIN FUNCTION: Fetch and Load Resources
+async function loadResources() {
+    const tableBody = document.getElementById("resource-table-body");
+    const countLabel = document.getElementById("total-count"); // Get the stat number element
+    const token = getAuthToken();
 
-    // 3. TAG MANAGEMENT (For Banned Words/Filters)
-    const tagContainer = document.querySelector('.tag-container');
-    const inlineInput = document.querySelector('.inline-input');
-
-    if (inlineInput) {
-        inlineInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && inlineInput.value.trim() !== "") {
-                const newTag = document.createElement('span');
-                newTag.className = 'word-tag';
-                newTag.innerHTML = `
-                    ${inlineInput.value}
-                    <button onclick="this.parentElement.remove()">×</button>
-                `;
-                tagContainer.insertBefore(newTag, inlineInput);
-                inlineInput.value = "";
-            }
-        });
+    if (!token) {
+        window.location.href = "admin_login.html";
+        return;
     }
 
-    // 4. TABLE ACTIONS (Approve / Reject / Delete)
-    // Using Event Delegation for performance
-    document.addEventListener('click', (e) => {
-        const target = e.target;
+    try {
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color: #666;">Scanning all rooms...</td></tr>`;
 
-        // Approve Action
-        if (target.classList.contains('btn-approve')) {
-            const row = target.closest('tr');
-            const statusCell = row.querySelector('.status-pending');
-            if (statusCell) {
-                statusCell.innerText = 'Approved';
-                statusCell.className = 'status-approved';
-                target.style.display = 'none'; // Hide approve button after use
+        // Parallel Fetch
+        const fetchPromises = ROOM_SLUGS.map(slug =>
+            fetch(`${API_BASE_URL}/student/room/${slug}/resources`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${token}` }
+            })
+                .then(res => res.ok ? res.json() : [])
+                .catch(err => [])
+        );
+
+        const results = await Promise.all(fetchPromises);
+        const allResources = results.flat();
+
+        // Sort: Newest first
+        allResources.sort((a, b) => b.id - a.id);
+
+        // --- INTERACTIVE UPDATE ---
+        // Update the dashboard number
+        if (countLabel) {
+            countLabel.textContent = allResources.length;
+        }
+
+        tableBody.innerHTML = "";
+
+        if (allResources.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">No uploads found.</td></tr>`;
+            return;
+        }
+
+        // Render rows
+        allResources.forEach(resource => {
+            const isVerified = resource.is_verified || false;
+            const statusClass = isVerified ? "status-approved" : "status-pending";
+            const statusText = isVerified ? "Verified" : "Pending";
+
+            // Uploader Name Logic
+            let uploaderName = "Unknown";
+            if (resource.uploader) {
+                uploaderName = resource.uploader;
+            } else if (resource.user && resource.user.username) {
+                uploaderName = resource.user.username;
             }
-        }
 
-        // Reject/Delete Action (with Fade Out)
-        if (target.classList.contains('btn-reject') || target.classList.contains('btn-delete')) {
-            const elementToRemove = target.closest('tr') || target.closest('.msg-item') || target.closest('.room-card');
-            
-            if (confirm("Are you sure you want to proceed with this action?")) {
-                elementToRemove.style.transition = 'all 0.4s ease';
-                elementToRemove.style.opacity = '0';
-                elementToRemove.style.transform = 'translateX(20px)';
-                
-                setTimeout(() => {
-                    elementToRemove.remove();
-                }, 400);
-            }
-        }
-        
-        // View Action
-        if (target.classList.contains('btn-view')) {
-            const itemName = target.closest('tr')?.cells[0].innerText || "Item";
-            alert(`Opening details for: ${itemName}`);
-        }
-    });
-
-    // 5. SEARCH BAR LOGIC
-    const searchInput = document.querySelector('.search-bar input');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.data-table tbody tr');
-
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(term) ? '' : 'none';
-            });
+            const row = `
+                <tr id="row-${resource.id}">
+                    <td>
+                        <div style="font-weight:600; font-size: 0.95rem;">${resource.title || "Untitled"}</div>
+                        <div style="font-size:0.8rem; margin-top:4px;">
+                            <a href="${API_BASE_URL}/${resource.file_path}" target="_blank" style="color:#3b82f6; text-decoration:none; background:#f1f5f9; padding:2px 6px; border-radius:4px;">View PDF</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight:500; color:#334155;">${uploaderName}</div>
+                    </td>
+                    <td>PDF</td>
+                    <td><span class="${statusClass}" id="status-${resource.id}">${statusText}</span></td>
+                    <td>
+                        <button class="btn btn-reject" style="background-color: #ef4444; color: white; padding: 6px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:500; transition: background 0.2s;" onclick="deleteResource(${resource.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
         });
+
+    } catch (error) {
+        console.error("Global Error:", error);
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error loading data.</td></tr>`;
     }
-});
+}
+
+// ACTION: Delete Resource
+async function deleteResource(resourceId) {
+    if (!confirm("Are you sure you want to permanently delete this file?")) return;
+
+    const token = getAuthToken();
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/delete-resource/${resourceId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const row = document.getElementById(`row-${resourceId}`);
+
+            // Visual removal
+            row.style.opacity = "0";
+            setTimeout(() => row.remove(), 500);
+
+            // Update the counter immediately
+            const countLabel = document.getElementById("total-count");
+            if (countLabel) {
+                countLabel.textContent = parseInt(countLabel.textContent) - 1;
+            }
+        } else {
+            const err = await response.json();
+            alert("Error: " + err.detail);
+        }
+    } catch (error) {
+        alert("Server connection error.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadResources);

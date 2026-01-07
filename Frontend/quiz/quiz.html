@@ -2,109 +2,317 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz Generator</title>
-    <link rel="stylesheet" href="quiz.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Quiz Generator</title>
+  <link rel="stylesheet" href="quiz.css" />
+  <style>
+    /* --- CSS FOR INTERACTIVE QUIZ --- */
+
+    /* Option Styles */
+    .option {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid #e2e8f0;
+      /* Default border */
+    }
+
+    .option:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* Selected State (Before Submit) */
+    .option.selected {
+      background-color: #e0f2fe;
+      border-color: #3b82f6;
+    }
+
+    .option.selected .radio-circle {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    /* Success/Error States (After Submit) */
+    .option.correct {
+      background-color: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #15803d;
+    }
+
+    .option.wrong {
+      background-color: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c;
+      opacity: 0.7;
+    }
+
+    /* Submit Button Section */
+    .quiz-footer {
+      margin-top: 30px;
+      text-align: center;
+      padding-bottom: 50px;
+    }
+
+    .btn-submit {
+      background-color: #22c55e;
+      /* Green */
+      color: white;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: #16a34a;
+    }
+
+    /* Scoreboard */
+    .score-board {
+      background: #1e293b;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+      /* Hidden by default */
+    }
+
+    .score-board h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .score-board p {
+      margin: 5px 0 0 0;
+      color: #cbd5e1;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="app-container">
 
-    <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Quiz Generator</h1>
+        <p>Generate quiz from uploaded PDFs</p>
+      </div>
 
-        <aside class="sidebar">
-            <div class="brand">
-                <h1>Quiz Generator</h1>
-                <p>Generate questions from your notes</p>
-            </div>
+      <div class="form-group">
+        <label>Select Document</label>
+        <select id="pdfSelect">
+          <option value="">Loading PDFs...</option>
+        </select>
+      </div>
 
-            <div class="form-group">
-                <label>Selected Document</label>
-                <div class="file-display">
-                    📄 Physics_Notes_Final.pdf
-                </div>
-            </div>
+      <button class="btn-generate" id="generateBtn">
+        Generate Quiz
+      </button>
+    </aside>
 
-            <div class="form-group">
-                <label>Page Range</label>
-                <div class="range-inputs">
-                    <input type="number" value="1">
-                    <span>to</span>
-                    <input type="number" value="10">
-                </div>
-            </div>
+    <main class="main-content">
+      <div class="header">
+        <h2>Quiz Preview</h2>
+        <p id="quizCount">No quiz generated</p>
+      </div>
 
-            <div class="form-group">
-                <label>Question Types</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" checked> Multiple Choice (MCQs)
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" checked> Objective (True/False)
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox"> Subjective (Short Answer)
-                    </label>
-                </div>
-            </div>
+      <div id="scoreBoard" class="score-board">
+        <h2 id="scoreText">You Scored: 0/0</h2>
+        <p id="percentageText">0%</p>
+      </div>
 
-            <div class="form-group">
-                <label>Difficulty</label>
-                <select>
-                    <option>Easy</option>
-                    <option selected>Medium</option>
-                    <option>Hard</option>
-                </select>
-            </div>
+      <div id="quizContainer"></div>
 
-            <button class="btn-generate">
-                Generate Quiz
-            </button>
-        </aside>
+      <div id="quizFooter" class="quiz-footer" style="display: none;">
+        <button id="submitQuizBtn" class="btn-submit">Submit Answers</button>
+      </div>
+    </main>
 
-        <main class="main-content">
-            <div class="header">
-                <h2>Quiz Preview</h2>
-                <p>3 Questions Generated</p>
-            </div>
+  </div>
 
-            <div class="card">
-                <button class="close-btn">&times;</button>
-                <span class="tag tag-mcq">MCQ</span>
-                <h3 class="question-text">What is the primary law governing planetary motion?</h3>
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    const TOKEN = localStorage.getItem("token");
 
-                <div class="options-grid">
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Newton's First Law</span>
-                    </div>
-                    <div class="option selected">
-                        <div class="radio-circle"></div>
-                        <span>Kepler's Laws</span>
-                    </div>
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Ohm's Law</span>
-                    </div>
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Boyle's Law</span>
-                    </div>
-                </div>
-            </div>
+    // Load ONLY my uploaded PDFs
+    async function loadPDFs() {
+      try {
+        const res = await fetch(`${API_BASE}/student/me`, {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+        const data = await res.json();
+        const select = document.getElementById("pdfSelect");
+        select.innerHTML = `<option value="">Select a PDF</option>`;
+        data.uploads.forEach(file => {
+          const option = document.createElement("option");
+          option.value = file.id;
+          option.textContent = file.filename;
+          select.appendChild(option);
+        });
+      } catch (e) {
+        console.error("Error loading PDFs", e);
+      }
+    }
 
-            <div class="card">
-                <button class="close-btn">&times;</button>
-                <span class="tag tag-sub">Subjective</span>
-                <h3 class="question-text">Explain the concept of Dark Matter in your own words.</h3>
-                <textarea class="subjective-area" placeholder="The generated answer key will..."></textarea>
-            </div>
+    // Generate Quiz
+    document.getElementById("generateBtn").addEventListener("click", async () => {
+      const resourceId = document.getElementById("pdfSelect").value;
+      const btn = document.getElementById("generateBtn");
 
-            <button class="btn-save">Save & Publish Quiz</button>
-        </main>
+      if (!resourceId) {
+        alert("Please select a document");
+        return;
+      }
 
-    </div>
+      // Loading State
+      btn.textContent = "Generating...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/student/quiz/${resourceId}`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+
+        if (!res.ok) throw new Error("Failed to generate");
+
+        const data = await res.json();
+        renderQuiz(data.quiz);
+      } catch (error) {
+        alert("Error generating quiz");
+        console.error(error);
+      } finally {
+        btn.textContent = "Generate Quiz";
+        btn.disabled = false;
+      }
+    });
+
+    // Render MCQ Quiz
+    function renderQuiz(quiz) {
+      const container = document.getElementById("quizContainer");
+      const scoreBoard = document.getElementById("scoreBoard");
+      const footer = document.getElementById("quizFooter");
+      const countLabel = document.getElementById("quizCount");
+
+      // Reset UI
+      container.innerHTML = "";
+      scoreBoard.style.display = "none";
+      footer.style.display = "block"; // Show submit button
+      countLabel.textContent = `${quiz.length} Questions Generated`;
+
+      quiz.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        // Store the correct answer in the dataset of the card for easy checking later
+        card.dataset.correctAnswer = q.answer;
+
+        card.innerHTML = `
+              <span class="tag tag-mcq">Question ${index + 1}</span>
+              <h3>${q.question}</h3>
+              <div class="options-grid" id="q-${index}">
+                ${q.options.map(opt => `
+                  <div class="option" onclick="selectOption(this)">
+                    <div class="radio-circle"></div>
+                    <span>${opt}</span>
+                  </div>
+                `).join("")}
+              </div>
+            `;
+        container.appendChild(card);
+      });
+    }
+
+    // --- INTERACTIVE FUNCTIONS ---
+
+    // 1. Handle Option Click
+    window.selectOption = function (element) {
+      // Prevent changing answers after submission
+      if (element.closest('.card').classList.contains('graded')) return;
+
+      const parentGrid = element.parentElement;
+
+      // Remove 'selected' class from all siblings
+      const siblings = parentGrid.querySelectorAll('.option');
+      siblings.forEach(opt => opt.classList.remove('selected'));
+
+      // Add 'selected' class to clicked element
+      element.classList.add('selected');
+    };
+
+    // 2. Submit & Calculate Score
+    document.getElementById("submitQuizBtn").addEventListener("click", () => {
+      const cards = document.querySelectorAll(".card");
+      let score = 0;
+      let total = cards.length;
+
+      if (total === 0) return;
+
+      cards.forEach(card => {
+        const correctAnswer = card.dataset.correctAnswer.trim();
+        const selectedOption = card.querySelector(".option.selected");
+
+        // Mark card as graded so users can't change answers
+        card.classList.add('graded');
+
+        // Find the visual element that corresponds to the correct answer
+        const allOptions = card.querySelectorAll(".option");
+        let correctOptionElement = null;
+
+        // Logic to find which HTML element contains the correct text
+        allOptions.forEach(opt => {
+          const text = opt.querySelector("span").textContent.trim();
+          if (text === correctAnswer) {
+            correctOptionElement = opt;
+          }
+        });
+
+        // SCORING LOGIC
+        if (selectedOption) {
+          const selectedText = selectedOption.querySelector("span").textContent.trim();
+
+          if (selectedText === correctAnswer) {
+            // Correct!
+            score++;
+            selectedOption.classList.add("correct");
+          } else {
+            // Wrong!
+            selectedOption.classList.add("wrong");
+            // Show the correct one
+            if (correctOptionElement) correctOptionElement.classList.add("correct");
+          }
+        } else {
+          // No selection made - highlight the correct answer anyway
+          if (correctOptionElement) correctOptionElement.classList.add("correct");
+        }
+      });
+
+      // 3. Display Score
+      const scoreBoard = document.getElementById("scoreBoard");
+      const scoreText = document.getElementById("scoreText");
+      const percentageText = document.getElementById("percentageText");
+
+      scoreText.textContent = `You Scored: ${score}/${total}`;
+      const percentage = Math.round((score / total) * 100);
+      percentageText.textContent = `${percentage}% Accuracy`;
+
+      scoreBoard.style.display = "block";
+
+      // Scroll to top to see score
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Hide submit button
+      document.getElementById("quizFooter").style.display = "none";
+    });
+
+    // Init
+    loadPDFs();
+  </script>
 
 </body>
 
