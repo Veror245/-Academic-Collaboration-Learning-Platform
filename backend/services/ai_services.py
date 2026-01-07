@@ -184,7 +184,6 @@ def generate_quiz(resource_id: int):
     9. If you cannot generate 5 questions based on the text, generate as many as you can BUT NOT MORE THAN 5.
     10. STRICTLY FOLLOW THE FORMAT GIVEN BELOW.
     11. DO NOT RESPOND WITH ANYTHING OTHER THAN THE JSON.
-    12. MAKE SURE THE ANSWER IS NOT ALWAYS OPTION B.
     
 
     STRICT JSON STRUCTURE (Use this format, but replace the content):
