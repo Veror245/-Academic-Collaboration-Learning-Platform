@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussion & Preview | StudyHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* Prevent body scroll */
+    }
+
+    /* --- Header --- */
+    .header {
+      height: 60px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      background: var(--bg-dark);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .back-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+
+    .back-btn:hover {
+      color: white;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 400px;
+    }
+
+    /* Like Button Styling */
+    .like-btn {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .like-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .like-btn.liked {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    /* --- Main Layout (Split View) --- */
+    .main-content {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    /* PDF Section (Left) */
+    .pdf-section {
+      flex: 1;
+      /* Takes remaining space */
+      background: #000;
+      border-right: 1px solid var(--card-border);
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .pdf-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Comment Section (Right) */
+    .discussion-section {
+      width: 400px;
+      /* Fixed width for comments */
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+    }
+
+    .comments-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* Input Area (Bottom of Right Panel) */
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid var(--card-border);
+      background: var(--bg-dark);
+    }
+
+    textarea {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: white;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: inherit;
+      resize: none;
+      height: 50px;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .post-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* Comment Card Style */
+    .comment-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .user-name {
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .comment-body {
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .timestamp {
+      font-size: 0.7rem;
+      color: #64748b;
+      float: right;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+
+      .pdf-section {
+        height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      .discussion-section {
+        width: 100%;
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-left">
+      <a href="../Study_Room/StudyRoom.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+      <h1 id="pageTitle">Loading Note...</h1>
+    </div>
+
+    <button class="like-btn" id="likeBtn" onclick="handleLike()">
+      <i class="far fa-thumbs-up" id="likeIcon"></i>
+      <span id="voteCount">--</span> Likes
+    </button>
+  </header>
+
+  <div class="main-content">
+    <section class="pdf-section">
+      <iframe id="pdfViewer" src=""></iframe>
+      <div class="pdf-placeholder" id="pdfPlaceholder">
+        <i class="fas fa-spinner fa-spin"></i> Loading PDF...
+      </div>
+    </section>
+
+    <section class="discussion-section">
+      <div class="comments-container" id="commentsList">
+        <p style="color:var(--text-muted); text-align:center; margin-top:20px;">Loading comments...</p>
+      </div>
+
+      <div class="input-area">
+        <textarea id="commentInput" placeholder="Ask a question..."></textarea>
+        <button onclick="postComment()" class="post-btn">Post Comment</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // 1. Get Params from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const resourceId = urlParams.get('id');
+    const resourceTitle = urlParams.get('title');
+    const resourcePath = urlParams.get('path'); // Passed from StudyRoom
+
+    // Validation
+    if (!resourceId) {
+      alert("No resource selected.");
+      window.location.href = "../Study_Room/StudyRoom.html";
+    }
+
+    // 2. Setup Page Data
+    if (resourceTitle) document.getElementById('pageTitle').innerText = decodeURIComponent(resourceTitle);
+
+    // Setup PDF
+    if (resourcePath) {
+      const fullPath = `${API_BASE}/${decodeURIComponent(resourcePath)}`;
+      document.getElementById('pdfViewer').src = fullPath;
+
+      // Hide placeholder when iframe loads
+      document.getElementById('pdfViewer').onload = () => {
+        document.getElementById('pdfPlaceholder').style.display = 'none';
+      };
+    } else {
+      document.getElementById('pdfPlaceholder').innerText = "PDF file not found.";
+    }
+
+    // Initial Load
+    fetchComments();
+
+    // Note: Since backend doesn't give us specific vote count for single ID easily, 
+    // we initialize with 'Vote' text or you can pass score in URL. 
+    // For now, clicking the button will fetch the fresh score.
+    document.getElementById('voteCount').innerText = "Vote";
+
+
+    // --- FUNCTIONS ---
+
+    // 3. Like/Vote Function
+    async function handleLike() {
+      const token = localStorage.getItem('token');
+      if (!token) return alert("Please log in to vote.");
+
+      try {
+        const res = await fetch(`${API_BASE}/student/vote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          // Sending '1' for Upvote. 
+          body: JSON.stringify({ resource_id: resourceId, vote_type: 1 })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Update UI
+          document.getElementById('voteCount').innerText = data.new_score;
+
+          // Toggle Visual Style
+          const btn = document.getElementById('likeBtn');
+          const icon = document.getElementById('likeIcon');
+
+          // If message says "added" or "updated", make it solid. If "removed", make it outline.
+          if (data.msg.includes("removed")) {
+            btn.classList.remove('liked');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+          } else {
+            btn.classList.add('liked');
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+          }
+        }
+      } catch (err) {
+        console.error("Vote failed", err);
+      }
+    }
+
+
+    // 4. Fetch Comments
+    async function fetchComments() {
+      const list = document.getElementById('commentsList');
+      try {
+        const res = await fetch(`${API_BASE}/student/comments/${resourceId}`);
+        const comments = await res.json();
+
+        list.innerHTML = '';
+        if (comments.length === 0) {
+          list.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No comments yet.<br>Start the discussion!</div>';
+          return;
+        }
+
+        comments.forEach(c => {
+          const date = new Date(c.created_at).toLocaleDateString();
+          const div = document.createElement('div');
+          div.className = 'comment-card';
+          div.innerHTML = `
+            <span class="user-name">
+                ${c.user} 
+                ${c.is_verified ? '<i class="fas fa-check-circle" style="color:#10b981; font-size:0.8em;"></i>' : ''}
+                <span class="timestamp">${date}</span>
+            </span>
+            <div class="comment-body">${c.text}</div>
+          `;
+          list.appendChild(div);
+        });
+
+        // Scroll to bottom
+        list.scrollTop = list.scrollHeight;
+
+      } catch (err) {
+        list.innerHTML = '<p style="color:#ef4444; text-align:center;">Error loading comments.</p>';
+      }
+    }
+
+    // 5. Post Comment
+    async function postComment() {
+      const input = document.getElementById('commentInput');
+      const content = input.value.trim();
+      const token = localStorage.getItem('token');
+
+      if (!content) return;
+      if (!token) return alert("Login required.");
+
+      try {
+        const res = await fetch(`${API_BASE}/student/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ resource_id: resourceId, content: content })
+        });
+
+        if (res.ok) {
+          input.value = '';
+          fetchComments();
+        }
+      } catch (err) {
+        alert("Failed to post.");
+      }
+    }
+  </script>
+</body>
+
+</html>
