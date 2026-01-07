@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussion | StudyHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    /* Comment Input Section */
+    .input-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: white;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: inherit;
+      resize: none;
+      height: 60px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .post-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: transform 0.2s;
+    }
+
+    .post-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Comments List */
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .comment-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .user-name {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .timestamp {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .comment-body {
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header class="header">
+      <a href="/Frontend/Study_Room/StudyRoom.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+      <div>
+        <h1 id="pageTitle">Discussion</h1>
+        <p style="color:var(--text-muted); font-size:0.9rem;" id="resourceIdDisplay">Resource ID: --</p>
+      </div>
+    </header>
+
+    <section class="input-card">
+      <div class="input-group">
+        <textarea id="commentInput" placeholder="Ask a question or share your thoughts..."></textarea>
+        <button onclick="postComment()" class="post-btn">Post</button>
+      </div>
+    </section>
+
+    <section id="commentsList" class="comments-list">
+      <p style="color:var(--text-muted); text-align:center;">Loading discussion...</p>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // 1. Get ID from URL (e.g., comments.html?id=5&title=Chapter1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const resourceId = urlParams.get('id');
+    const resourceTitle = urlParams.get('title');
+
+    // Check if valid ID exists
+    if (!resourceId) {
+      alert("No resource selected.");
+      window.location.href = "Frontend/Study_Room/StudyRoom.html";
+    }
+
+    // Set Headers
+    document.getElementById('resourceIdDisplay').innerText = `Resource ID: ${resourceId}`;
+    if (resourceTitle) document.getElementById('pageTitle').innerText = `Discussion: ${decodeURIComponent(resourceTitle)}`;
+
+    // Load comments on start
+    fetchComments();
+
+    async function fetchComments() {
+      const list = document.getElementById('commentsList');
+      try {
+        const res = await fetch(`${API_BASE}/student/comments/${resourceId}`);
+        if (!res.ok) throw new Error("Failed");
+
+        const comments = await res.json();
+
+        list.innerHTML = '';
+        if (comments.length === 0) {
+          list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No comments yet. Be the first!</p>';
+          return;
+        }
+
+        comments.forEach(c => {
+          const date = new Date(c.created_at).toLocaleDateString() + ' ' + new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          const div = document.createElement('div');
+          div.className = 'comment-card';
+          div.innerHTML = `
+                        <div class="comment-header">
+                            <span class="user-name">${c.user} ${c.is_verified ? '<i class="fas fa-check-circle" style="color:#10b981;"></i>' : ''}</span>
+                            <span class="timestamp">${date}</span>
+                        </div>
+                        <div class="comment-body">${c.text}</div>
+                    `;
+          list.appendChild(div);
+        });
+
+      } catch (err) {
+        list.innerHTML = '<p style="color:#ef4444; text-align:center;">Error loading comments.</p>';
+      }
+    }
+
+    async function postComment() {
+      const input = document.getElementById('commentInput');
+      const content = input.value.trim();
+      const token = localStorage.getItem('token');
+
+      if (!content) return;
+      if (!token) return alert("You must be logged in to comment.");
+
+      try {
+        const res = await fetch(`${API_BASE}/student/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ resource_id: resourceId, content: content })
+        });
+
+        if (res.ok) {
+          input.value = ''; // Clear input
+          fetchComments(); // Reload list
+        } else {
+          alert("Failed to post.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error connecting to server.");
+      }
+    }
+  </script>
+</body>
+
+</html>
