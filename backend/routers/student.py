@@ -9,37 +9,9 @@ from backend.services import database, models, auth
 from backend.services import ai_services
 from pydantic import BaseModel 
 from backend.services.models import Comment, Vote
+from backend.services.schemas import ChatRequest, CommentCreate, UserProfileResponse, VoteCreate
 
 
-#Define the Input Format
-class ChatRequest(BaseModel):
-    resource_id: int
-    question: str
-    # New Field: A list of previous messages 
-    # Format: [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]
-    history: List[Dict[str, str]] = []
-
-class CommentCreate(BaseModel):
-    resource_id: int
-    content: str
-
-class VoteCreate(BaseModel):
-    resource_id: int
-    vote_type: int # 1 = Upvote, -1 = Downvote
-
-class MyUploadResponse(BaseModel):
-    id: int
-    filename: str
-    created_at: datetime
-
-# The Main Profile Response
-class UserProfileResponse(BaseModel):
-    id: int
-    full_name: str
-    email: str
-    role: str
-    karma_score: int # Total upvotes received
-    uploads: List[MyUploadResponse]
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
