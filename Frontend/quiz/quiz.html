@@ -222,13 +222,20 @@
       if (countLabel) countLabel.textContent = `${quiz.length} Modules Loaded`;
 
       quiz.forEach((q, index) => {
-        let safeOptions = q.options || [];
+        let safeOptions = q.options;
 
         // --- DATA FIX START ---
-        // Check if options are stuck in one string: ["A, B, C, D"]
-        if (Array.isArray(safeOptions) && safeOptions.length === 1 && typeof safeOptions[0] === 'string') {
-          // Split them by comma and remove extra spaces
+        // Scenario 1: API returns a raw string "Option A, Option B"
+        if (typeof safeOptions === 'string') {
+          safeOptions = safeOptions.split(',').map(opt => opt.trim());
+        }
+        // Scenario 2: API returns an array containing one string ["Option A, Option B"]
+        else if (Array.isArray(safeOptions) && safeOptions.length === 1 && typeof safeOptions[0] === 'string') {
           safeOptions = safeOptions[0].split(',').map(opt => opt.trim());
+        }
+        // Scenario 3: Fallback
+        else if (!Array.isArray(safeOptions)) {
+          safeOptions = [];
         }
         // --- DATA FIX END ---
 

@@ -520,7 +520,7 @@
 
       // Generate Avatar
       const seed = user.full_name.replace(/\s+/g, '');
-      document.getElementById("profile-avatar").src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+      document.getElementById("profile-avatar").src = `/Frontend/assets/user.png`;
 
       // 2. Stats
       document.getElementById("stat-karma").textContent = user.karma_score;
