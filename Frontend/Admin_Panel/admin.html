@@ -41,8 +41,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Native smooth scroll */
-
         body {
             font-family: var(--font-body);
             background-color: var(--bg-dark);
@@ -61,7 +59,6 @@
             pointer-events: none;
             z-index: -1;
             opacity: 0.05;
-            /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
         }
 
         .blob {
@@ -104,9 +101,10 @@
         .dashboard-wrapper {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
-        /* --- SIDEBAR (ANIMATED) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 280px;
             background: rgba(5, 5, 5, 0.6);
@@ -119,6 +117,7 @@
             height: 100vh;
             z-index: 100;
             animation: slideInLeft 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: transform 0.3s ease, width 0.3s ease;
         }
 
         .logo {
@@ -130,6 +129,7 @@
             letter-spacing: -0.5px;
             opacity: 0;
             animation: fadeIn 0.8s ease forwards 0.3s;
+            white-space: nowrap;
         }
 
         .logo span {
@@ -141,15 +141,12 @@
             flex-grow: 1;
         }
 
-        /* Staggered List Items */
         .nav-links li {
             margin-bottom: 0.5rem;
             opacity: 0;
-            /* Start hidden */
             animation: slideInUp 0.5s ease forwards;
         }
 
-        /* Stagger Delays */
         .nav-links li:nth-child(1) {
             animation-delay: 0.4s;
         }
@@ -175,9 +172,9 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid transparent;
             position: relative;
+            white-space: nowrap;
         }
 
-        /* Hover Animation */
         .nav-links a:hover {
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
@@ -185,17 +182,11 @@
             transform: translateX(8px);
         }
 
-        /* --- ACTIVE STATE LOGIC --- */
         .nav-links li.active a {
             background: rgba(0, 243, 255, 0.1);
             border-color: var(--neon-cyan);
             color: var(--neon-cyan);
             box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
-        }
-
-        .nav-links li.active a i {
-            color: var(--neon-cyan);
-            filter: drop-shadow(0 0 5px var(--neon-cyan));
         }
 
         .user-profile {
@@ -206,9 +197,11 @@
             border-top: 1px solid var(--glass-border);
             opacity: 0;
             animation: fadeIn 0.8s ease forwards 0.8s;
+            overflow: hidden;
         }
 
         .avatar {
+            min-width: 40px;
             width: 40px;
             height: 40px;
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
@@ -227,12 +220,7 @@
             font-weight: 600;
             font-size: 0.9rem;
             color: #fff;
-        }
-
-        .user-info .role {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-family: monospace;
+            white-space: nowrap;
         }
 
         /* --- MAIN CONTENT --- */
@@ -241,6 +229,8 @@
             margin-left: 280px;
             padding: 2.5rem;
             animation: fadeIn 0.8s ease-out 0.2s backwards;
+            width: calc(100% - 280px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
         }
 
         .top-bar {
@@ -248,6 +238,21 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 3rem;
+        }
+
+        .header-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .top-bar h1 {
@@ -268,6 +273,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: 0.3s;
+            white-space: nowrap;
         }
 
         .btn-logout:hover {
@@ -283,7 +289,6 @@
             gap: 2rem;
             margin-bottom: 3rem;
             scroll-margin-top: 100px;
-            /* Offset for scroll snap */
         }
 
         .stat-card {
@@ -340,7 +345,6 @@
             backdrop-filter: blur(16px);
             animation: slideUp 0.6s ease-out 0.6s backwards;
             scroll-margin-top: 40px;
-            /* Important for scroll spy */
         }
 
         .section-header {
@@ -350,6 +354,8 @@
             margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .section-header h2 {
@@ -383,6 +389,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            white-space: nowrap;
         }
 
         .data-table th {
@@ -433,16 +440,21 @@
         }
 
         /* --- ACTION BUTTONS --- */
-        .btn-verify {
+        .btn-verify,
+        .btn-delete,
+        .btn-view {
             background: transparent;
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
             padding: 6px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.8rem;
             font-weight: 600;
             transition: all 0.3s;
+        }
+
+        .btn-verify {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
         }
 
         .btn-verify:hover {
@@ -463,13 +475,8 @@
         }
 
         .btn-delete {
-            background: transparent;
             color: var(--neon-red);
             border: 1px solid var(--neon-red);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
         }
 
         .btn-delete:hover {
@@ -478,7 +485,126 @@
             box-shadow: 0 0 10px var(--neon-red);
         }
 
-        /* --- KEYFRAME ANIMATIONS --- */
+        /* View Button for Mobile */
+        .btn-view {
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+        }
+
+        .btn-view:hover {
+            background: var(--neon-purple);
+            color: #fff;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        /* --- POPUP (MODAL) SYSTEM --- */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-card {
+            background: #0f172a;
+            border: 1px solid var(--neon-cyan);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .popup-overlay.active .popup-card {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .popup-header h3 {
+            font-family: var(--font-heading);
+            color: #fff;
+            margin: 0;
+        }
+
+        .btn-close-popup {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .popup-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .popup-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* --- RESPONSIVE CLASSES --- */
+        .show-mobile-only {
+            display: none;
+        }
+
+        .hide-mobile {
+            display: table-cell;
+        }
+
+        /* --- ANIMATIONS --- */
         @keyframes slideInLeft {
             from {
                 transform: translateX(-100%);
@@ -539,7 +665,8 @@
             }
         }
 
-        /* Responsive */
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+
         @media (max-width: 1024px) {
             .sidebar {
                 width: 80px;
@@ -549,26 +676,146 @@
 
             .logo span,
             .nav-links span,
-            .user-info,
-            .logo {
+            .user-info {
                 display: none;
             }
 
-            .sidebar::before {
-                content: 'S';
+            .logo {
+                margin-bottom: 2rem;
+                font-size: 0;
+            }
+
+            .logo::before {
+                content: 'A';
                 font-family: var(--font-heading);
                 font-size: 1.5rem;
                 font-weight: 700;
                 color: var(--neon-cyan);
-                margin-bottom: 2rem;
+            }
+
+            .nav-links a {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .user-profile {
+                justify-content: center;
+                border-top: none;
             }
 
             .main-content {
                 margin-left: 80px;
+                width: calc(100% - 80px);
+                padding: 2rem;
+            }
+        }
+
+        /* Mobile View (< 768px) */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+                align-items: flex-start;
+                padding: 2rem;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .logo span,
+            .nav-links span,
+            .user-info {
+                display: block;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .logo::before {
+                content: none;
+            }
+
+            .nav-links a {
+                justify-content: flex-start;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .top-bar {
+                margin-bottom: 2rem;
+            }
+
+            .top-bar h1 {
+                font-size: 1.5rem;
+            }
+
+            .menu-toggle {
+                display: block;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .btn-logout span {
+                display: none;
+            }
+
+            .btn-logout {
+                padding: 8px 12px;
+            }
+
+            .panel-section {
+                padding: 1rem;
+            }
+
+            /* --- MOBILE TABLE LOGIC (HIDE COLUMNS) --- */
+            .hide-mobile {
+                display: none;
+            }
+
+            .show-mobile-only {
+                display: inline-block;
+            }
+
+            /* Adjust table layout for mobile */
+            .data-table th,
+            .data-table td {
+                padding: 1rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            /* Sidebar overlay */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(5px);
+                z-index: 99;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
             }
         }
     </style>
@@ -580,8 +827,23 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="popup-overlay" id="detailsModal">
+        <div class="popup-card">
+            <div class="popup-header">
+                <h3 id="modalTitle">Entry Details</h3>
+                <button class="btn-close-popup" onclick="closePopup()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-body" id="modalContent">
+            </div>
+            <div class="popup-actions" id="modalActions">
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-wrapper">
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="logo">Admin<span>Dashboard</span></div>
             <ul class="nav-links">
                 <li id="nav-overview" class="active">
@@ -604,9 +866,14 @@
 
         <main class="main-content">
             <header class="top-bar">
-                <h1>Command Center</h1>
+                <div class="header-group">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Command Center</h1>
+                </div>
                 <button onclick="logout()" class="btn-logout">
-                    <i class="fas fa-power-off"></i> Terminate Session
+                    <i class="fas fa-power-off"></i> <span>Terminate Session</span>
                 </button>
             </header>
 
@@ -630,8 +897,8 @@
                         <thead>
                             <tr>
                                 <th>File Protocol</th>
-                                <th>Source ID</th>
-                                <th>Format</th>
+                                <th class="hide-mobile">Source ID</th>
+                                <th class="hide-mobile">Format</th>
                                 <th>Integrity</th>
                                 <th>Override</th>
                             </tr>
@@ -655,8 +922,8 @@
                             <tr>
                                 <th>User ID</th>
                                 <th>Payload Content</th>
-                                <th>Target Node</th>
-                                <th>Timestamp</th>
+                                <th class="hide-mobile">Target Node</th>
+                                <th class="hide-mobile">Timestamp</th>
                                 <th>Status</th>
                                 <th>Protocol</th>
                             </tr>
@@ -675,6 +942,15 @@
 
     <script>
         const API_BASE = "http://127.0.0.1:8000";
+        let allResources = [];
+        let allCommentsData = [];
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('access_token');
@@ -685,58 +961,39 @@
             }
 
             fetchResources();
-
-            // --- NEW: SIDEBAR SCROLL SPY LOGIC ---
             setupNavigationHandlers();
         });
 
-        // --- NEW FUNCTION: SCROLL SPY & CLICK HANDLING ---
         function setupNavigationHandlers() {
             const navItems = document.querySelectorAll('.nav-links li');
             const sections = document.querySelectorAll('section[id]');
 
-            // 1. CLICK HANDLER: Highlight immediately on click
             navItems.forEach(item => {
                 item.addEventListener('click', function () {
-                    // Remove active from all
                     navItems.forEach(nav => nav.classList.remove('active'));
-                    // Add to clicked
                     this.classList.add('active');
+                    if (window.innerWidth <= 768) toggleSidebar();
                 });
             });
 
-            // 2. SCROLL OBSERVER: Update highlight while scrolling
-            const observerOptions = {
-                root: null,
-                rootMargin: '-20% 0px -60% 0px', // Trigger when section is near top of viewport
-                threshold: 0
-            };
-
+            const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Get the ID of the section currently in view
                         const currentId = entry.target.getAttribute('id');
-
-                        // Loop through nav items to match the link href
                         navItems.forEach(item => {
                             item.classList.remove('active');
-                            const link = item.querySelector('a').getAttribute('href').substring(1); // remove '#'
-                            if (link === currentId) {
-                                item.classList.add('active');
-                            }
+                            const link = item.querySelector('a').getAttribute('href').substring(1);
+                            if (link === currentId) item.classList.add('active');
                         });
                     }
                 });
             }, observerOptions);
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            sections.forEach(section => observer.observe(section));
         }
 
-        let allResources = [];
-
+        // --- FETCH RESOURCES ---
         async function fetchResources() {
             const token = localStorage.getItem('access_token');
             const tableBody = document.getElementById('resource-table-body');
@@ -774,32 +1031,145 @@
                 return;
             }
 
-            tbody.innerHTML = resources.map(r => `
+            tbody.innerHTML = resources.map((r, index) => `
                     <tr>
                         <td style="font-weight: 500; color: #fff;">${r.title}</td>
-                        <td style="font-family: monospace; color: var(--text-secondary);">${r.uploader}</td>
-                        <td style="color: var(--neon-cyan);">PDF</td>
+                        <td class="hide-mobile" style="font-family: monospace; color: var(--text-secondary);">${r.uploader}</td>
+                        <td class="hide-mobile" style="color: var(--neon-cyan);">PDF</td>
                         <td><span class="badge badge-verified">Active</span></td>
                         <td>
-                            <button class="btn-delete" onclick="deleteResource(${r.id})">
+                            <button class="btn-delete hide-mobile" onclick="deleteResource(${r.id})">
                                 <i class="fas fa-trash"></i> Purge
+                            </button>
+                            <button class="btn-view show-mobile-only" onclick="openResourcePopup(${index})">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
                 `).join('');
         }
 
+        // --- FETCH COMMENTS ---
+        async function loadAllComments() {
+            const tbody = document.getElementById('comments-table-body');
+            allCommentsData = [];
+
+            for (const res of allResources) {
+                try {
+                    const response = await fetch(`${API_BASE}/student/comments/${res.id}`);
+                    if (response.ok) {
+                        const comments = await response.json();
+                        comments.forEach(c => c.resource_title = res.title);
+                        allCommentsData.push(...comments);
+                    }
+                } catch (err) { console.error(err); }
+            }
+
+            allCommentsData.sort((a, b) => (a.is_verified === b.is_verified) ? 0 : a.is_verified ? 1 : -1);
+            document.getElementById('comment-count').innerText = allCommentsData.length;
+
+            if (allCommentsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No communication logs found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allCommentsData.map((c, index) => `
+                    <tr>
+                        <td style="font-family: monospace; color: var(--text-secondary);">${c.user}</td>
+                        <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; color:#e2e8f0;">${c.text}</td>
+                        <td class="hide-mobile" style="color: var(--neon-cyan);">${c.resource_title || 'Unknown Note'}</td>
+                        <td class="hide-mobile" style="font-size:0.85rem; color:#64748b; font-family: monospace;">${new Date(c.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <span class="badge ${c.is_verified ? 'badge-verified' : 'badge-pending'}">
+                                ${c.is_verified ? 'Secured' : 'Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            <button 
+                                class="btn-verify hide-mobile ${c.is_verified ? 'btn-unverify' : ''}" 
+                                onclick="toggleVerifyComment(${c.id})">
+                                ${c.is_verified ? 'Revoke' : 'Authorize'}
+                            </button>
+                            <button class="btn-view show-mobile-only" onclick="openCommentPopup(${index})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        // --- POPUP SYSTEM LOGIC ---
+        const modal = document.getElementById('detailsModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const modalActions = document.getElementById('modalActions');
+
+        function openPopup() {
+            modal.classList.add('active');
+        }
+
+        function closePopup() {
+            modal.classList.remove('active');
+        }
+
+        // Close on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closePopup();
+        });
+
+        // 1. Open Resource Popup
+        window.openResourcePopup = function (index) {
+            const r = allResources[index];
+            modalTitle.innerText = "Data Stream Details";
+            modalContent.innerHTML = `
+                <div class="info-row"><span class="info-label">File Protocol</span><span class="info-value">${r.title}</span></div>
+                <div class="info-row"><span class="info-label">Source ID</span><span class="info-value">${r.uploader}</span></div>
+                <div class="info-row"><span class="info-label">Format</span><span class="info-value">PDF</span></div>
+                <div class="info-row"><span class="info-label">Sector</span><span class="info-value" style="text-transform: uppercase;">${r.room_slug}</span></div>
+                <div class="info-row"><span class="info-label">Integrity</span><span class="info-value" style="color:var(--neon-green)">Active</span></div>
+            `;
+            modalActions.innerHTML = `
+                <button class="btn-delete" onclick="deleteResource(${r.id}); closePopup();">
+                    <i class="fas fa-trash"></i> Purge
+                </button>
+            `;
+            openPopup();
+        };
+
+        // 2. Open Comment Popup
+        window.openCommentPopup = function (index) {
+            const c = allCommentsData[index];
+            const btnText = c.is_verified ? 'Revoke' : 'Authorize';
+            const btnClass = c.is_verified ? 'btn-unverify' : '';
+
+            modalTitle.innerText = "Comm Log Details";
+            modalContent.innerHTML = `
+                <div class="info-row"><span class="info-label">User ID</span><span class="info-value">${c.user}</span></div>
+                <div class="info-row"><span class="info-label">Target Node</span><span class="info-value">${c.resource_title}</span></div>
+                <div class="info-row"><span class="info-label">Timestamp</span><span class="info-value">${new Date(c.created_at).toLocaleString()}</span></div>
+                <div class="info-row"><span class="info-label">Status</span><span class="info-value">${c.is_verified ? 'Secured' : 'Pending'}</span></div>
+                <div class="info-row" style="flex-direction:column; gap:5px;">
+                    <span class="info-label">Payload Content</span>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; font-size:0.9rem; color:#e2e8f0; width:100%;">${c.text}</div>
+                </div>
+            `;
+            modalActions.innerHTML = `
+                <button class="btn-verify ${btnClass}" onclick="toggleVerifyComment(${c.id}); closePopup();">
+                    ${btnText}
+                </button>
+            `;
+            openPopup();
+        };
+
+        // --- API ACTIONS ---
         async function deleteResource(id) {
             if (!confirm("Confirm Purge Protocol? This deletes the file and all associated logs.")) return;
-
             const token = localStorage.getItem('access_token');
-
             try {
                 const res = await fetch(`${API_BASE}/admin/delete-resource/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
                 if (res.ok) {
                     alert("Purge Successful");
                     fetchResources();
@@ -812,65 +1182,14 @@
             }
         }
 
-        async function loadAllComments() {
-            const tbody = document.getElementById('comments-table-body');
-            let allComments = [];
-
-            for (const res of allResources) {
-                try {
-                    const response = await fetch(`${API_BASE}/student/comments/${res.id}`);
-                    if (response.ok) {
-                        const comments = await response.json();
-                        comments.forEach(c => c.resource_title = res.title);
-                        allComments.push(...comments);
-                    }
-                } catch (err) { console.error(err); }
-            }
-
-            allComments.sort((a, b) => (a.is_verified === b.is_verified) ? 0 : a.is_verified ? 1 : -1);
-
-            document.getElementById('comment-count').innerText = allComments.length;
-
-            if (allComments.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No communication logs found.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = allComments.map(c => `
-                    <tr>
-                        <td style="font-family: monospace; color: var(--text-secondary);">${c.user}</td>
-                        <td style="max-width:300px; color:#e2e8f0;">${c.text}</td>
-                        <td style="color: var(--neon-cyan);">${c.resource_title || 'Unknown Note'}</td>
-                        <td style="font-size:0.85rem; color:#64748b; font-family: monospace;">${new Date(c.created_at).toLocaleDateString()}</td>
-                        <td>
-                            <span class="badge ${c.is_verified ? 'badge-verified' : 'badge-pending'}">
-                                ${c.is_verified ? 'Secured' : 'Pending'}
-                            </span>
-                        </td>
-                        <td>
-                            <button 
-                                class="btn-verify ${c.is_verified ? 'btn-unverify' : ''}" 
-                                onclick="toggleVerifyComment(${c.id})">
-                                ${c.is_verified ? 'Revoke' : 'Authorize'}
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-        }
-
         async function toggleVerifyComment(commentId) {
             const token = localStorage.getItem('access_token');
             if (!token) return alert("You are logged out!");
-
             try {
                 const res = await fetch(`${API_BASE}/admin/verify-comment/${commentId}`, {
                     method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                 });
-
                 if (res.ok) {
                     loadAllComments();
                 } else {
