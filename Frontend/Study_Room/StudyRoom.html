@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyHub | Neural Grid</title>
+    <title>Study Rooms - Uploaded Notes</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,6 @@
             pointer-events: none;
             z-index: -1;
             opacity: 0.05;
-            /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
         }
 
         .blob {
@@ -343,20 +342,10 @@
             filter: drop-shadow(0 0 5px currentColor);
         }
 
-        #upbtn-\$ {
-            note.id
-        }
-
-        .active,
         .vote-btn.active:first-child {
             color: var(--neon-green);
         }
 
-        #downbtn-\$ {
-            note.id
-        }
-
-        .active,
         .vote-btn.active:last-child {
             color: var(--neon-red);
         }
@@ -526,16 +515,19 @@
         <header class="library-header">
             <div class="header-content">
                 <h1>Study<span class="text-gradient">Rooms</span></h1>
-                <p id="room-description">SYNC // COLLABORATE // EVOLVE</p>
+                <p id="room-description">Uploaded Documents</p>
             </div>
 
-            <button class="upload-btn" onclick="openModal('uploadModal')">
-                <i class="fas fa-satellite-dish"></i> Upload Data
-            </button>
+            <a href="/Frontend/UploadNotes/UploadNotes.html" style="text-decoration: none;">
+                <button class="upload-btn">
+                    <i class="fas fa-satellite-dish"></i> Upload Data
+                </button>
+            </a>
         </header>
 
         <nav class="filter-bar">
-            <button class="filter-btn active" onclick="loadRoom('cs', this)">Computer Science</button>
+            <button class="filter-btn active" onclick="loadRoom('all', this)">All</button>
+            <button class="filter-btn" onclick="loadRoom('cs', this)">Computer Science</button>
             <button class="filter-btn" onclick="loadRoom('ece', this)">Electronics</button>
             <button class="filter-btn" onclick="loadRoom('mech', this)">Mechanical</button>
             <button class="filter-btn" onclick="loadRoom('civil', this)">Civil Eng</button>
@@ -589,10 +581,11 @@
         const API_BASE = "http://127.0.0.1:8000";
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadRoom('cs', document.querySelector('.filter-btn'));
+            // Load 'All' by default
+            loadRoom('all', document.querySelector('.filter-btn'));
         });
 
-        // 1. LOAD NOTES
+        // 1. LOAD NOTES (UPDATED to fetch ALL slugs if needed)
         async function loadRoom(slug, btnElement) {
             const token = localStorage.getItem('token');
 
@@ -602,6 +595,7 @@
                 return;
             }
 
+            // Update Active UI
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
 
@@ -609,22 +603,52 @@
             grid.innerHTML = '<p style="color:#64748b;">Scanning neural pathways...</p>';
 
             try {
-                const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                let notes = [];
+
+                if (slug === 'all') {
+                    // Logic to fetch from all specific rooms because backend lacks 'all' endpoint
+                    const rooms = ['cs', 'ece', 'mech', 'civil', 'science', 'hum'];
+
+                    // Create an array of promises
+                    const fetchPromises = rooms.map(room =>
+                        fetch(`${API_BASE}/student/room/${room}/resources`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.ok ? res.json() : []) // If fetch fails, return empty array to keep Promise.all alive
+                            .catch(() => [])
+                    );
+
+                    // Wait for all fetches to finish
+                    const results = await Promise.all(fetchPromises);
+                    // Flatten array of arrays into one list
+                    notes = results.flat();
+
+                } else {
+                    // Standard single room fetch
+                    const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        throw new Error("Session expired or invalid. Please login again.");
                     }
-                });
-
-                if (response.status === 401) {
-                    throw new Error("Session expired or invalid. Please login again.");
-                }
-                if (!response.ok) {
-                    throw new Error(`Server Error: ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`Server Error: ${response.status}`);
+                    }
+                    notes = await response.json();
                 }
 
-                const notes = await response.json();
+                // --- NEW SORTING LOGIC: Sort by created_at (Descending / Newest First) ---
+                notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
                 renderNotes(notes);
 
             } catch (err) {
@@ -662,7 +686,6 @@
                 const upActive = note.user_vote === 1 ? 'active' : '';
                 const downActive = note.user_vote === -1 ? 'active' : '';
 
-                // RESTORED: goToComments() logic is back in the onclick
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
@@ -779,7 +802,7 @@
             }
         }
 
-        // 4. RESTORED COMMENT NAVIGATION (Replaces Modal Logic)
+        // 4. NAVIGATION
         function goToComments(id, title, filePath) {
             const cleanTitle = encodeURIComponent(title);
             const cleanPath = encodeURIComponent(filePath);
