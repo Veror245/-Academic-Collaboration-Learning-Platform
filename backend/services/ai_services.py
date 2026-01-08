@@ -39,9 +39,27 @@ def process_document(file_path: str, resource_id: int):
     loader = PyPDFLoader(file_path)
     docs = loader.load()
     
-    # B. Generate Summary (using the first 3 pages context)
     # We take a subset of text to avoid token limits for the summary
-    summary_text = " ".join([d.page_content for d in docs[:3]])
+    clean_text = []
+    pages_read_count = 0
+    
+    # Iterate through the first 20 pages
+    for page in docs[:20]:
+        text = page.page_content.strip()
+        
+        # FILTER: If page has less than 200 characters, it's likely a Map, Title, or Chapter Header.
+        # Skip it!
+        if len(text) < 200:
+            continue
+            
+        clean_text.append(text)
+        pages_read_count += 1
+        
+        # Stop once we have 5 solid pages of text
+        if pages_read_count >= 5:
+            break
+            
+    summary_text = " ".join(clean_text)
     
     summary_prompt = f"""
     You are a strict academic summarizer. 
@@ -55,7 +73,7 @@ def process_document(file_path: str, resource_id: int):
     4. Provide raw text only.
     
     Document Text:
-    {summary_text[:5000]} 
+    {summary_text[:20000]} 
     """
     
     # Invoke Gemini
