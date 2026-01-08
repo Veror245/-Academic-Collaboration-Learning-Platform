@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile | Neural Grid</title>
+  <title>User Profile</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -422,7 +422,7 @@
           <div class="stat-divider">
             <div class="mini-stat">
               <span id="stat-karma" class="ms-val">0</span>
-              <span class="ms-lbl">Karma Score</span>
+              <span class="ms-lbl">Likes</span>
             </div>
             <div class="mini-stat">
               <span id="stat-uploads" class="ms-val">0</span>
@@ -431,7 +431,7 @@
           </div>
 
           <div style="padding: 25px;">
-            <h3 class="section-title" style="font-size: 0.9rem; margin-bottom: 15px;">Contact Protocol</h3>
+            <h3 class="section-title" style="font-size: 0.9rem; margin-bottom: 15px;">Contact</h3>
             <div style="display: flex; align-items: center; gap: 10px; color: #fff;">
               <i class="fas fa-envelope" style="color: var(--neon-cyan);"></i>
               <span id="profile-email" style="font-family: monospace;">...</span>
@@ -444,7 +444,7 @@
 
         <div class="glass-card" style="margin-bottom: 30px;">
           <div class="section-header">
-            <h3 class="section-title">Account Parameters</h3>
+            <h3 class="section-title">Account</h3>
           </div>
           <div class="info-grid">
             <div class="info-group">
@@ -464,7 +464,7 @@
 
         <div class="glass-card">
           <div class="section-header">
-            <h3 class="section-title">Transmission Log</h3>
+            <h3 class="section-title">Uploaded Documents</h3>
           </div>
 
           <div id="uploads-list" class="activity-list">
@@ -529,7 +529,6 @@
 
       // 3. Account Details Section
       document.getElementById("detail-name").textContent = user.full_name;
-      // Removed ID display logic here to match HTML removal
       document.getElementById("detail-role").textContent = user.role;
       document.getElementById("detail-email").textContent = user.email;
 
@@ -543,7 +542,15 @@
       }
 
       user.uploads.forEach(file => {
-        const dateObj = new Date(file.created_at);
+        // --- TIMEZONE FIX ---
+        // Ensure the date string is treated as UTC if it doesn't have an offset
+        // This prevents the browser from interpreting UTC server time as Local time
+        let timeString = file.created_at;
+        if (timeString && !timeString.includes('Z') && !timeString.includes('+')) {
+          timeString += 'Z';
+        }
+
+        const dateObj = new Date(timeString);
         const timeAgo = timeSince(dateObj);
 
         const itemHTML = `
@@ -560,9 +567,13 @@
       });
     }
 
-    // --- Helper: Time Since ---
+    // --- Helper: Time Since (Updated) ---
     function timeSince(date) {
       const seconds = Math.floor((new Date() - date) / 1000);
+
+      // Fix for slight clock skews or future dates (returns "Just now" instead of negative seconds)
+      if (seconds < 5) return "Just now";
+
       let interval = seconds / 31536000;
       if (interval > 1) return Math.floor(interval) + "y ago";
       interval = seconds / 2592000;

@@ -18,6 +18,27 @@
     padding: 0;
 }
 
+
+/* --- Fix for Browser Autofill White Background --- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    /* 1. Delay the background color change indefinitely so it looks transparent */
+    transition: background-color 5000s ease-in-out 0s;
+
+    /* 2. Force the text color to be white (otherwise it defaults to black) */
+    -webkit-text-fill-color: var(--text-main) !important;
+
+    /* 3. Ensure font styles remain consistent */
+    font-family: var(--font-main) !important;
+    font-size: 1rem !important;
+
+    /* 4. Fix the caret (cursor) color */
+    caret-color: var(--text-main);
+}
+
+
 body {
     font-family: var(--font-main);
     background-color: var(--bg-dark);
@@ -194,8 +215,8 @@ body {
 }
 
 input[type="email"],
-input[type="password"] ,
-input[type="text"]{
+input[type="password"],
+input[type="text"] {
     width: 100%;
     padding: 16px 0;
     background: transparent;
