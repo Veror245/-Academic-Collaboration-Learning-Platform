@@ -41,7 +41,7 @@ def process_document(file_path: str, resource_id: int):
     
     # B. Generate Summary (using the first 3 pages context)
     # We take a subset of text to avoid token limits for the summary
-    summary_text = " ".join([d.page_content for d in docs[:3]])
+    summary_text = " ".join([d.page_content for d in docs[:10]])
     
     summary_prompt = f"""
     You are a strict academic summarizer. 
@@ -55,7 +55,7 @@ def process_document(file_path: str, resource_id: int):
     4. Provide raw text only.
     
     Document Text:
-    {summary_text[:5000]} 
+    {summary_text[:15000]} 
     """
     
     # Invoke Gemini
