@@ -80,7 +80,7 @@ pip install -r requirements.txt
 # SECRET_KEY=your_jwt_secret
 
 # Run the Server
-uvicorn main:app --reload
+fastapi dev main.py
 ```
 
 ### 2. Frontend Setup
