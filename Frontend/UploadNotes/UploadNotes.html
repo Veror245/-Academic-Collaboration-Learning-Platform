@@ -17,15 +17,57 @@
   <div class="bg-shape shape-2"></div>
 
   <div class="container">
-    <div class="header">
-      <h1>Upload Notes</h1>
-      <p>Select your department to connect with peers.</p>
+
+    <header class="dashboard-header">
+      <div class="header-brand">
+        <h1 class="brand-title">UniMind<span class="text-gradient">AI</span></h1>
+      </div>
+
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li>
+            <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
+              <i class="fas fa-satellite-dish"></i> Home
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/quiz/quiz.html" class="nav-link">
+              <i class="fas fa-brain"></i> Neural Quiz
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+              <i class="fas fa-layer-group"></i> Study Matrix
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+              <i class="fas fa-fingerprint"></i> User Data
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
+        <div class="hud-avatar">
+          <i class="fas fa-user-astronaut"></i>
+        </div>
+        <div class="hud-info">
+          <div class="hud-top">
+            <span class="user-name">Alex</span>
+            <span class="status-indicator"></span>
+          </div>
+        </div>
+      </a>
+    </header>
+    <div class="page-header">
+      <h1>Select Department</h1>
+      <p>Choose a frequency channel to connect with peers.</p>
     </div>
 
     <div class="room-grid">
 
       <a href="/Frontend/UploadNotes/Rooms/cs/cs.html" class="room-card cs">
-
         <div class="icon-box">
           <i class="fas fa-laptop-code"></i>
         </div>
@@ -37,7 +79,6 @@
       </a>
 
       <a href="/Frontend/UploadNotes/Rooms/ec/ec.html" class="room-card ece">
-
         <div class="icon-box">
           <i class="fas fa-microchip"></i>
         </div>
@@ -47,8 +88,8 @@
         </div>
         <i class="fas fa-chevron-right arrow-icon"></i>
       </a>
-      <a href="/Frontend/UploadNotes/Rooms/me/me.html" class="room-card mech">
 
+      <a href="/Frontend/UploadNotes/Rooms/me/me.html" class="room-card mech">
         <div class="icon-box">
           <i class="fas fa-cogs"></i>
         </div>
@@ -60,7 +101,6 @@
       </a>
 
       <a href="/Frontend/UploadNotes/Rooms/civil/civil.html" class="room-card civil">
-
         <div class="icon-box">
           <i class="fas fa-hard-hat"></i>
         </div>
@@ -72,7 +112,6 @@
       </a>
 
       <a href="/Frontend/UploadNotes/Rooms/bs/bs.html" class="room-card science">
-
         <div class="icon-box">
           <i class="fas fa-atom"></i>
         </div>
@@ -84,7 +123,6 @@
       </a>
 
       <a href="/Frontend/UploadNotes/Rooms/MA/MA.html" class="room-card mgmt">
-
         <div class="icon-box">
           <i class="fas fa-chart-line"></i>
         </div>

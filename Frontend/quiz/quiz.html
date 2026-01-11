@@ -11,6 +11,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <link rel="stylesheet" href="quiz.css" />
 </head>
@@ -48,6 +49,31 @@
     </aside>
 
     <main class="main-content">
+
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li>
+            <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
+              <i class="fas fa-satellite-dish"></i> Home
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+              <i class="fas fa-brain"></i> Upload Notes
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+              <i class="fas fa-layer-group"></i> Study Matrix
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+              <i class="fas fa-fingerprint"></i> User Data
+            </a>
+          </li>
+        </ul>
+      </nav>
       <div class="header">
         <h2>Simulation Preview</h2>
         <p id="quizCount">Waiting for input...</p>
@@ -66,8 +92,6 @@
         <div class="scanner-core"></div>
         <p class="loader-text">Analyzing Neural Data<span class="dots">...</span></p>
       </div>
-
-      <div id="quizContainer"></div>
 
       <div id="quizContainer"></div>
 

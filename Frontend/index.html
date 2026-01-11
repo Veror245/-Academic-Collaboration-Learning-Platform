@@ -146,10 +146,23 @@
       letter-spacing: -0.5px;
     }
 
+
+    .nav-links{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+    }
+
+     .ad-log{
+      display: flex;
+      gap: 20px;
+      
+    }
+
     .nav-links a {
       color: #a1a1aa;
       text-decoration: none;
-      margin-left: 35px;
       font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.3s;
@@ -563,6 +576,8 @@
       transform: translateY(30px);
       position: relative;
       overflow: hidden;
+      cursor: pointer;
+      
     }
 
     .feature-box.visible {
@@ -655,6 +670,8 @@
       }
     }
 
+   
+
     /* --- RESPONSIVE --- */
     @media (max-width: 1024px) {
       .hero {
@@ -723,7 +740,10 @@
     <div class="logo">UniMind AI</div>
     <div class="nav-links">
       <a href="#features-section">Features</a>
-      <a href="/Frontend/Admin_login/adminLogin.html" class="btn-login">Admin</a>
+      <div class="ad-log">
+        <a href="/Frontend/Admin_login/adminLogin.html" class="btn-login">Admin</a>
+        <a href="/Frontend/LogIn/LogIn.html" class="btn-login">LogIn</a>
+      </div>
     </div>
   </nav>
 
@@ -777,26 +797,34 @@
     </div>
 
     <div class="feature-grid">
+     <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
       <div class="feature-box" style="transition-delay: 0ms;">
         <div class="f-icon"><i class="fas fa-laptop-code"></i></div>
         <h3>Study Rooms</h3>
         <p>Dedicated rooms for CS, Mech, Civil, and more. Find your peers instantly.</p>
       </div>
-      <div class="feature-box" style="transition-delay: 100ms;">
-        <div class="f-icon"><i class="fas fa-file-upload"></i></div>
-        <h3>AI Analysis</h3>
-        <p>Upload any PDF or image. Our AI will analyze it and provide answers.</p>
-      </div>
-      <div class="feature-box" style="transition-delay: 200ms;">
-        <div class="f-icon"><i class="fas fa-comments"></i></div>
-        <h3>Live Chat</h3>
-        <p>Discuss problems in real-time. Share files and code snippets easily.</p>
-      </div>
-      <div class="feature-box" style="transition-delay: 300ms;">
-        <div class="f-icon"><i class="fas fa-chart-line"></i></div>
-        <h3>Track Progress</h3>
-        <p>Keep track of your study streak and downloaded resources in your profile.</p>
-      </div>
+     </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 100ms;">
+          <div class="f-icon"><i class="fas fa-file-upload"></i></div>
+          <h3>AI Analysis</h3>
+          <p>Upload any PDF or image. Our AI will analyze it and provide answers.</p>
+        </div>
+      </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 200ms;">
+          <div class="f-icon"><i class="fas fa-comments"></i></div>
+          <h3>Live Chat</h3>
+          <p>Discuss problems in real-time. Share files and code snippets easily.</p>
+        </div>
+      </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 300ms;">
+          <div class="f-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Track Progress</h3>
+          <p>Keep track of your study streak and downloaded resources in your profile.</p>
+        </div>
+      </a>
     </div>
   </section>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Rooms - Uploaded Notes</title>
+    <title>Study Rooms - UniMind</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,32 +96,42 @@
 
         /* --- 3. LAYOUT --- */
         .library-container {
-            max-width: 1200px;
+            max-width: 1300px;
+            /* Slightly wider to fit inline nav */
             margin: 0 auto;
             padding: 40px 20px;
             position: relative;
             z-index: 1;
         }
 
-        /* --- 4. HEADER --- */
+        /* --- 4. HEADER (INLINE LAYOUT) --- */
         .library-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            flex-wrap: nowrap;
+            /* Forces single line */
+            gap: 20px;
             margin-bottom: 40px;
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 20px;
+            width: 100%;
+        }
+
+        /* Logo Section */
+        .header-content {
+            flex-shrink: 0;
+            /* Prevents shrinking */
         }
 
         .header-content h1 {
             font-family: var(--font-heading);
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #fff;
+            white-space: nowrap;
         }
 
         .text-gradient {
@@ -135,10 +145,92 @@
             color: var(--text-secondary);
             font-family: monospace;
             font-size: 0.9rem;
-            letter-spacing: 1px;
+            margin: 0;
         }
 
-        /* Upload Button */
+        /* Navigation Bar (Centered) */
+        .main-nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            min-width: 0;
+            padding: 0 10px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 100px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            margin: 0;
+            flex-wrap: nowrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+        }
+
+        .nav-link:hover i {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.2), rgba(124, 58, 237, 0.2));
+            color: #fff;
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        .nav-link.active i {
+            color: var(--neon-purple);
+        }
+
+        /* Logout Button Specifics */
+        .logout-link {
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            margin-left: 5px;
+        }
+
+        .logout-link:hover {
+            background: rgba(255, 0, 85, 0.1) !important;
+            color: var(--neon-red) !important;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4) !important;
+        }
+
+        .logout-link:hover i {
+            color: var(--neon-red) !important;
+        }
+
+        /* Upload Button Wrapper */
+        .upload-action-link {
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
         .upload-btn {
             background: rgba(0, 243, 255, 0.1);
             color: var(--neon-cyan);
@@ -156,6 +248,7 @@
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .upload-btn:hover {
@@ -228,7 +321,6 @@
             flex-direction: column;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(16px);
-            position: relative;
             overflow: hidden;
         }
 
@@ -238,7 +330,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Card Header */
         .card-header {
             display: flex;
             align-items: flex-start;
@@ -276,7 +367,6 @@
             font-family: monospace;
         }
 
-        /* AI Summary Box */
         .ai-summary {
             font-size: 0.85rem;
             color: #d1d5db;
@@ -289,11 +379,6 @@
             line-height: 1.6;
         }
 
-        .ai-summary i {
-            color: var(--neon-purple);
-        }
-
-        /* Footer */
         .card-footer {
             margin-top: auto;
             display: flex;
@@ -309,7 +394,6 @@
             gap: 12px;
         }
 
-        /* Vote Box */
         .vote-box {
             display: flex;
             align-items: center;
@@ -336,18 +420,16 @@
             color: #fff;
         }
 
-        /* Active Vote States */
-        .vote-btn.active {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px currentColor);
-        }
-
-        .vote-btn.active:first-child {
+        .vote-btn.active.up {
             color: var(--neon-green);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px var(--neon-green));
         }
 
-        .vote-btn.active:last-child {
+        .vote-btn.active.down {
             color: var(--neon-red);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px var(--neon-red));
         }
 
         .vote-count {
@@ -358,7 +440,6 @@
             text-align: center;
         }
 
-        /* Comment Button */
         .comment-btn {
             background: none;
             border: none;
@@ -376,7 +457,6 @@
             text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        /* Download Link */
         .download-link {
             text-decoration: none;
             color: var(--neon-cyan);
@@ -394,7 +474,7 @@
             text-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        /* --- 7. MODALS (Glassmorphism) --- */
+        /* --- 7. MODALS --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -417,7 +497,6 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
-            position: relative;
         }
 
         .modal h2 {
@@ -453,16 +532,6 @@
         .form-control:focus {
             border-color: var(--neon-cyan);
             box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
-        }
-
-        input[type="file"]::file-selector-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
         }
 
         .modal-actions {
@@ -501,6 +570,32 @@
         .btn-confirm:hover {
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
         }
+
+        /* --- RESPONSIVE HEADER --- */
+        @media (max-width: 1200px) {
+            .library-header {
+                flex-wrap: wrap;
+                /* Allow wrapping on small screens */
+                justify-content: center;
+                gap: 1.5rem;
+            }
+
+            .header-content {
+                width: 100%;
+                text-align: center;
+                order: 1;
+            }
+
+            .upload-action-link {
+                order: 2;
+            }
+
+            .main-nav {
+                width: 100%;
+                order: 3;
+                overflow-x: auto;
+            }
+        }
     </style>
 </head>
 
@@ -518,13 +613,38 @@
                 <p id="room-description">Uploaded Documents</p>
             </div>
 
-            <a href="/Frontend/UploadNotes/UploadNotes.html" style="text-decoration: none;">
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
+                            <i class="fas fa-satellite-dish"></i> Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+                            <i class="fas fa-brain"></i> Upload Notes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/quiz/quiz.html" class="nav-link">
+                            <i class="fas fa-layer-group"></i> Neural Quiz
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+                            <i class="fas fa-fingerprint"></i> User Data
+                        </a>
+                    </li>
+                   
+                </ul>
+            </nav>
+
+            <a href="javascript:void(0)" onclick="openModal('uploadModal')" class="upload-action-link">
                 <button class="upload-btn">
                     <i class="fas fa-satellite-dish"></i> Upload Data
                 </button>
             </a>
         </header>
-
         <nav class="filter-bar">
             <button class="filter-btn active" onclick="loadRoom('all', this)">All</button>
             <button class="filter-btn" onclick="loadRoom('cs', this)">Computer Science</button>
@@ -581,93 +701,68 @@
         const API_BASE = "http://127.0.0.1:8000";
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Load 'All' by default
             loadRoom('all', document.querySelector('.filter-btn'));
         });
 
-        // 1. LOAD NOTES (UPDATED to fetch ALL slugs if needed)
+        // 1. LOGOUT LOGIC
+        document.getElementById('logout-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm("Are you sure you want to disconnect?")) {
+                localStorage.removeItem('token');
+                sessionStorage.clear();
+                window.location.href = '../Login/login.html';
+            }
+        });
+
+        // 2. LOAD NOTES
         async function loadRoom(slug, btnElement) {
             const token = localStorage.getItem('token');
-
             if (!token) {
-                alert("You are not logged in. Redirecting to login...");
                 window.location.href = "../Login/login.html";
                 return;
             }
 
-            // Update Active UI
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
+            // Update UI Active State
+            if (btnElement) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
 
             const grid = document.getElementById('notesGrid');
             grid.innerHTML = '<p style="color:#64748b;">Scanning neural pathways...</p>';
 
             try {
                 let notes = [];
-
                 if (slug === 'all') {
-                    // Logic to fetch from all specific rooms because backend lacks 'all' endpoint
                     const rooms = ['cs', 'ece', 'mech', 'civil', 'science', 'hum'];
-
-                    // Create an array of promises
                     const fetchPromises = rooms.map(room =>
                         fetch(`${API_BASE}/student/room/${room}/resources`, {
                             method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(res => res.ok ? res.json() : []) // If fetch fails, return empty array to keep Promise.all alive
-                            .catch(() => [])
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        }).then(res => res.ok ? res.json() : []).catch(() => [])
                     );
-
-                    // Wait for all fetches to finish
                     const results = await Promise.all(fetchPromises);
-                    // Flatten array of arrays into one list
                     notes = results.flat();
-
                 } else {
-                    // Standard single room fetch
                     const response = await fetch(`${API_BASE}/student/room/${slug}/resources`, {
                         method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
-
-                    if (response.status === 401) {
-                        throw new Error("Session expired or invalid. Please login again.");
-                    }
-                    if (!response.ok) {
-                        throw new Error(`Server Error: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error("Failed to fetch data");
                     notes = await response.json();
                 }
 
-                // --- NEW SORTING LOGIC: Sort by created_at (Descending / Newest First) ---
+                // Sort: Newest first
                 notes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
                 renderNotes(notes);
 
             } catch (err) {
                 console.error(err);
-                if (err.message.includes("Session expired")) {
-                    localStorage.removeItem('token');
-                    setTimeout(() => window.location.href = "../Login/login.html", 2000);
-                }
-
-                grid.innerHTML = `
-                    <div style="text-align:center; color:#ef4444;">
-                        <i class="fas fa-lock" style="font-size:2rem; margin-bottom:10px;"></i><br>
-                        <strong>Access Denied</strong><br>
-                        <small>${err.message}</small>
-                    </div>
-                `;
+                grid.innerHTML = `<div style="text-align:center; color:#ef4444;">Error loading data.</div>`;
             }
         }
 
+        // 3. RENDER NOTES
         function renderNotes(notes) {
             const grid = document.getElementById('notesGrid');
             grid.innerHTML = '';
@@ -680,11 +775,9 @@
             notes.forEach(note => {
                 const card = document.createElement('div');
                 card.className = 'note-card';
-
                 const fileUrl = `${API_BASE}/${note.file_path}`;
-
-                const upActive = note.user_vote === 1 ? 'active' : '';
-                const downActive = note.user_vote === -1 ? 'active' : '';
+                const upActive = note.user_vote === 1 ? 'active up' : '';
+                const downActive = note.user_vote === -1 ? 'active down' : '';
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -705,19 +798,15 @@
                                 <button class="vote-btn ${upActive}" id="upbtn-${note.id}" onclick="handleVote(${note.id}, 1)">
                                     <i class="fas fa-arrow-up"></i>
                                 </button>
-                                
                                 <span class="vote-count" id="score-${note.id}">${note.score}</span>
-                                
                                 <button class="vote-btn ${downActive}" id="downbtn-${note.id}" onclick="handleVote(${note.id}, -1)">
                                     <i class="fas fa-arrow-down"></i>
                                 </button>
                             </div>
-                            
                             <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.file_path.replace(/'/g, "\\'")}')">
                                 <i class="far fa-comment-dots"></i> Discuss
                             </button>
                         </div>
-
                         <a href="${fileUrl}" target="_blank" class="download-link">
                             <i class="fas fa-external-link-alt"></i> Access
                         </a>
@@ -727,24 +816,16 @@
             });
         }
 
-        // 2. UPLOAD HANDLING
+        // 4. UPLOAD HANDLING
         async function handleUpload(e) {
             e.preventDefault();
-
-            const title = document.getElementById('noteTitle').value;
-            const room_slug = document.getElementById('noteSubject').value;
-            const tags = document.getElementById('noteTags').value;
-            const fileInput = document.getElementById('fileInput');
-
-            if (fileInput.files.length === 0) return alert("Select a file!");
+            const token = localStorage.getItem('token');
 
             const formData = new FormData();
-            formData.append('title', title);
-            formData.append('room_slug', room_slug);
-            formData.append('tags', tags);
-            formData.append('file', fileInput.files[0]);
-
-            const token = localStorage.getItem('token');
+            formData.append('title', document.getElementById('noteTitle').value);
+            formData.append('room_slug', document.getElementById('noteSubject').value);
+            formData.append('tags', document.getElementById('noteTags').value);
+            formData.append('file', document.getElementById('fileInput').files[0]);
 
             try {
                 const res = await fetch(`${API_BASE}/student/upload`, {
@@ -756,7 +837,7 @@
                 if (res.ok) {
                     alert("Upload Successful!");
                     closeModal('uploadModal');
-                    loadRoom(room_slug, null);
+                    loadRoom(document.getElementById('noteSubject').value, null);
                 } else {
                     const data = await res.json();
                     alert("Error: " + data.detail);
@@ -766,7 +847,7 @@
             }
         }
 
-        // 3. VOTING
+        // 5. VOTING
         async function handleVote(resourceId, type) {
             const token = localStorage.getItem('token');
             if (!token) return alert("Please login to vote");
@@ -788,35 +869,26 @@
                     const upBtn = document.getElementById(`upbtn-${resourceId}`);
                     const downBtn = document.getElementById(`downbtn-${resourceId}`);
 
-                    upBtn.classList.remove('active');
-                    downBtn.classList.remove('active');
+                    upBtn.className = 'vote-btn';
+                    downBtn.className = 'vote-btn';
 
-                    if (type === 1) {
-                        upBtn.classList.add('active');
-                    } else if (type === -1) {
-                        downBtn.classList.add('active');
-                    }
+                    if (type === 1) upBtn.classList.add('active', 'up');
+                    else if (type === -1) downBtn.classList.add('active', 'down');
                 }
             } catch (err) {
-                console.error("Vote failed", err);
+                console.error(err);
             }
         }
 
-        // 4. NAVIGATION
+        // 6. UTILS
         function goToComments(id, title, filePath) {
             const cleanTitle = encodeURIComponent(title);
             const cleanPath = encodeURIComponent(filePath);
             window.location.href = `/Frontend/comments/comments.html?id=${id}&title=${cleanTitle}&path=${cleanPath}`;
         }
 
-        // 5. UTILS
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
 

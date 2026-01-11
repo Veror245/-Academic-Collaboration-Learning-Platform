@@ -24,90 +24,129 @@
 
   <div class="main-container">
 
-    <header class="dashboard-header">
-      <div class="header-content">
-        <h1 class="brand-title">UniMind<span class="text-gradient">AI</span></h1>
-        <p class="brand-subtitle">System Online. Ready to Learn.</p>
-      </div>
+    <div class="header-content">
+      <h1 class="brand-title" style="font-size: 2.5rem;">UniMind<span class="text-gradient">AI</span></h1>
+      <p class="brand-subtitle" style="font-size: .9rem; color: rgba(255, 255, 255, 0.468);">System Online. Ready to Learn.</p>
+    </div>
 
-      <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
-        <div class="hud-avatar">
-          <i class="fas fa-user-astronaut"></i>
+  <header class="dashboard-header">
+    
+  
+    <nav class="main-nav">
+      <ul class="nav-list">
+        <li>
+          <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+            <i class="fas fa-satellite-dish"></i> Upload Notes
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/quiz/quiz.html" class="nav-link">
+            <i class="fas fa-brain"></i> Neural Quiz
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+            <i class="fas fa-layer-group"></i> Study Matrix
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+            <i class="fas fa-fingerprint"></i> User Data
+          </a>
+        </li>
+        <li>
+          <a href="#" id="logout-btn" class="nav-link logout-link">
+            <i class="fas fa-power-off"></i> Log out
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
+      <div class="hud-avatar">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <div class="hud-info">
+        <div class="hud-top">
+          <span class="user-name" id="user-name">Alex</span>
+          <span class="status-indicator"></span>
         </div>
-        <div class="hud-info">
-          <div class="hud-top">
-            <span class="user-name" id="user-name">Alex</span>
-            <span class="status-indicator"></span>
-          </div>
-          <span class="user-id" id="email">Email: </span>
-        </div>
-      </a>
-    </header>
+        <span class="user-id" id="email">Email: </span>
+      </div>
+    </a>
+  </header>
 
     <div class="grid-wrapper">
 
       <div class="glass-card" style="--accent: #00f3ff;">
         <div class="card-glow"></div>
-        <div class="card-content">
-          <div class="icon-box">
-            <i class="fas fa-satellite-dish"></i>
+        <a href="/Frontend/UploadNotes/UploadNotes.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-satellite-dish"></i>
+            </div>
+            <div class="text-box">
+              <h3>Upload Notes</h3>
+              <p>Sync your data to the cloud. Collaborate in virtual space.</p>
+            </div>
+            <a href="/Frontend/UploadNotes/UploadNotes.html" class="action-btn">
+              Initiate Upload <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
-          <div class="text-box">
-            <h3>Upload Notes</h3>
-            <p>Sync your data to the cloud. Collaborate in virtual space.</p>
-          </div>
-          <a href="/Frontend/UploadNotes/UploadNotes.html" class="action-btn">
-            Initiate Upload <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        </a>
       </div>
 
       <div class="glass-card" style="--accent: #bc13fe;">
         <div class="card-glow"></div>
-        <div class="card-content">
-          <div class="icon-box">
-            <i class="fas fa-brain"></i>
+        <a href="/Frontend/quiz/quiz.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="text-box">
+              <h3>Neural Quiz</h3>
+              <p>AI-generated assessments to test your retention capabilities.</p>
+            </div>
+            <a href="/Frontend/quiz/quiz.html" class="action-btn">
+              Start Simulation <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
-          <div class="text-box">
-            <h3>Neural Quiz</h3>
-            <p>AI-generated assessments to test your retention capabilities.</p>
-          </div>
-          <a href="/Frontend/quiz/quiz.html" class="action-btn">
-            Start Simulation <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        </a>
       </div>
 
       <div class="glass-card" style="--accent: #00ff9d;">
         <div class="card-glow"></div>
-        <div class="card-content">
-          <div class="icon-box">
-            <i class="fas fa-layer-group"></i>
+        <a href="/Frontend/Study_Room/StudyRoom.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="text-box">
+              <h3>Study Matrix</h3>
+              <p>Organize PDFs and handwritten inputs in a secure environment.</p>
+            </div>
+            <a href="/Frontend/Study_Room/StudyRoom.html" class="action-btn">
+              Enter Room <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
-          <div class="text-box">
-            <h3>Study Matrix</h3>
-            <p>Organize PDFs and handwritten inputs in a secure environment.</p>
-          </div>
-          <a href="/Frontend/Study_Room/StudyRoom.html" class="action-btn">
-            Enter Room <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        </a>
       </div>
 
       <div class="glass-card" style="--accent: #ff0055;">
         <div class="card-glow"></div>
-        <div class="card-content">
-          <div class="icon-box">
-            <i class="fas fa-fingerprint"></i>
+        <a href="/Frontend/User_Profile/UserProfile.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-fingerprint"></i>
+            </div>
+            <div class="text-box">
+              <h3>User Data</h3>
+              <p>Analyze learning streaks, manage subscription, and core settings.</p>
+            </div>
+            <a href="/Frontend/User_Profile/UserProfile.html" class="action-btn">
+              Access Logs <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
-          <div class="text-box">
-            <h3>User Data</h3>
-            <p>Analyze learning streaks, manage subscription, and core settings.</p>
-          </div>
-          <a href="/Frontend/User_Profile/UserProfile.html" class="action-btn">
-            Access Logs <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        </a>
       </div>
 
     </div>
