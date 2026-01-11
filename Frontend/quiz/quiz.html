@@ -246,44 +246,33 @@
       if (countLabel) countLabel.textContent = `${quiz.length} Modules Loaded`;
 
       quiz.forEach((q, index) => {
-        let safeOptions = q.options;
+          // Backend now sends strict objects, so we don't need the string split fixes.
+          // Just ensure it exists.
+          const safeOptions = Array.isArray(q.options) ? q.options : [];
 
-        // --- DATA FIX START ---
-        // Scenario 1: API returns a raw string "Option A, Option B"
-        if (typeof safeOptions === 'string') {
-          safeOptions = safeOptions.split(',').map(opt => opt.trim());
-        }
-        // Scenario 2: API returns an array containing one string ["Option A, Option B"]
-        else if (Array.isArray(safeOptions) && safeOptions.length === 1 && typeof safeOptions[0] === 'string') {
-          safeOptions = safeOptions[0].split(',').map(opt => opt.trim());
-        }
-        // Scenario 3: Fallback
-        else if (!Array.isArray(safeOptions)) {
-          safeOptions = [];
-        }
-        // --- DATA FIX END ---
+          const card = document.createElement("div");
+          card.className = "card glass-panel";
+          
+          // Store the correct answer ID (e.g., "A")
+          card.dataset.correctAnswer = q.answer; 
 
-        const card = document.createElement("div");
-        card.className = "card glass-panel";
-        card.dataset.correctAnswer = q.answer;
-
-        card.innerHTML = `
-            <div class="card-header">
-              <span class="tag tag-mcq">Module ${index + 1}</span>
-            </div>
-            <h3>${q.question}</h3>
-            <div class="options-grid" id="q-${index}">
-              ${safeOptions.map(opt => `
-                <div class="option" onclick="selectOption(this)">
-                  <div class="radio-node"></div>
-                  <span>${opt}</span>
-                </div>
-              `).join("")}
-            </div>
+          card.innerHTML = `
+              <div class="card-header">
+                <span class="tag tag-mcq">Module ${index + 1}</span>
+              </div>
+              <h3>${q.question}</h3>
+              <div class="options-grid" id="q-${index}">
+                ${safeOptions.map(opt => `
+                  <div class="option" data-id="${opt.id}" onclick="selectOption(this)">
+                    <div class="radio-node"></div>
+                    <span>${opt.text}</span>
+                  </div>
+                `).join("")}
+              </div>
           `;
-        container.appendChild(card);
+          container.appendChild(card);
       });
-    }
+  }
 
     // --- 4. INTERACTION LOGIC ---
     window.selectOption = function (element) {
@@ -298,59 +287,62 @@
     // --- 5. SUBMIT & SCORING ---
     const submitBtn = document.getElementById("submitQuizBtn");
     if (submitBtn) {
-      submitBtn.addEventListener("click", () => {
-        const cards = document.querySelectorAll(".card");
-        let score = 0;
-        let total = cards.length;
+        submitBtn.addEventListener("click", () => {
+            const cards = document.querySelectorAll(".card");
+            let score = 0;
+            let total = cards.length;
 
-        if (total === 0) return;
+            if (total === 0) return;
 
-        cards.forEach(card => {
-          const correctAnswer = card.dataset.correctAnswer.trim();
-          const selectedOption = card.querySelector(".option.selected");
+            cards.forEach(card => {
+                // 1. Get the Correct Answer ID (e.g., "A")
+                const correctAnswerId = card.dataset.correctAnswer.trim();
+                
+                // 2. Find which option the user clicked
+                const selectedOption = card.querySelector(".option.selected");
 
-          card.classList.add('graded');
+                card.classList.add('graded');
 
-          const allOptions = card.querySelectorAll(".option");
-          let correctOptionElement = null;
+                // 3. Find the DOM element for the Correct Option (to highlight it green)
+                // We look for the div that has data-id="A"
+                const correctOptionElement = card.querySelector(`.option[data-id="${correctAnswerId}"]`);
 
-          allOptions.forEach(opt => {
-            const text = opt.querySelector("span").textContent.trim();
-            if (text === correctAnswer) correctOptionElement = opt;
-          });
+                if (selectedOption) {
+                    // 4. Compare IDs
+                    const selectedId = selectedOption.dataset.id;
+                    
+                    if (selectedId === correctAnswerId) {
+                        score++;
+                        selectedOption.classList.add("correct");
+                    } else {
+                        selectedOption.classList.add("wrong");
+                        // Highlight the correct one so they learn
+                        if (correctOptionElement) correctOptionElement.classList.add("correct");
+                    }
+                } else {
+                    // If they didn't pick anything, just show the right answer
+                    if (correctOptionElement) correctOptionElement.classList.add("correct");
+                }
+            });
 
-          if (selectedOption) {
-            const selectedText = selectedOption.querySelector("span").textContent.trim();
-            if (selectedText === correctAnswer) {
-              score++;
-              selectedOption.classList.add("correct");
-            } else {
-              selectedOption.classList.add("wrong");
-              if (correctOptionElement) correctOptionElement.classList.add("correct");
-            }
-          } else {
-            if (correctOptionElement) correctOptionElement.classList.add("correct");
-          }
+            // --- UPDATE SCOREBOARD UI ---
+            const scoreBoard = document.getElementById("scoreBoard");
+            const scoreText = document.getElementById("scoreText");
+            const percentageText = document.getElementById("percentageText");
+            const progressBar = document.getElementById("progressBar");
+
+            if (scoreText) scoreText.textContent = `Accuracy: ${score}/${total}`;
+
+            const percentage = Math.round((score / total) * 100);
+            if (percentageText) percentageText.textContent = `${percentage}% Efficiency`;
+            if (progressBar) progressBar.style.width = `${percentage}%`;
+
+            if (scoreBoard) scoreBoard.style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const footer = document.getElementById("quizFooter");
+            if (footer) footer.style.display = "none";
         });
-
-        const scoreBoard = document.getElementById("scoreBoard");
-        const scoreText = document.getElementById("scoreText");
-        const percentageText = document.getElementById("percentageText");
-        const progressBar = document.getElementById("progressBar");
-
-        if (scoreText) scoreText.textContent = `Accuracy: ${score}/${total}`;
-
-        const percentage = Math.round((score / total) * 100);
-        if (percentageText) percentageText.textContent = `${percentage}% Efficiency`;
-        if (progressBar) progressBar.style.width = `${percentage}%`;
-
-        if (scoreBoard) scoreBoard.style.display = "block";
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        const footer = document.getElementById("quizFooter");
-        if (footer) footer.style.display = "none";
-      });
     }
 
     // Init
