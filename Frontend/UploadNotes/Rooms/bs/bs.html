@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic Science Room - Study & Chat</title>
+  <title>basic Science Room - Study & Chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
     /* --- CSS STYLES --- */
@@ -237,6 +238,7 @@
     .chat-panel {
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .chat-header {
@@ -293,6 +295,48 @@
       line-height: 1.5;
     }
 
+    /* --- NEW CSS: Markdown Support inside Bubbles --- */
+    .bubble p {
+      margin-bottom: 8px;
+    }
+
+    .bubble p:last-child {
+      margin-bottom: 0;
+    }
+
+    .bubble ul,
+    .bubble ol {
+      margin-left: 20px;
+      margin-bottom: 8px;
+    }
+
+    .bubble strong {
+      font-weight: 700;
+    }
+
+    .bubble em {
+      font-style: italic;
+    }
+
+    .bubble pre {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .bubble code {
+      font-family: monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    /* ------------------------------------------- */
+
     .incoming .bubble {
       background: rgba(255, 255, 255, 0.08);
       color: #f1f5f9;
@@ -305,6 +349,11 @@
       color: white;
       border-top-right-radius: 2px;
       box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    }
+
+    .outgoing .bubble code {
+      background: rgba(0, 0, 0, 0.2);
+      /* Darker code background for outgoing */
     }
 
     /* --- Chat Input Area --- */
@@ -549,18 +598,19 @@
         aiResult.style.display = "block";
         uploadText.textContent = "Upload complete";
 
+        // Parse Summary Markdown if necessary
+        const summaryHtml = marked.parse(data.summary || "");
+
         aiContentDiv.innerHTML = `
                     <p><strong>Summary:</strong></p>
-                    <div>${data.summary}</div>
+                    <div>${summaryHtml}</div>
                 `;
 
         // Reset chat history for new file
         chatHistory = [];
-        messagesArea.innerHTML += `
-                    <div class="message incoming">
-                        <div class="sender-name">AI Assistant</div>
-                        <div class="bubble">I've read your file! Ask me anything about it.</div>
-                    </div>`;
+        // Append welcome message (manually formatted or via helper)
+        appendMessage("AI Assistant", "I've read your file! Ask me anything about it.", "incoming");
+
         scrollToBottom();
 
       } catch (err) {
@@ -640,9 +690,12 @@
       const msgDiv = document.createElement('div');
       msgDiv.classList.add('message', type);
 
+      // --- CHANGE: Parse Markdown to HTML ---
+      const htmlContent = marked.parse(text);
+
       msgDiv.innerHTML = `
                 <div class="sender-name">${sender}</div>
-                <div class="bubble">${text}</div>
+                <div class="bubble">${htmlContent}</div>
             `;
 
       messagesArea.appendChild(msgDiv);
