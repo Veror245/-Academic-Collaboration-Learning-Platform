@@ -1,0 +1,453 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* --- Theme Variables based on your Image --- */
+:root {
+  /* The deep background color from the left side of your image */
+  --bg-dark: #0f0c19;
+  /* The bright purple accent from the 'Log In' button */
+  --accent-purple: #7c3aed;
+  --accent-glow: #8b5cf6;
+  /* Very dark card background */
+  --card-bg: rgba(20, 15, 30, 0.6);
+  --card-border: rgba(124, 58, 237, 0.15);
+  --text-main: #ffffff;
+  --text-muted: #9ca3af;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 40px 20px;
+  overflow-x: hidden;
+  color: var(--text-main);
+}
+
+/* --- Ambient Background Glows --- */
+.bg-shape {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+  opacity: 0.6;
+}
+
+/* Top Left - Deep Blue/Indigo Glow */
+.shape-1 {
+  top: -20%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, #2e1065 0%, transparent 70%);
+}
+
+/* Bottom Right - Purple/Pink Glow */
+.shape-2 {
+  bottom: -20%;
+  right: -10%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle, #4c1d95 0%, transparent 70%);
+}
+
+/* --- Main Container --- */
+.container {
+  max-width: 1100px;
+  width: 100%;
+  z-index: 1;
+}
+
+.header {
+  text-align: left;
+  /* Aligned left like the 'Welcome Back' text */
+  margin-bottom: 50px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #fff, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+/* --- Grid Layout --- */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* --- The Card Design (Matched to Image) --- */
+.room-card {
+  background: var(--card-bg);
+  /* Heavy blur for that premium glass look */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  /* Subtle purple border */
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* --- HEADER LAYOUT --- */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- LOGO STYLES --- */
+.brand-title {
+  font-family: 'Inter', sans-serif;
+  /* Using Inter since Space Grotesk wasn't linked in this file */
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #fff;
+  margin: 0;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #00f3ff, #bc13fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- NAVIGATION BAR --- */
+.main-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+  /* Purple glow match */
+}
+
+/* Active State */
+.nav-link.active {
+  background: var(--accent-purple);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+}
+
+/* --- USER PROFILE PILL --- */
+.hud-user-card {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  transition: all 0.3s ease;
+}
+
+.hud-user-card:hover {
+  border-color: var(--accent-purple);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hud-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00f3ff, #bc13fe);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.hud-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #00ff9d;
+  border-radius: 50%;
+  margin-left: 5px;
+  box-shadow: 0 0 5px #00ff9d;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* --- ADJUST EXISTING PAGE HEADER --- */
+/* We renamed .header to .page-header in HTML to avoid conflict */
+.page-header {
+  text-align: left;
+  margin-bottom: 40px;
+  padding-left: 10px;
+  /* Slight offset to align with grid */
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  background: linear-gradient(to right, #fff, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* --- RESPONSIVE HEADER --- */
+@media (max-width: 1024px) {
+  .dashboard-header {
+    justify-content: center;
+  }
+
+  .header-brand {
+    order: 1;
+  }
+
+  .hud-user-card {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .main-nav {
+    order: 3;
+    width: 100%;
+    margin-top: 1rem;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hud-user-card {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .main-nav {
+    order: 2;
+  }
+
+  .nav-list {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+
+
+/* Hover Effect: Glow like the 'Log In' button */
+.room-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-purple);
+  box-shadow: 0 10px 40px rgba(124, 58, 237, 0.25);
+  /* Purple Glow */
+  background: rgba(30, 27, 46, 0.8);
+}
+
+/* --- Icons --- */
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  transition: 0.3s;
+  background: rgba(255, 255, 255, 0.05);
+  /* Dark subtle background */
+}
+
+/* Icon Colors - Made slightly pastel to fit dark theme */
+.cs .icon-box {
+  color: #60a5fa;
+}
+
+/* Blue */
+.ece .icon-box {
+  color: #fbbf24;
+}
+
+/* Amber */
+.mech .icon-box {
+  color: #f87171;
+}
+
+/* Red */
+.civil .icon-box {
+  color: #34d399;
+}
+
+/* Emerald */
+.science .icon-box {
+  color: #a78bfa;
+}
+
+/* Purple */
+.mgmt .icon-box {
+  color: #f472b6;
+}
+
+/* Pink */
+
+.room-card:hover .icon-box {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* --- Text Styling --- */
+.card-content {
+  flex-grow: 1;
+}
+
+.card-title {
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-subtitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* --- Arrow Icon --- */
+.arrow-icon {
+  color: rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.room-card:hover .arrow-icon {
+  transform: translateX(5px);
+  color: var(--accent-glow);
+}
+
+/* --- Mobile --- */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
+  .room-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Ensure the shapes don't physically block clicks */
+.bg-shape {
+    pointer-events: none !important; 
+    z-index: -1;
+}
+
+/* Ensure the cards are 'clickable' objects */
+.room-card {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    display: flex; /* Ensures the inner content doesn't break clicking */
+}
+/* This is the most important part */
+.bg-shape {
+    pointer-events: none !important; /* Makes shapes "ghost-like" so clicks pass through */
+    z-index: -1 !important;
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+}
+
+.room-card {
+    pointer-events: auto !important; /* Forces the card to accept clicks */
+    cursor: pointer !important;
+    position: relative;
+    z-index: 20;
+}

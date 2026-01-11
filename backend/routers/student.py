@@ -9,37 +9,9 @@ from backend.services import database, models, auth
 from backend.services import ai_services
 from pydantic import BaseModel 
 from backend.services.models import Comment, Vote
+from backend.services.schemas import ChatRequest, CommentCreate, UserProfileResponse, VoteCreate
 
 
-#Define the Input Format
-class ChatRequest(BaseModel):
-    resource_id: int
-    question: str
-    # New Field: A list of previous messages 
-    # Format: [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]
-    history: List[Dict[str, str]] = []
-
-class CommentCreate(BaseModel):
-    resource_id: int
-    content: str
-
-class VoteCreate(BaseModel):
-    resource_id: int
-    vote_type: int # 1 = Upvote, -1 = Downvote
-
-class MyUploadResponse(BaseModel):
-    id: int
-    filename: str
-    created_at: datetime
-
-# The Main Profile Response
-class UserProfileResponse(BaseModel):
-    id: int
-    full_name: str
-    email: str
-    role: str
-    karma_score: int # Total upvotes received
-    uploads: List[MyUploadResponse]
 
 router = APIRouter(prefix="/student", tags=["Student Features"])
 
@@ -63,11 +35,16 @@ def upload_resource(
     
     if not room:
         raise HTTPException(404, detail="Invalid Study Room")
+    
+    room_folder = os.path.join(UPLOAD_DIR, room_slug)
+    
+    # Create the folder if it doesn't exist yet
+    os.makedirs(room_folder, exist_ok=True)
 
     # C. Save File Locally
     timestamp = int(datetime.now(timezone.utc).timestamp())
     clean_filename = f"{timestamp}_{file.filename.replace(' ', '_')}" # type: ignore
-    file_path = os.path.join(UPLOAD_DIR, clean_filename)
+    file_path = os.path.join(room_folder, clean_filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -75,7 +52,7 @@ def upload_resource(
     # D. Save Entry to Database
     new_resource = models.Resource(
         title=title,
-        file_path=f"static/uploads/{clean_filename}", # Relative path for frontend
+        file_path=f"static/uploads/{room_slug}/{clean_filename}", # Relative path for frontend
         tags=tags,
         uploader_id=user.id,
         room_id=room.id,
@@ -103,15 +80,18 @@ def upload_resource(
 
 # 2. LIST FILES ENDPOINT
 @router.get("/room/{room_slug}/resources")
-def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
-    # A. Find Room (Legacy Style)
+def get_room_resources(
+    room_slug: str, 
+    user: models.User = Depends(auth.get_current_user), # <--- ADDED: To check their personal vote
+    db: Session = Depends(database.get_db)
+):
+    # A. Find Room
     room = db.query(models.Room).filter(models.Room.slug == room_slug).first()
     
     if not room:
         raise HTTPException(404, detail="Room not found")
 
-    # B. Fetch Resources with Uploader Name (Legacy Style)
-    # Logic: Query Resource and User.full_name, Join them, Filter by Room
+    # B. Fetch Resources with Uploader Name
     results = (
         db.query(models.Resource, models.User.full_name)
         .join(models.User, models.Resource.uploader_id == models.User.id)
@@ -120,20 +100,37 @@ def get_room_resources(room_slug: str, db: Session = Depends(database.get_db)):
         .all()
     )
     
-    # Format the output cleanly
-    # In legacy query, 'results' is a list of tuples: (ResourceObject, "John Doe")
-    return [
-        {
+    # C. Format the output + Add Vote Data
+    final_output = []
+    
+    for resource, full_name in results:
+        # 1. Calculate Total Score (Sum of all votes)
+        total_score = db.query(func.sum(models.Vote.value))\
+            .filter(models.Vote.resource_id == resource.id)\
+            .scalar() or 0  # Default to 0 if no votes exist
+            
+        # 2. Check if the CURRENT user has voted
+        existing_vote = db.query(models.Vote).filter(
+            models.Vote.resource_id == resource.id,
+            models.Vote.user_id == user.id
+        ).first()
+        
+        current_user_vote = existing_vote.value if existing_vote else 0
+
+        final_output.append({
             "id": resource.id,
             "title": resource.title,
             "file_path": resource.file_path,
             "tags": resource.tags,
             "ai_summary": resource.ai_summary,
-            "uploader": full_name,  # Extracted from the join
-            "created_at": resource.created_at
-        }
-        for resource, full_name in results
-    ]
+            "uploader": full_name,
+            "created_at": resource.created_at,
+            # --- NEW FIELDS ---
+            "score": total_score,        # Send total votes to frontend
+            "user_vote": current_user_vote # Send 1 (up), -1 (down), or 0 (none)
+        })
+
+    return final_output
     
 
 @router.post("/chat")

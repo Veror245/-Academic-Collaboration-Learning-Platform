@@ -2,110 +2,352 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz Generator</title>
-    <link rel="stylesheet" href="quiz.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neural Quiz Generator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="quiz.css" />
 </head>
 
 <body>
 
-    <div class="app-container">
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
-        <aside class="sidebar">
-            <div class="brand">
-                <h1>Quiz Generator</h1>
-                <p>Generate questions from your notes</p>
-            </div>
+  <div class="app-container">
 
-            <div class="form-group">
-                <label>Selected Document</label>
-                <div class="file-display">
-                    📄 Physics_Notes_Final.pdf
-                </div>
-            </div>
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Quiz<span class="text-gradient">Gen</span></h1>
+        <p>Initialize Knowledge Extraction</p>
+      </div>
 
-            <div class="form-group">
-                <label>Page Range</label>
-                <div class="range-inputs">
-                    <input type="number" value="1">
-                    <span>to</span>
-                    <input type="number" value="10">
-                </div>
-            </div>
+      <div class="form-group">
+        <label>Target Data Source</label>
+        <div class="select-wrapper">
+          <select id="pdfSelect">
+            <option value="" disabled selected>Select Data Node</option>
+          </select>
+          <div class="select-arrow">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
 
-            <div class="form-group">
-                <label>Question Types</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" checked> Multiple Choice (MCQs)
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" checked> Objective (True/False)
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox"> Subjective (Short Answer)
-                    </label>
-                </div>
-            </div>
+      <button class="btn-generate" id="generateBtn">
+        <span>Initialize Sequence</span>
+        <div class="btn-glow"></div>
+      </button>
+    </aside>
 
-            <div class="form-group">
-                <label>Difficulty</label>
-                <select>
-                    <option>Easy</option>
-                    <option selected>Medium</option>
-                    <option>Hard</option>
-                </select>
-            </div>
+    <main class="main-content">
 
-            <button class="btn-generate">
-                Generate Quiz
-            </button>
-        </aside>
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li>
+            <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
+              <i class="fas fa-satellite-dish"></i> Home
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+              <i class="fas fa-brain"></i> Upload Notes
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+              <i class="fas fa-layer-group"></i> Study Matrix
+            </a>
+          </li>
+          <li>
+            <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+              <i class="fas fa-fingerprint"></i> User Data
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="header">
+        <h2>Simulation Preview</h2>
+        <p id="quizCount">Waiting for input...</p>
+      </div>
 
-        <main class="main-content">
-            <div class="header">
-                <h2>Quiz Preview</h2>
-                <p>3 Questions Generated</p>
-            </div>
+      <div id="scoreBoard" class="score-board glass-panel">
+        <h2 id="scoreText">Accuracy: 0/0</h2>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <p id="percentageText">0% Efficiency</p>
+      </div>
 
-            <div class="card">
-                <button class="close-btn">&times;</button>
-                <span class="tag tag-mcq">MCQ</span>
-                <h3 class="question-text">What is the primary law governing planetary motion?</h3>
+      <div id="loader" class="loader-wrapper" style="display: none;">
+        <div class="scanner-ring"></div>
+        <div class="scanner-core"></div>
+        <p class="loader-text">Analyzing Neural Data<span class="dots">...</span></p>
+      </div>
 
-                <div class="options-grid">
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Newton's First Law</span>
-                    </div>
-                    <div class="option selected">
-                        <div class="radio-circle"></div>
-                        <span>Kepler's Laws</span>
-                    </div>
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Ohm's Law</span>
-                    </div>
-                    <div class="option">
-                        <div class="radio-circle"></div>
-                        <span>Boyle's Law</span>
-                    </div>
-                </div>
-            </div>
+      <div id="quizContainer"></div>
 
-            <div class="card">
-                <button class="close-btn">&times;</button>
-                <span class="tag tag-sub">Subjective</span>
-                <h3 class="question-text">Explain the concept of Dark Matter in your own words.</h3>
-                <textarea class="subjective-area" placeholder="The generated answer key will..."></textarea>
-            </div>
+      <div id="quizFooter" class="quiz-footer" style="display: none;">
+        <button id="submitQuizBtn" class="btn-submit">Finalize & Grade</button>
+      </div>
+    </main>
 
-            <button class="btn-save">Save & Publish Quiz</button>
-        </main>
+  </div>
 
-    </div>
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    // Ensure we handle the case where token might be null
+    const TOKEN = localStorage.getItem("token") || "";
 
+    // --- HELPER: SAFE UI UPDATES ---
+    // This prevents crashes if you haven't updated the HTML button/loader yet
+    const ui = {
+      setBtnLoading: (isLoading) => {
+        const btn = document.getElementById("generateBtn");
+        if (!btn) return;
+
+        const span = btn.querySelector("span");
+        btn.disabled = isLoading;
+
+        if (isLoading) {
+          if (span) span.textContent = "Processing...";
+          else btn.textContent = "Processing..."; // Fallback for old HTML
+        } else {
+          if (span) span.textContent = "Initialize Sequence";
+          else btn.textContent = "Generate Quiz"; // Fallback for old HTML
+        }
+      },
+      toggleLoader: (show) => {
+        const loader = document.getElementById("loader");
+        // Only try to toggle if the loader HTML actually exists
+        if (loader) {
+          loader.style.display = show ? "flex" : "none";
+        }
+      }
+    };
+
+    // --- 1. LOAD PDFS ---
+    async function loadPDFs() {
+      try {
+        if (!TOKEN) {
+          console.error("No token found. User might need to login.");
+          return;
+        }
+
+        const res = await fetch(`${API_BASE}/student/me`, {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+
+        if (!res.ok) throw new Error(`Failed to load PDFs: ${res.status}`);
+
+        const data = await res.json();
+        const select = document.getElementById("pdfSelect");
+
+        // Reset dropdown
+        select.innerHTML = `<option value="" disabled selected>Select Data Node</option>`;
+
+        if (data.uploads && data.uploads.length > 0) {
+          data.uploads.forEach(file => {
+            const option = document.createElement("option");
+            option.value = file.id;
+            option.textContent = file.filename;
+            select.appendChild(option);
+          });
+        } else {
+          const option = document.createElement("option");
+          option.textContent = "No Archives Found";
+          option.disabled = true;
+          select.appendChild(option);
+        }
+      } catch (e) {
+        console.error("Error loading PDFs:", e);
+        const select = document.getElementById("pdfSelect");
+        if (select) select.innerHTML = `<option value="" disabled>Connection Failed</option>`;
+      }
+    }
+
+    // --- 2. GENERATE QUIZ ---
+    document.getElementById("generateBtn").addEventListener("click", async () => {
+      const select = document.getElementById("pdfSelect");
+      const resourceId = select ? select.value : null;
+
+      if (!resourceId) {
+        alert("Please select a data node from the archives.");
+        return;
+      }
+
+      // UI: Start Loading
+      ui.setBtnLoading(true);
+      ui.toggleLoader(true);
+
+      // UI: Hide previous results
+      const container = document.getElementById("quizContainer");
+      const footer = document.getElementById("quizFooter");
+      const scoreBoard = document.getElementById("scoreBoard");
+      if (container) container.innerHTML = "";
+      if (footer) footer.style.display = "none";
+      if (scoreBoard) scoreBoard.style.display = "none";
+
+      try {
+        const res = await fetch(`${API_BASE}/student/quiz/${resourceId}`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+
+        if (!res.ok) {
+          // Log the specific backend error
+          const errorText = await res.text();
+          throw new Error(`Server responded with ${res.status}: ${errorText}`);
+        }
+
+        const data = await res.json();
+
+        // Validate data structure
+        if (!data.quiz || !Array.isArray(data.quiz)) {
+          throw new Error("Invalid data format received from server");
+        }
+
+        // UI: Stop Loading
+        ui.toggleLoader(false);
+
+        // Render
+        renderQuiz(data.quiz);
+
+      } catch (error) {
+        console.error("Full Error Details:", error);
+        alert("Error generating simulation. Check console (F12) for details.");
+        ui.toggleLoader(false);
+      } finally {
+        ui.setBtnLoading(false);
+      }
+    });
+
+    // --- 3. RENDER QUIZ ---
+
+    function renderQuiz(quiz) {
+      const container = document.getElementById("quizContainer");
+      const scoreBoard = document.getElementById("scoreBoard");
+      const footer = document.getElementById("quizFooter");
+      const countLabel = document.getElementById("quizCount");
+
+      if (!container) return;
+
+      container.innerHTML = "";
+      if (scoreBoard) scoreBoard.style.display = "none";
+      if (footer) footer.style.display = "block";
+      if (countLabel) countLabel.textContent = `${quiz.length} Modules Loaded`;
+
+      quiz.forEach((q, index) => {
+          // Backend now sends strict objects, so we don't need the string split fixes.
+          // Just ensure it exists.
+          const safeOptions = Array.isArray(q.options) ? q.options : [];
+
+          const card = document.createElement("div");
+          card.className = "card glass-panel";
+          
+          // Store the correct answer ID (e.g., "A")
+          card.dataset.correctAnswer = q.answer; 
+
+          card.innerHTML = `
+              <div class="card-header">
+                <span class="tag tag-mcq">Module ${index + 1}</span>
+              </div>
+              <h3>${q.question}</h3>
+              <div class="options-grid" id="q-${index}">
+                ${safeOptions.map(opt => `
+                  <div class="option" data-id="${opt.id}" onclick="selectOption(this)">
+                    <div class="radio-node"></div>
+                    <span>${opt.text}</span>
+                  </div>
+                `).join("")}
+              </div>
+          `;
+          container.appendChild(card);
+      });
+  }
+
+    // --- 4. INTERACTION LOGIC ---
+    window.selectOption = function (element) {
+      if (element.closest('.card').classList.contains('graded')) return;
+
+      const parentGrid = element.parentElement;
+      const siblings = parentGrid.querySelectorAll('.option');
+      siblings.forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+    };
+
+    // --- 5. SUBMIT & SCORING ---
+    const submitBtn = document.getElementById("submitQuizBtn");
+    if (submitBtn) {
+        submitBtn.addEventListener("click", () => {
+            const cards = document.querySelectorAll(".card");
+            let score = 0;
+            let total = cards.length;
+
+            if (total === 0) return;
+
+            cards.forEach(card => {
+                // 1. Get the Correct Answer ID (e.g., "A")
+                const correctAnswerId = card.dataset.correctAnswer.trim();
+                
+                // 2. Find which option the user clicked
+                const selectedOption = card.querySelector(".option.selected");
+
+                card.classList.add('graded');
+
+                // 3. Find the DOM element for the Correct Option (to highlight it green)
+                // We look for the div that has data-id="A"
+                const correctOptionElement = card.querySelector(`.option[data-id="${correctAnswerId}"]`);
+
+                if (selectedOption) {
+                    // 4. Compare IDs
+                    const selectedId = selectedOption.dataset.id;
+                    
+                    if (selectedId === correctAnswerId) {
+                        score++;
+                        selectedOption.classList.add("correct");
+                    } else {
+                        selectedOption.classList.add("wrong");
+                        // Highlight the correct one so they learn
+                        if (correctOptionElement) correctOptionElement.classList.add("correct");
+                    }
+                } else {
+                    // If they didn't pick anything, just show the right answer
+                    if (correctOptionElement) correctOptionElement.classList.add("correct");
+                }
+            });
+
+            // --- UPDATE SCOREBOARD UI ---
+            const scoreBoard = document.getElementById("scoreBoard");
+            const scoreText = document.getElementById("scoreText");
+            const percentageText = document.getElementById("percentageText");
+            const progressBar = document.getElementById("progressBar");
+
+            if (scoreText) scoreText.textContent = `Accuracy: ${score}/${total}`;
+
+            const percentage = Math.round((score / total) * 100);
+            if (percentageText) percentageText.textContent = `${percentage}% Efficiency`;
+            if (progressBar) progressBar.style.width = `${percentage}%`;
+
+            if (scoreBoard) scoreBoard.style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const footer = document.getElementById("quizFooter");
+            if (footer) footer.style.display = "none";
+        });
+    }
+
+    // Init
+    loadPDFs();
+  </script>
 </body>
 
 </html>

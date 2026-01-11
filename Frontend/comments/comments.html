@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comment and Discuss</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- 1. THEME VARIABLES --- */
+    :root {
+      --bg-dark: #050505;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+      --neon-green: #00ff9d;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- BACKGROUND FX --- */
+    .bg-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.05;
+      /* background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); */
+    }
+
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -2;
+      opacity: 0.3;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+      top: -20%;
+      left: -10%;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+      bottom: -20%;
+      right: -10%;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(30px, 20px);
+      }
+    }
+
+    /* --- HEADER --- */
+    .header {
+      height: 70px;
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(5, 5, 5, 0.6);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-cyan);
+      background: var(--glass-surface);
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #fff;
+      max-width: 500px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Like Button */
+    .like-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      padding: 8px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .like-btn:hover {
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      background: rgba(0, 255, 157, 0.05);
+    }
+
+    .like-btn.liked {
+      background: var(--neon-green);
+      border-color: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+    }
+
+    /* --- MAIN LAYOUT --- */
+    .main-content {
+      display: flex;
+      height: calc(100vh - 70px);
+      padding: 20px;
+      gap: 20px;
+    }
+
+    /* --- PDF VIEWER (Left) --- */
+    .pdf-section {
+      flex: 1;
+      background: #000;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Decoration line at top of PDF viewer */
+    .pdf-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      z-index: 2;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      filter: contrast(1.1);
+      /* Slight contrast boost for readability */
+    }
+
+    .pdf-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--neon-cyan);
+      font-family: var(--font-heading);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* --- DISCUSSION (Right) --- */
+    .discussion-section {
+      width: 420px;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Comments List */
+    .comments-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* Custom Scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: var(--glass-border) transparent;
+    }
+
+    .comments-container::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .comments-container::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 5px;
+    }
+
+    /* Comment Cards */
+    .comment-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border-left: 2px solid var(--glass-border);
+      border-radius: 4px 12px 12px 4px;
+      padding: 15px;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .comment-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: var(--neon-purple);
+      transform: translateX(5px);
+    }
+
+    .user-name {
+      color: var(--neon-cyan);
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .timestamp {
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      font-weight: 400;
+    }
+
+    .comment-body {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0 0 20px 20px;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: white;
+      border-radius: 12px;
+      padding: 15px;
+      font-family: var(--font-body);
+      resize: none;
+      height: 60px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--neon-purple);
+      background: rgba(188, 19, 254, 0.05);
+      box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+    }
+
+    .post-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--neon-purple);
+      border: 1px solid var(--neon-purple);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .post-btn:hover {
+      background: var(--neon-purple);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        height: auto;
+        padding-bottom: 0;
+      }
+
+      .pdf-section {
+        height: 50vh;
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .discussion-section {
+        width: 100%;
+        height: 50vh;
+        border-radius: 12px 12px 0 0;
+      }
+
+      body {
+        overflow-y: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <header class="header">
+    <div class="header-left">
+      <a href="../Study_Room/StudyRoom.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <h1 id="pageTitle">Initializing Stream...</h1>
+    </div>
+
+    <button class="like-btn" id="likeBtn" onclick="handleLike()">
+      <i class="far fa-heart" id="likeIcon"></i>
+      <span id="voteCount">--</span>
+    </button>
+  </header>
+
+  <div class="main-content">
+    <section class="pdf-section">
+      <iframe id="pdfViewer" src=""></iframe>
+      <div class="pdf-placeholder" id="pdfPlaceholder">
+        <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem;"></i>
+        <span>Accessing Secure Data...</span>
+      </div>
+    </section>
+
+    <section class="discussion-section">
+      <div class="comments-container" id="commentsList">
+        <p style="color:var(--text-secondary); text-align:center; font-family: monospace; margin-top:20px;">Fetching
+          Logs...</p>
+      </div>
+
+      <div class="input-area">
+        <textarea id="commentInput" placeholder="Enter discussion protocol..."></textarea>
+        <button onclick="postComment()" class="post-btn">Transmit</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // 1. Get Params from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const resourceId = urlParams.get('id');
+    const resourceTitle = urlParams.get('title');
+    const resourcePath = urlParams.get('path'); // Passed from StudyRoom
+
+    // Validation
+    if (!resourceId) {
+      alert("No resource selected.");
+      window.location.href = "../Study_Room/StudyRoom.html";
+    }
+
+    // 2. Setup Page Data
+    if (resourceTitle) document.getElementById('pageTitle').innerText = decodeURIComponent(resourceTitle);
+
+    // Setup PDF
+    if (resourcePath) {
+      const fullPath = `${API_BASE}/${decodeURIComponent(resourcePath)}`;
+      document.getElementById('pdfViewer').src = fullPath;
+
+      // Hide placeholder when iframe loads
+      document.getElementById('pdfViewer').onload = () => {
+        document.getElementById('pdfPlaceholder').style.display = 'none';
+      };
+    } else {
+      document.getElementById('pdfPlaceholder').innerHTML = "<span style='color:var(--neon-purple)'>FILE NOT FOUND</span>";
+    }
+
+    // Initial Load
+    fetchComments();
+
+    // Init Vote Button text
+    document.getElementById('voteCount').innerText = "VOTE";
+
+
+    // --- FUNCTIONS ---
+
+    // 3. Like/Vote Function
+    async function handleLike() {
+      const token = localStorage.getItem('token');
+      if (!token) return alert("Authentication required to vote.");
+
+      try {
+        const res = await fetch(`${API_BASE}/student/vote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ resource_id: resourceId, vote_type: 1 })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Update UI
+          document.getElementById('voteCount').innerText = data.new_score;
+
+          // Toggle Visual Style
+          const btn = document.getElementById('likeBtn');
+          const icon = document.getElementById('likeIcon');
+
+          if (data.msg.includes("removed")) {
+            btn.classList.remove('liked');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+          } else {
+            btn.classList.add('liked');
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+          }
+        }
+      } catch (err) {
+        console.error("Vote failed", err);
+      }
+    }
+
+
+    // 4. Fetch Comments
+    async function fetchComments() {
+      const list = document.getElementById('commentsList');
+      try {
+        const res = await fetch(`${API_BASE}/student/comments/${resourceId}`);
+        const comments = await res.json();
+
+        list.innerHTML = '';
+        if (comments.length === 0) {
+          list.innerHTML = '<div style="text-align:center; color:var(--text-secondary); padding:20px; font-family:monospace;">No data logs found.<br>Initialize discussion.</div>';
+          return;
+        }
+
+        comments.forEach(c => {
+          const date = new Date(c.created_at).toLocaleDateString();
+          const div = document.createElement('div');
+          div.className = 'comment-card';
+          div.innerHTML = `
+            <div class="user-name">
+                <span>${c.user} ${c.is_verified ? '<i class="fas fa-check-circle" style="color:var(--neon-green); font-size:0.8em;"></i>' : ''}</span>
+                <span class="timestamp">${date}</span>
+            </div>
+            <div class="comment-body">${c.text}</div>
+          `;
+          list.appendChild(div);
+        });
+
+        // Scroll to bottom
+        list.scrollTop = list.scrollHeight;
+
+      } catch (err) {
+        list.innerHTML = '<p style="color:var(--neon-red); text-align:center;">Error retrieving logs.</p>';
+      }
+    }
+
+    // 5. Post Comment
+    async function postComment() {
+      const input = document.getElementById('commentInput');
+      const content = input.value.trim();
+      const token = localStorage.getItem('token');
+
+      if (!content) return;
+      if (!token) return alert("Login required.");
+
+      try {
+        const res = await fetch(`${API_BASE}/student/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ resource_id: resourceId, content: content })
+        });
+
+        if (res.ok) {
+          input.value = '';
+          fetchComments();
+        }
+      } catch (err) {
+        alert("Transmission failed.");
+      }
+    }
+  </script>
+</body>
+
+</html>

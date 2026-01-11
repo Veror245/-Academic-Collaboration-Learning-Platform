@@ -4,71 +4,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>UniMind-Dashboard</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <div class="container">
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
-    <div class="user-card-wrapper">
-      <a href="/Frontend//User_Profile/UserProfile.html" class="user-card">
-        
-          <div class="user-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="user-details">
-            <h2 id="user-name">Welcome, Alex! <span class="status-badge">Online</span></h2>
-            <p id="email">Email: #883492 • Computer Science</p>
-          </div>
-        
-      </a>
-    </div>
-    <div class="header-section">
-      <h1 class="section-title">Dashboard</h1>
-      <p class="section-subtitle">Everything you need to master your studies in one place.</p>
+  <div class="main-container">
+
+    <div class="header-content">
+      <h1 class="brand-title" style="font-size: 2.5rem;">UniMind<span class="text-gradient">AI</span></h1>
+      <p class="brand-subtitle" style="font-size: .9rem; color: rgba(255, 255, 255, 0.468);">System Online. Ready to Learn.</p>
     </div>
 
-    <div class="features-grid">
-
-      <div class="feature-card study">
-        <div class="icon-wrapper">
-          <i class="fas fa-laptop-code"></i>
+  <header class="dashboard-header">
+    
+  
+    <nav class="main-nav">
+      <ul class="nav-list">
+        <li>
+          <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+            <i class="fas fa-satellite-dish"></i> Upload Notes
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/quiz/quiz.html" class="nav-link">
+            <i class="fas fa-brain"></i> Neural Quiz
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+            <i class="fas fa-layer-group"></i> Study Matrix
+          </a>
+        </li>
+        <li>
+          <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+            <i class="fas fa-fingerprint"></i> User Data
+          </a>
+        </li>
+        <li>
+          <a href="#" id="logout-btn" class="nav-link logout-link">
+            <i class="fas fa-power-off"></i> Log out
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
+      <div class="hud-avatar">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <div class="hud-info">
+        <div class="hud-top">
+          <span class="user-name" id="user-name">Alex</span>
+          <span class="status-indicator"></span>
         </div>
-        <h3>Study Room</h3>
-        <p>Join virtual rooms to collaborate with peers or focus solo with our Pomodoro timer.</p>
-        <a href="/Frontend/Study_Room/StudyRoom.html" class="btn-link">Enter Room &rarr;</a>
+        <span class="user-id" id="email">Email: </span>
+      </div>
+    </a>
+  </header>
+
+    <div class="grid-wrapper">
+
+      <div class="glass-card" style="--accent: #00f3ff;">
+        <div class="card-glow"></div>
+        <a href="/Frontend/UploadNotes/UploadNotes.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-satellite-dish"></i>
+            </div>
+            <div class="text-box">
+              <h3>Upload Notes</h3>
+              <p>Sync your data to the cloud. Collaborate in virtual space.</p>
+            </div>
+            <a href="/Frontend/UploadNotes/UploadNotes.html" class="action-btn">
+              Initiate Upload <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </a>
       </div>
 
-      <div class="feature-card quiz">
-        <div class="icon-wrapper">
-          <i class="fas fa-brain"></i>
-        </div>
-        <h3>Daily Quizzes</h3>
-        <p>Test your knowledge with AI-generated quizzes tailored to your syllabus.</p>
-        <a href="/Frontend/quiz/quiz.html" class="btn-link">Start Quiz &rarr;</a>
+      <div class="glass-card" style="--accent: #bc13fe;">
+        <div class="card-glow"></div>
+        <a href="/Frontend/quiz/quiz.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="text-box">
+              <h3>Neural Quiz</h3>
+              <p>AI-generated assessments to test your retention capabilities.</p>
+            </div>
+            <a href="/Frontend/quiz/quiz.html" class="action-btn">
+              Start Simulation <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </a>
       </div>
 
-      <div class="feature-card notes">
-        <div class="icon-wrapper">
-          <i class="fas fa-file-upload"></i>
-        </div>
-        <h3>Upload Notes</h3>
-        <p>Upload your PDFs or handwritten notes. Organize them securely.</p>
-        <a href="/Frontend/Notes/notes.html" class="btn-link">Upload Now &rarr;</a>
+      <div class="glass-card" style="--accent: #00ff9d;">
+        <div class="card-glow"></div>
+        <a href="/Frontend/Study_Room/StudyRoom.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="text-box">
+              <h3>Study Matrix</h3>
+              <p>Organize PDFs and handwritten inputs in a secure environment.</p>
+            </div>
+            <a href="/Frontend/Study_Room/StudyRoom.html" class="action-btn">
+              Enter Room <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </a>
       </div>
 
-      <div class="feature-card profile">
-        <div class="icon-wrapper">
-          <i class="fas fa-user-circle"></i>
-        </div>
-        <h3>Your Profile</h3>
-        <p>Track your learning streak, manage subscription, and preferences.</p>
-        <a href="/Frontend/User_Profile/UserProfile.html" class="btn-link">View Profile &rarr;</a>
+      <div class="glass-card" style="--accent: #ff0055;">
+        <div class="card-glow"></div>
+        <a href="/Frontend/User_Profile/UserProfile.html" style="text-decoration: none;">
+          <div class="card-content">
+            <div class="icon-box">
+              <i class="fas fa-fingerprint"></i>
+            </div>
+            <div class="text-box">
+              <h3>User Data</h3>
+              <p>Analyze learning streaks, manage subscription, and core settings.</p>
+            </div>
+            <a href="/Frontend/User_Profile/UserProfile.html" class="action-btn">
+              Access Logs <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </a>
       </div>
 
     </div>

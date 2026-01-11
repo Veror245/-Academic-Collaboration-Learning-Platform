@@ -4,51 +4,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StudyHub AI - Master Your Learning</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>UniMind AI - Master Your Learning</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* --- GENERAL RESET --- */
+    :root {
+      --bg-dark: #050505;
+      --primary-gradient: linear-gradient(135deg, #9333ea 0%, #db2777 100%);
+      /* Purple to Pink */
+      --text-gradient: linear-gradient(to right, #c084fc, #e879f9);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --card-glow: 0 0 20px rgba(147, 51, 234, 0.15);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    html,
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #0f172a;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
       color: white;
       overflow-x: hidden;
-      /* Prevent horizontal scroll from bg blobs */
+      min-height: 100vh;
+      position: relative;
     }
 
-    /* --- BACKGROUND BLOBS --- */
-    .bg-shape {
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* --- ANIMATED BACKGROUND BLOBS (The "Cloud" Effect) --- */
+    .ambient-light {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(120px);
-      z-index: -1;
-      opacity: 0.5;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: floatBlob 10s infinite alternate cubic-bezier(0.45, 0.05, 0.55, 0.95);
     }
 
-    /* Top Right Purple */
-    .shape-1 {
-      top: -100px;
-      right: -100px;
+    /* Deep Purple Blob */
+    .blob-1 {
+      top: -10%;
+      right: -5%;
       width: 600px;
       height: 600px;
-      background: #7f00ff;
+      background: radial-gradient(circle, #7e22ce, transparent 70%);
     }
 
-    /* Bottom Left Blue */
-    .shape-2 {
-      top: 600px;
-      left: -200px;
+    /* Pink/Magenta Blob */
+    .blob-2 {
+      bottom: -10%;
+      left: -10%;
       width: 500px;
       height: 500px;
-      background: #00c6ff;
+      background: radial-gradient(circle, #be185d, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    /* Center Blueish Hint */
+    .blob-3 {
+      top: 40%;
+      left: 30%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #4f46e5, transparent 70%);
+      opacity: 0.2;
+      animation-duration: 15s;
+    }
+
+    @keyframes floatBlob {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(30px, 50px) scale(1.1);
+      }
     }
 
     /* --- NAVBAR --- */
@@ -61,40 +130,64 @@
       width: 100%;
       top: 0;
       z-index: 100;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(5, 5, 5, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
     }
 
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
+      background: var(--text-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+
+    .nav-links{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+    }
+
+     .ad-log{
+      display: flex;
+      gap: 20px;
+      
     }
 
     .nav-links a {
-      color: rgba(255, 255, 255, 0.8);
+      color: #a1a1aa;
       text-decoration: none;
-      margin-left: 30px;
-      font-size: 0.95rem;
-      transition: color 0.3s;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s;
+      position: relative;
     }
 
     .nav-links a:hover {
       color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .btn-login {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px 28px;
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
+      transition: 0.3s;
+      font-size: 0.9rem;
     }
 
     .btn-login:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #d8b4fe;
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(216, 180, 254, 0.2);
     }
 
     /* --- HERO SECTION --- */
@@ -103,91 +196,175 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 120px 50px 50px 50px;
-      /* Top padding for navbar */
-      max-width: 1300px;
+      padding: 140px 50px 80px 50px;
+      max-width: 1400px;
       margin: 0 auto;
+      perspective: 1000px;
     }
 
     .hero-content {
-      flex: 1;
-      padding-right: 50px;
+      flex: 1.1;
+      padding-right: 60px;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
     }
 
     .hero h1 {
-      font-size: 3.5rem;
-      line-height: 1.2;
-      margin-bottom: 20px;
+      font-size: 4.5rem;
+      line-height: 1.1;
+      margin-bottom: 25px;
       font-weight: 700;
+      letter-spacing: -2px;
+      background: linear-gradient(to bottom, #ffffff, #a1a1aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .hero h1 span {
-      color: #4facfe;
+      background: var(--text-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
     }
 
     .hero p {
       font-size: 1.1rem;
-      color: #94a3b8;
-      margin-bottom: 40px;
-      max-width: 500px;
-      line-height: 1.6;
+      color: #a1a1aa;
+      margin-bottom: 45px;
+      max-width: 550px;
+      line-height: 1.7;
     }
 
     .cta-btn {
       display: inline-block;
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      background: var(--primary-gradient);
       color: white;
-      padding: 15px 40px;
-      border-radius: 30px;
+      padding: 18px 48px;
+      border-radius: 14px;
+      /* Slightly squared for modern look */
       text-decoration: none;
       font-weight: 600;
-      font-size: 1.1rem;
-      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
-      transition: transform 0.3s, box-shadow 0.3s;
+      font-size: 1rem;
+      box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+
+    /* Button Shine Effect */
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .cta-btn:hover::after {
+      left: 100%;
     }
 
     .cta-btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px rgba(219, 39, 119, 0.7);
     }
 
-    /* --- HERO IMAGE (CSS MOCKUP) --- */
+    /* --- HERO VISUAL (3D CARD MOCKUP) --- */
     .hero-visual {
-      flex: 1;
+      flex: 0.9;
       position: relative;
       display: flex;
       justify-content: center;
+      opacity: 0;
+      animation: fadeInRight 1s ease-out 0.3s forwards;
     }
 
+    /* The "Phone/Card" Container */
     .app-card {
-      width: 400px;
-      height: 500px;
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(20px);
+      width: 360px;
+      height: 540px;
+      background: rgba(15, 15, 15, 0.6);
+      /* Darker backing */
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
       position: relative;
-      transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
-      box-shadow: -20px 20px 60px rgba(0, 0, 0, 0.5);
-      padding: 20px;
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.8),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      padding: 30px;
       overflow: hidden;
+      animation: floatCard 6s ease-in-out infinite;
+      transform-style: preserve-3d;
     }
 
-    /* Mockup Internals */
+    /* Glow behind the card */
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 400px;
+      background: var(--primary-gradient);
+      filter: blur(80px);
+      opacity: 0.3;
+      z-index: -1;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulseGlow 4s infinite alternate;
+    }
+
+    @keyframes floatCard {
+
+      0%,
+      100% {
+        transform: perspective(1000px) rotateY(-10deg) rotateX(2deg) translateY(0);
+      }
+
+      50% {
+        transform: perspective(1000px) rotateY(-8deg) rotateX(2deg) translateY(-20px);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        opacity: 0.2;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+
+      100% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    }
+
     .mock-header {
       height: 40px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .mock-dots {
+      display: flex;
+      gap: 8px;
     }
 
     .mock-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
+      background: #333;
+    }
+
+    .mock-dot:nth-child(1) {
       background: #ef4444;
-      margin-right: 8px;
     }
 
     .mock-dot:nth-child(2) {
@@ -201,176 +378,372 @@
     .mock-chat {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 18px;
     }
 
     .mock-bubble {
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      max-width: 80%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      max-width: 85%;
+      line-height: 1.5;
+      position: relative;
+      opacity: 0;
+      animation: popIn 0.5s ease-out forwards;
+      color: #e4e4e7;
     }
 
     .mock-bubble.left {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      animation-delay: 1s;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .mock-bubble.right {
-      background: #3b82f6;
+      background: var(--primary-gradient);
       align-self: flex-end;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 5px 15px rgba(219, 39, 119, 0.3);
+      animation-delay: 2s;
+      color: white;
+      font-weight: 500;
+    }
+
+    .mock-bubble.loader-bubble {
+      width: 60px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      animation-delay: 3.5s;
+    }
+
+    .typing-dot {
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    @keyframes typing {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0);
+      }
+
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .mock-input {
       margin-top: auto;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      margin-top: 150px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      margin-top: 100px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      font-size: 0.8rem;
+      color: #555;
     }
 
-    /* Floating Badge */
+    .mock-input::after {
+      content: 'Ask AI anything...';
+      color: #52525b;
+    }
+
+    /* Floating Badge (Glass Card style) */
     .float-badge {
       position: absolute;
-      top: 50px;
-      right: -30px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      padding: 15px 20px;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      top: 80px;
+      right: -50px;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      padding: 15px 25px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
       display: flex;
       align-items: center;
       gap: 15px;
-      animation: float 6s ease-in-out infinite;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      animation: floatBadge 5s ease-in-out infinite;
+      z-index: 2;
     }
 
-    .badge-icon {
-      background: #a855f7;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
+    @keyframes floatBadge {
 
-    @keyframes float {
-      0% {
-        transform: translateY(0px);
+      0%,
+      100% {
+        transform: translateY(0);
       }
 
       50% {
-        transform: translateY(-20px);
-      }
-
-      100% {
-        transform: translateY(0px);
+        transform: translateY(-10px);
       }
     }
 
+    .badge-icon {
+      background: linear-gradient(135deg, #a855f7, #d8b4fe);
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: white;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+    }
 
-    /* --- FEATURES GRID --- */
+    /* --- FEATURES SECTION --- */
     .features-section {
-      padding: 50px 50px 100px;
+      padding: 100px 50px;
       max-width: 1300px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
     .section-header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease-out;
+    }
+
+    .section-header.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .section-header h2 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 3rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .section-header p {
-      color: #94a3b8;
+      color: #a1a1aa;
+      font-size: 1.1rem;
     }
 
     .feature-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
       gap: 30px;
     }
 
     .feature-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 30px;
-      border-radius: 20px;
-      transition: 0.3s;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 40px 30px;
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      transform: translateY(30px);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      
     }
 
+    .feature-box.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Feature Hover Glow */
     .feature-box:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
       transform: translateY(-10px);
+      border-color: rgba(168, 85, 247, 0.3);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(168, 85, 247, 0.05);
     }
 
     .f-icon {
       font-size: 2rem;
-      margin-bottom: 20px;
-      color: #3b82f6;
+      margin-bottom: 25px;
+      color: #d8b4fe;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: 20px;
+      transition: 0.4s;
+      border: 1px solid rgba(168, 85, 247, 0.1);
+    }
+
+    .feature-box:hover .f-icon {
+      background: var(--primary-gradient);
+      color: white;
+      transform: rotate(10deg) scale(1.1);
+      box-shadow: 0 10px 20px rgba(219, 39, 119, 0.3);
+      border-color: transparent;
+    }
+
+    /* Varying icon base colors */
+    .feature-box:nth-child(2) .f-icon {
+      color: #f472b6;
+      background: rgba(244, 114, 182, 0.1);
+    }
+
+    .feature-box:nth-child(3) .f-icon {
+      color: #818cf8;
+      background: rgba(129, 140, 248, 0.1);
+    }
+
+    .feature-box:nth-child(4) .f-icon {
+      color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.1);
     }
 
     .feature-box h3 {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: white;
     }
 
     .feature-box p {
-      color: #94a3b8;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      color: #a1a1aa;
+      font-size: 0.95rem;
+      line-height: 1.6;
     }
 
-    /* Responsive */
-    @media (max-width: 900px) {
+    /* --- ANIMATIONS KEYFRAMES --- */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+   
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 1024px) {
       .hero {
         flex-direction: column;
         text-align: center;
-        padding-top: 120px;
+        padding-top: 130px;
       }
 
       .hero-content {
         padding-right: 0;
-        margin-bottom: 50px;
+        margin-bottom: 80px;
+      }
+
+      .hero h1 {
+        font-size: 3.2rem;
+      }
+
+      .hero-visual {
+        width: 100%;
+        display: flex;
+        justify-content: center;
       }
 
       .app-card {
-        width: 300px;
-        height: 400px;
+        width: 320px;
+        height: 480px;
+        /* Less rotation on mobile for readability */
+        animation: floatCardMobile 6s ease-in-out infinite;
       }
 
-      .navbar {
-        padding: 20px;
+      .float-badge {
+        right: -10px;
+        top: 40px;
+        padding: 10px 15px;
+      }
+
+      @keyframes floatCardMobile {
+
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-15px);
+        }
       }
 
       .nav-links {
         display: none;
+        /* In a real app, use a hamburger menu */
       }
-
-      /* Simplified for mobile */
     }
   </style>
 </head>
 
 <body>
 
-  <div class="bg-shape shape-1"></div>
-  <div class="bg-shape shape-2"></div>
+  <div class="ambient-light">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
 
   <nav class="navbar">
-    <div class="logo"><i class="fas fa-atom"></i> StudyHub</div>
+    <div class="logo">UniMind AI</div>
     <div class="nav-links">
-      <a href="#">Features</a>
-      <a href="#">Pricing</a>
-      <a href="#">About</a>
-      <a href="#" class="btn-login">Login</a>
+      <a href="#features-section">Features</a>
+      <div class="ad-log">
+        <a href="/Frontend/Admin_login/adminLogin.html" class="btn-login">Admin</a>
+        <a href="/Frontend/LogIn/LogIn.html" class="btn-login">LogIn</a>
+      </div>
     </div>
   </nav>
 
@@ -380,22 +753,28 @@
       <p>Join virtual study rooms, solve problems instantly with AI, and share notes with your department. The future of
         studying is here.</p>
 
-      <a href="/Frontend/Student_Or_Admin/StudentOrAdmin.html" class="cta-btn">Get Started Now</a>
+      <a href="/Frontend/SignUp/SignUp.html" class="cta-btn">Sign Up Now</a>
     </div>
 
     <div class="hero-visual">
       <div class="app-card">
         <div class="mock-header">
-          <div class="mock-dot"></div>
-          <div class="mock-dot"></div>
-          <div class="mock-dot"></div>
+          <div class="mock-dots">
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+          </div>
         </div>
         <div class="mock-chat">
-          <div class="mock-bubble left">Can someone help with the Calculus PDF?</div>
-          <div class="mock-bubble right">Sure! I just uploaded the AI solution.</div>
-          <div class="mock-bubble left">Wow, the AI explanation is really clear!</div>
-          <div class="mock-bubble left"
-            style="width: 50%; height: 80px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.3);">
+          <div class="mock-bubble left">Ask me anything!</div>
+          <div class="mock-bubble right">What are Formal Parameters in C?</div>
+          <div class="mock-bubble left">Formal parameters are variables declared in the parentheses of the function
+            header. They specify the type, order, and
+            number of values the function expects to receive.</div>
+          <div class="mock-bubble left loader-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
           </div>
         </div>
         <div class="mock-input"></div>
@@ -404,42 +783,71 @@
       <div class="float-badge">
         <div class="badge-icon"><i class="fas fa-robot"></i></div>
         <div>
-          <div style="font-weight: 600; font-size: 0.9rem;">AI Solver</div>
-          <div style="font-size: 0.75rem; color: #ccc;">Active Now</div>
+          <div style="font-weight: 600; font-size: 0.95rem;">AI Solver</div>
+          <div style="font-size: 0.75rem; color: #a1a1aa;">Active Now</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="features-section">
+  <section class="features-section" id="features-section">
     <div class="section-header">
       <h2>Everything you need</h2>
       <p>Tools designed to help you ace your exams.</p>
     </div>
 
     <div class="feature-grid">
-      <div class="feature-box">
-        <i class="fas fa-laptop-code f-icon"></i>
+     <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+      <div class="feature-box" style="transition-delay: 0ms;">
+        <div class="f-icon"><i class="fas fa-laptop-code"></i></div>
         <h3>Study Rooms</h3>
         <p>Dedicated rooms for CS, Mech, Civil, and more. Find your peers instantly.</p>
       </div>
-      <div class="feature-box">
-        <i class="fas fa-file-upload f-icon" style="color: #a855f7;"></i>
-        <h3>AI Analysis</h3>
-        <p>Upload any PDF or image. Our AI will analyze it and provide answers.</p>
-      </div>
-      <div class="feature-box">
-        <i class="fas fa-comments f-icon" style="color: #4ade80;"></i>
-        <h3>Live Chat</h3>
-        <p>Discuss problems in real-time. Share files and code snippets easily.</p>
-      </div>
-      <div class="feature-box">
-        <i class="fas fa-chart-line f-icon" style="color: #f472b6;"></i>
-        <h3>Track Progress</h3>
-        <p>Keep track of your study streak and downloaded resources in your profile.</p>
-      </div>
+     </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 100ms;">
+          <div class="f-icon"><i class="fas fa-file-upload"></i></div>
+          <h3>AI Analysis</h3>
+          <p>Upload any PDF or image. Our AI will analyze it and provide answers.</p>
+        </div>
+      </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 200ms;">
+          <div class="f-icon"><i class="fas fa-comments"></i></div>
+          <h3>Live Chat</h3>
+          <p>Discuss problems in real-time. Share files and code snippets easily.</p>
+        </div>
+      </a>
+      <a href="/Frontend/LogIn/LogIn.html" style="text-decoration: none;">
+        <div class="feature-box" style="transition-delay: 300ms;">
+          <div class="f-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Track Progress</h3>
+          <p>Keep track of your study streak and downloaded resources in your profile.</p>
+        </div>
+      </a>
     </div>
   </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      const elementsToAnimate = document.querySelectorAll('.feature-box, .section-header');
+      elementsToAnimate.forEach(el => observer.observe(el));
+    });
+  </script>
 
 </body>
 

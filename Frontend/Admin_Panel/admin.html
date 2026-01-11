@@ -1,155 +1,1212 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudioControl | Admin Dashboard</title>
-    <link rel="stylesheet" href="admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>UniMind | Admin Dashbaord</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- 1. THEME VARIABLES --- */
+        :root {
+            --bg-dark: #050505;
+            --glass-surface: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #00ff9d;
+            --neon-red: #ff0055;
+            --neon-amber: #ffbf00;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND FX --- */
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -2;
+            opacity: 0.4;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+            top: -10%;
+            left: -10%;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(30px, 20px);
+            }
+        }
+
+        /* --- LAYOUT --- */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            animation: slideInLeft 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: transform 0.3s ease, width 0.3s ease;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3rem;
+            letter-spacing: -0.5px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.3s;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: var(--neon-cyan);
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: slideInUp 0.5s ease forwards;
+        }
+
+        .nav-links li:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .nav-links li:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .nav-links li:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+        }
+
+        .nav-links li.active a {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.8s;
+            overflow: hidden;
+        }
+
+        .avatar {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #000;
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
+            animation: pulse-avatar 2s infinite;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 2.5rem;
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+            width: calc(100% - 280px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .top-bar h1 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            color: var(--neon-red);
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-logout:hover {
+            background: var(--neon-red);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+        }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+
+        .stat-card {
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out 0.4s backwards;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+
+        .stat-card h3 {
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .count {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+
+        /* --- PANEL SECTIONS --- */
+        .panel-section {
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(16px);
+            animation: slideUp 0.6s ease-out 0.6s backwards;
+            scroll-margin-top: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .Refresh_button {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .Refresh_button:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        /* --- TABLE STYLING --- */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1.2rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--glass-border);
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+            color: #fff;
+            transition: background 0.2s;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* --- BADGES --- */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .badge-verified {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.1);
+        }
+
+        .badge-pending {
+            background: rgba(255, 191, 0, 0.1);
+            color: var(--neon-amber);
+            border: 1px solid rgba(255, 191, 0, 0.3);
+        }
+
+        /* --- ACTION BUTTONS --- */
+        .btn-verify,
+        .btn-delete,
+        .btn-view {
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-verify {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+        }
+
+        .btn-verify:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .btn-unverify {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .btn-unverify:hover {
+            background: var(--text-secondary);
+            color: #000;
+            box-shadow: none;
+        }
+
+        .btn-delete {
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+        }
+
+        .btn-delete:hover {
+            background: var(--neon-red);
+            color: #fff;
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* View Button for Mobile */
+        .btn-view {
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+        }
+
+        .btn-view:hover {
+            background: var(--neon-purple);
+            color: #fff;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        /* --- POPUP (MODAL) SYSTEM --- */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-card {
+            background: #0f172a;
+            border: 1px solid var(--neon-cyan);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .popup-overlay.active .popup-card {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .popup-header h3 {
+            font-family: var(--font-heading);
+            color: #fff;
+            margin: 0;
+        }
+
+        .btn-close-popup {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .popup-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .popup-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* --- RESPONSIVE CLASSES --- */
+        .show-mobile-only {
+            display: none;
+        }
+
+        .hide-mobile {
+            display: table-cell;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-avatar {
+            0% {
+                box-shadow: 0 0 0 0 rgba(188, 19, 254, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(188, 19, 254, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(188, 19, 254, 0);
+            }
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 1.5rem 0.5rem;
+                align-items: center;
+            }
+
+            .logo span,
+            .nav-links span,
+            .user-info {
+                display: none;
+            }
+
+            .logo {
+                margin-bottom: 2rem;
+                font-size: 0;
+            }
+
+            .logo::before {
+                content: 'A';
+                font-family: var(--font-heading);
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--neon-cyan);
+            }
+
+            .nav-links a {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .user-profile {
+                justify-content: center;
+                border-top: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+                padding: 2rem;
+            }
+        }
+
+        /* Mobile View (< 768px) */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+                align-items: flex-start;
+                padding: 2rem;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .logo span,
+            .nav-links span,
+            .user-info {
+                display: block;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .logo::before {
+                content: none;
+            }
+
+            .nav-links a {
+                justify-content: flex-start;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .top-bar {
+                margin-bottom: 2rem;
+            }
+
+            .top-bar h1 {
+                font-size: 1.5rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .btn-logout span {
+                display: none;
+            }
+
+            .btn-logout {
+                padding: 8px 12px;
+            }
+
+            .panel-section {
+                padding: 1rem;
+            }
+
+            /* --- MOBILE TABLE LOGIC (HIDE COLUMNS) --- */
+            .hide-mobile {
+                display: none;
+            }
+
+            .show-mobile-only {
+                display: inline-block;
+            }
+
+            /* Adjust table layout for mobile */
+            .data-table th,
+            .data-table td {
+                padding: 1rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            /* Sidebar overlay */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(5px);
+                z-index: 99;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
+    <div class="bg-noise"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="popup-overlay" id="detailsModal">
+        <div class="popup-card">
+            <div class="popup-header">
+                <h3 id="modalTitle">Entry Details</h3>
+                <button class="btn-close-popup" onclick="closePopup()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-body" id="modalContent">
+            </div>
+            <div class="popup-actions" id="modalActions">
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-wrapper">
-        <nav class="sidebar">
-            <div class="logo">StudioAdmin</div>
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">Admin<span>Dashboard</span></div>
             <ul class="nav-links">
-                <li class="active"><a href="#overview">Overview</a></li>
-                <li><a href="#content-moderation">Note Moderation</a></li>
-                <li><a href="#study-rooms">Study Rooms</a></li>
-                <li><a href="#chat-moderation">Chat Filter</a></li>
-                <li><a href="#">User Management</a></li>
+                <li id="nav-overview" class="active">
+                    <a href="#overview"><i class="fas fa-chart-line"></i> <span>Overview</span></a>
+                </li>
+                <li id="nav-content">
+                    <a href="#content-moderation"><i class="fas fa-layer-group"></i> <span>Uploads</span></a>
+                </li>
+                <li id="nav-comment">
+                    <a href="#comment-moderation"><i class="fas fa-comments"></i> <span>Comments</span></a>
+                </li>
             </ul>
             <div class="user-profile">
                 <div class="avatar">AD</div>
                 <div class="user-info">
-                    <p class="name">Admin User</p>
-                    <p class="role">System Moderator</p>
+                    <p class="name">Administrator</p>
                 </div>
             </div>
         </nav>
 
         <main class="main-content">
             <header class="top-bar">
-                <h1>Admin Control Panel</h1>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search resources...">
+                <div class="header-group">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Command Center</h1>
                 </div>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fas fa-power-off"></i> <span>Terminate Session</span>
+                </button>
             </header>
 
             <section class="stats-grid" id="overview">
                 <div class="stat-card">
-                    <h3>Pending Notes</h3>
-                    <p class="count">24</p>
+                    <h3>Total Archives</h3>
+                    <p class="count" id="total-count">0</p>
                 </div>
                 <div class="stat-card">
-                    <h3>Active Rooms</h3>
-                    <p class="count">12</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Flagged Chats</h3>
-                    <p class="count danger-text">8</p>
+                    <h3>Pending Transmissions</h3>
+                    <p class="count" id="comment-count">0</p>
                 </div>
             </section>
 
             <section id="content-moderation" class="panel-section">
                 <div class="section-header">
-                    <h2>Content Moderation (PDF/Notes)</h2>
+                    <h2>Data Stream Uploads</h2>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>File Name</th>
-                            <th>Uploader</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Organic_Chemistry_Vol1.pdf</td>
-                            <td>Alex River</td>
-                            <td>PDF</td>
-                            <td><span class="status-pending">Pending</span></td>
-                            <td>
-                                <button class="btn btn-approve">Approve</button>
-                                <button class="btn btn-reject">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Final_Exam_Review.docx</td>
-                            <td>Sarah Jenkins</td>
-                            <td>Note</td>
-                            <td><span class="status-approved">Approved</span></td>
-                            <td>
-                                <button class="btn btn-view">View</button>
-                                <button class="btn btn-delete">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="chat-moderation" class="panel-section">
-                <div class="section-header">
-                    <h2>Chat Filter & Cuss Word Manager</h2>
-                </div>
-                <div class="chat-mod-grid">
-                    <div class="filter-manager">
-                        <h3>Keyword Blacklist</h3>
-                        <p class="sub-text">Add words to be automatically redacted from discussions.</p>
-                        <div class="tag-container">
-                            <span class="word-tag">badword1 <button>&times;</button></span>
-                            <span class="word-tag">spam_link <button>&times;</button></span>
-                            <span class="word-tag">offensive_term <button>&times;</button></span>
-                            <input type="text" placeholder="Add new..." class="inline-input">
-                        </div>
-                    </div>
-
-                    <div class="flagged-messages">
-                        <h3>Flagged Messages Queue</h3>
-                        <div class="message-list">
-                            <div class="msg-item flagged">
-                                <div class="msg-meta"><strong>User99</strong> in <em>Math Room</em> • 2m ago</div>
-                                <p class="msg-text">"This professor is so [CENSORED] annoying."</p>
-                                <div class="msg-actions">
-                                    <button class="btn btn-view">Warn</button>
-                                    <button class="btn btn-reject">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>File Protocol</th>
+                                <th class="hide-mobile">Source ID</th>
+                                <th class="hide-mobile">Format</th>
+                                <th>Integrity</th>
+                                <th>Override</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resource-table-body">
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
-            <section id="study-rooms" class="panel-section">
+            <section id="comment-moderation" class="panel-section">
                 <div class="section-header">
-                    <h2>Group Study Room Control</h2>
+                    <h2>Communication Logs</h2>
+                    <button onclick="loadAllComments()" class="Refresh_button">
+                        <i class="fas fa-sync-alt"></i> Refresh Stream
+                    </button>
                 </div>
-                <div class="room-grid">
-                    <div class="room-card">
-                        <div class="room-info">
-                            <h4>Calculus Study Group</h4>
-                            <p>Active: 14 participants</p>
-                        </div>
-                        <div class="room-controls">
-                            <span class="status-online">Active</span>
-                            <button class="btn btn-reject">Force Shutdown</button>
-                        </div>
-                    </div>
-                    <div class="room-card">
-                        <div class="room-info">
-                            <h4>Art History Review</h4>
-                            <p>Active: 0 participants</p>
-                        </div>
-                        <div class="room-controls">
-                            <span class="status-offline">Idle</span>
-                            <button class="btn btn-view">Set Private</button>
-                        </div>
-                    </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Payload Content</th>
+                                <th class="hide-mobile">Target Node</th>
+                                <th class="hide-mobile">Timestamp</th>
+                                <th>Status</th>
+                                <th>Protocol</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comments-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-secondary);">
+                                    Initializing Data Stream...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </main>
     </div>
-    <script src="admin-script.js"></script>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000";
+        let allResources = [];
+        let allCommentsData = [];
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert("No Admin Token found. Redirecting to Login.");
+                window.location.href = '/Frontend/Admin_login/adminLogin.html';
+                return;
+            }
+
+            fetchResources();
+            setupNavigationHandlers();
+        });
+
+        function setupNavigationHandlers() {
+            const navItems = document.querySelectorAll('.nav-links li');
+            const sections = document.querySelectorAll('section[id]');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) toggleSidebar();
+                });
+            });
+
+            const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const currentId = entry.target.getAttribute('id');
+                        navItems.forEach(item => {
+                            item.classList.remove('active');
+                            const link = item.querySelector('a').getAttribute('href').substring(1);
+                            if (link === currentId) item.classList.add('active');
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
+        }
+
+        // --- FETCH RESOURCES ---
+        async function fetchResources() {
+            const token = localStorage.getItem('access_token');
+            const tableBody = document.getElementById('resource-table-body');
+            const rooms = ['cs', 'ece', 'mech', 'civil', 'science', 'hum'];
+            allResources = [];
+
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Scanning Network...</td></tr>';
+
+            for (const room of rooms) {
+                try {
+                    const res = await fetch(`${API_BASE}/student/room/${room}/resources`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        data.forEach(r => {
+                            r.room_slug = room;
+                            allResources.push(r);
+                        });
+                    }
+                } catch (e) { console.log(`Error fetching ${room}`); }
+            }
+
+            document.getElementById('total-count').innerText = allResources.length;
+            renderResources(allResources);
+            loadAllComments();
+        }
+
+        function renderResources(resources) {
+            const tbody = document.getElementById('resource-table-body');
+
+            if (resources.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No uploads found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = resources.map((r, index) => `
+                    <tr>
+                        <td style="font-weight: 500; color: #fff;">${r.title}</td>
+                        <td class="hide-mobile" style="font-family: monospace; color: var(--text-secondary);">${r.uploader}</td>
+                        <td class="hide-mobile" style="color: var(--neon-cyan);">PDF</td>
+                        <td><span class="badge badge-verified">Active</span></td>
+                        <td>
+                            <button class="btn-delete hide-mobile" onclick="deleteResource(${r.id})">
+                                <i class="fas fa-trash"></i> Purge
+                            </button>
+                            <button class="btn-view show-mobile-only" onclick="openResourcePopup(${index})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        // --- FETCH COMMENTS ---
+        async function loadAllComments() {
+            const tbody = document.getElementById('comments-table-body');
+            allCommentsData = [];
+
+            for (const res of allResources) {
+                try {
+                    const response = await fetch(`${API_BASE}/student/comments/${res.id}`);
+                    if (response.ok) {
+                        const comments = await response.json();
+                        comments.forEach(c => c.resource_title = res.title);
+                        allCommentsData.push(...comments);
+                    }
+                } catch (err) { console.error(err); }
+            }
+
+            allCommentsData.sort((a, b) => (a.is_verified === b.is_verified) ? 0 : a.is_verified ? 1 : -1);
+            document.getElementById('comment-count').innerText = allCommentsData.length;
+
+            if (allCommentsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No communication logs found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allCommentsData.map((c, index) => `
+                    <tr>
+                        <td style="font-family: monospace; color: var(--text-secondary);">${c.user}</td>
+                        <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; color:#e2e8f0;">${c.text}</td>
+                        <td class="hide-mobile" style="color: var(--neon-cyan);">${c.resource_title || 'Unknown Note'}</td>
+                        <td class="hide-mobile" style="font-size:0.85rem; color:#64748b; font-family: monospace;">${new Date(c.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <span class="badge ${c.is_verified ? 'badge-verified' : 'badge-pending'}">
+                                ${c.is_verified ? 'Secured' : 'Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            <button 
+                                class="btn-verify hide-mobile ${c.is_verified ? 'btn-unverify' : ''}" 
+                                onclick="toggleVerifyComment(${c.id})">
+                                ${c.is_verified ? 'Revoke' : 'Authorize'}
+                            </button>
+                            <button class="btn-view show-mobile-only" onclick="openCommentPopup(${index})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        // --- POPUP SYSTEM LOGIC ---
+        const modal = document.getElementById('detailsModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const modalActions = document.getElementById('modalActions');
+
+        function openPopup() {
+            modal.classList.add('active');
+        }
+
+        function closePopup() {
+            modal.classList.remove('active');
+        }
+
+        // Close on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closePopup();
+        });
+
+        // 1. Open Resource Popup
+        window.openResourcePopup = function (index) {
+            const r = allResources[index];
+            modalTitle.innerText = "Data Stream Details";
+            modalContent.innerHTML = `
+                <div class="info-row"><span class="info-label">File Protocol</span><span class="info-value">${r.title}</span></div>
+                <div class="info-row"><span class="info-label">Source ID</span><span class="info-value">${r.uploader}</span></div>
+                <div class="info-row"><span class="info-label">Format</span><span class="info-value">PDF</span></div>
+                <div class="info-row"><span class="info-label">Sector</span><span class="info-value" style="text-transform: uppercase;">${r.room_slug}</span></div>
+                <div class="info-row"><span class="info-label">Integrity</span><span class="info-value" style="color:var(--neon-green)">Active</span></div>
+            `;
+            modalActions.innerHTML = `
+                <button class="btn-delete" onclick="deleteResource(${r.id}); closePopup();">
+                    <i class="fas fa-trash"></i> Purge
+                </button>
+            `;
+            openPopup();
+        };
+
+        // 2. Open Comment Popup
+        window.openCommentPopup = function (index) {
+            const c = allCommentsData[index];
+            const btnText = c.is_verified ? 'Revoke' : 'Authorize';
+            const btnClass = c.is_verified ? 'btn-unverify' : '';
+
+            modalTitle.innerText = "Comm Log Details";
+            modalContent.innerHTML = `
+                <div class="info-row"><span class="info-label">User ID</span><span class="info-value">${c.user}</span></div>
+                <div class="info-row"><span class="info-label">Target Node</span><span class="info-value">${c.resource_title}</span></div>
+                <div class="info-row"><span class="info-label">Timestamp</span><span class="info-value">${new Date(c.created_at).toLocaleString()}</span></div>
+                <div class="info-row"><span class="info-label">Status</span><span class="info-value">${c.is_verified ? 'Secured' : 'Pending'}</span></div>
+                <div class="info-row" style="flex-direction:column; gap:5px;">
+                    <span class="info-label">Payload Content</span>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; font-size:0.9rem; color:#e2e8f0; width:100%;">${c.text}</div>
+                </div>
+            `;
+            modalActions.innerHTML = `
+                <button class="btn-verify ${btnClass}" onclick="toggleVerifyComment(${c.id}); closePopup();">
+                    ${btnText}
+                </button>
+            `;
+            openPopup();
+        };
+
+        // --- API ACTIONS ---
+        async function deleteResource(id) {
+            if (!confirm("Confirm Purge Protocol? This deletes the file and all associated logs.")) return;
+            const token = localStorage.getItem('access_token');
+            try {
+                const res = await fetch(`${API_BASE}/admin/delete-resource/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    alert("Purge Successful");
+                    fetchResources();
+                } else {
+                    const err = await res.json();
+                    alert("Purge Failed: " + (err.detail || res.statusText));
+                }
+            } catch (e) {
+                alert("Connection Failed. Is backend running?");
+            }
+        }
+
+        async function toggleVerifyComment(commentId) {
+            const token = localStorage.getItem('access_token');
+            if (!token) return alert("You are logged out!");
+            try {
+                const res = await fetch(`${API_BASE}/admin/verify-comment/${commentId}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                });
+                if (res.ok) {
+                    loadAllComments();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "Permission Denied"));
+                }
+            } catch (e) {
+                console.error("Connection error", e);
+                alert("Failed to connect to server.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            window.location.href = '/Frontend/Admin_login/adminLogin.html';
+        }
+    </script>
 </body>
+
 </html>

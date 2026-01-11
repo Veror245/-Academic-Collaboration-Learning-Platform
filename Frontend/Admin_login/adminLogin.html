@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniMind AI | Admin Access</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --bg-dark: #050505;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+      --neon-red: #ff0055;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* --- LAYOUT & BACKGROUND --- */
+    body.login-page {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bg-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.05;
+      /*background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");*/
+    }
+
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -2;
+      opacity: 0.4;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+      top: -20%;
+      left: -20%;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
+      bottom: -20%;
+      right: -20%;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(30px, 20px);
+      }
+    }
+
+    /* --- LOGIN CARD --- */
+    .login-card {
+      background: var(--glass-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      padding: 3rem;
+      border-radius: 24px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Glow effect on top of card */
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+    }
+
+    .login-logo {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: block;
+      letter-spacing: -1px;
+    }
+
+    .text-gradient {
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .login-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* --- FORM --- */
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #fff;
+      font-family: var(--font-body);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .form-input:focus {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 243, 255, 0.05);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+    }
+
+    /* --- BUTTON --- */
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: var(--neon-cyan);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 12px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-login:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+
+    /* --- MESSAGES --- */
+    .error-message {
+      color: var(--neon-red);
+      font-size: 0.85rem;
+      margin-top: 1.5rem;
+      display: none;
+      font-family: monospace;
+      padding: 10px;
+      background: rgba(255, 0, 85, 0.1);
+      border: 1px solid rgba(255, 0, 85, 0.2);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body class="login-page">
+
+  <div class="bg-noise"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="login-card">
+    <span class="login-logo">UniMind<span class="text-gradient">Admin</span></span>
+    <p class="login-subtitle">System Access Required</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Operator ID</label>
+        <input type="text" id="username" class="form-input" placeholder="Enter ID..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Security Key</label>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-login">Initialize Session</button>
+      <p id="errorMsg" class="error-message">Access Denied. Invalid Credentials.</p>
+    </form>
+  </div>
+
+  <script>
+    const LOGIN_URL = "http://127.0.0.1:8000/auth/login"; // CHECK THIS: Update if your auth route is different (e.g., /login)
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById('username').value;
+      const passwordInput = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const submitBtn = document.querySelector('.btn-login');
+
+      // Reset UI
+      errorMsg.style.display = 'none';
+      submitBtn.textContent = "Authenticating...";
+      submitBtn.disabled = true;
+
+      // FastAPI OAuth2PasswordRequestForm expects form-data
+      const formData = new URLSearchParams();
+      formData.append('username', usernameInput);
+      formData.append('password', passwordInput);
+
+      try {
+        const response = await fetch(LOGIN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // 1. SAVE THE TOKEN
+          localStorage.setItem('access_token', data.access_token);
+
+          // 2. REDIRECT
+          window.location.href = '/Frontend/Admin_Panel/admin.html';
+        } else {
+          // Login failed
+          errorMsg.textContent = "Access Denied. Invalid Credentials.";
+          errorMsg.style.display = 'block';
+          submitBtn.textContent = "Initialize Session";
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMsg.textContent = "Server Connection Failed.";
+        errorMsg.style.display = 'block';
+        submitBtn.textContent = "Initialize Session";
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>
