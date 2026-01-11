@@ -21,7 +21,7 @@ CHROMA_PATH = "chroma_db"  # Folder where vector data will be saved locally
 
 # Initialize the Gemini Model (The "Brain")
 llm = ChatGoogleGenerativeAI(
-    model="gemma-3-27b-it",  # Fast and cheap model
+    model="gemma-3-27b-it",  
     temperature=0.3
 )
 
@@ -207,9 +207,14 @@ def generate_quiz(resource_id: int):
     STRICT JSON STRUCTURE (Use this format, but replace the content):
     [
         {{
-            "question": "Write the first question here based on the text?",
-            "options": ["Option A", "Option B", "Option C", "Option D"],
-            "answer": "Option A"
+            "question": "Write the question here based on the text?",
+            "options": [
+                {{"id": "A", "text": "First option text"}},
+                {{"id": "B", "text": "Second option text"}},
+                {{"id": "C", "text": "Third option text"}},
+                {{"id": "D", "text": "Fourth option text"}}
+            ],
+            "answer": "A"
         }}
     ]
 
