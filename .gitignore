@@ -207,12 +207,8 @@ marimo/_lsp/
 __marimo__/
 static/
 chroma_db/
-<<<<<<< HEAD
-myenv/
-=======
 
 *.db
 *.sqlite
 *.sqlite3
-
->>>>>>> 682ae0e26996ca6b7a90df32b33e50446b778fa2
+myenv/
