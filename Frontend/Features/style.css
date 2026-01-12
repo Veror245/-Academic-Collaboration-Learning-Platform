@@ -96,6 +96,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0;
   /* Changed from flex-end to center for better alignment */
   margin-bottom: 4rem;
   flex-wrap: wrap;
@@ -104,16 +105,37 @@ body {
   padding-bottom: 2rem;
 }
 
-.header-content{
+.header-content {
   margin-bottom: 2rem;
 }
 
-.text-gradient{
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+  flex-wrap: nowrap;
+  /* Forces everything onto one line */
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 2rem;
+  width: 100%;
+}
+
+.header-content {
+  margin-bottom: 0;
+  /* Removes the bottom space so it aligns with nav */
+  min-width: max-content;
+  /* Prevents the title from getting squashed */
+}
+
+.text-gradient {
   background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+
 /* --- NEW NAVIGATION STYLES --- */
 .main-nav {
   /* This ensures the nav tries to stay in the center if space allows */
@@ -205,7 +227,7 @@ body {
   /* On medium screens, force the nav to a new line below logo and user */
   .dashboard-header {
     justify-content: center;
-    
+
   }
 
   .header-content {

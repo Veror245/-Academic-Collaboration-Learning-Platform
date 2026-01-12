@@ -70,6 +70,8 @@
             color: transparent;
         }
 
+        
+
         /* Live Indicator Pulse */
         .live-indicator {
             width: 10px;
@@ -403,21 +405,59 @@
         </div>
 
         <div id="chatInterface" style="display: none; height: 100%; flex-direction: column;">
-            <div class="chat-header">
-                <div>
-                    <h3 class="chat-title" id="activeGroupName">Unknown Protocol</h3>
-                    <span style="font-size: 0.8rem; color: var(--neon-green);" id="activeGroupStatus">● Secure
-                        Connection</span>
-                </div>
-                <div class="chat-actions">
-                    <button onclick="toggleResources()" title="Shared Files"><i class="fas fa-folder-open"></i>
-                        Files</button>
-                    <button id="deleteGroupBtn" onclick="deleteCurrentGroup()" class="btn-delete" style="display:none;"
-                        title="Delete Group">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
-                </div>
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="brand-title" style="font-size: 2rem;">UniMind<span class="text-gradient">AI</span></h1>
+                <p class="brand-subtitle" style="font-size: .8rem; color: rgba(255, 255, 255, 0.468);">System Online.</p>
             </div>
+        
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
+                            <i class="fas fa-satellite-dish"></i> Upload Notes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/quiz/quiz.html" class="nav-link">
+                            <i class="fas fa-brain"></i> Neural Quiz
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
+                            <i class="fas fa-layer-group"></i> Study Matrix
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
+                            <i class="fas fa-fingerprint"></i> User Data
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Frontend/StudyGroups/StudyGroups.html" class="nav-link">
+                            <i class="fas fa-comments"></i> Chatroom
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="logout-btn" class="nav-link logout-link">
+                            <i class="fas fa-power-off"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        
+            <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
+                <div class="hud-avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="hud-info">
+                    <div class="hud-top">
+                        <span class="user-name" id="user-name">Alex</span>
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </a>
+        </header>
 
             <div class="chat-messages" id="messageContainer"></div>
 
