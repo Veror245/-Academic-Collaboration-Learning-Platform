@@ -36,15 +36,20 @@ def create_group(
     return {"msg": "Group created!", "id": new_group.id}
 
 @router.get("/all")
-def get_all_groups(db: Session = Depends(database.get_db)):
+def get_all_groups(db: Session = Depends(database.get_db),
+                   user: models.User = Depends(auth.get_current_user),):
+
     # Returns list of groups with member count
     groups = db.query(models.StudyGroup).all()
+
     return [
         {
             "id": g.id,
             "name": g.name,
             "description": g.description,
-            "member_count": len(g.members)
+            "creator_id": g.creator_id,
+            "member_count": len(g.members),
+            "is_member": user in g.members
         }
         for g in groups
     ]
@@ -93,6 +98,14 @@ def send_message(
     user: models.User = Depends(auth.get_current_user),
     db: Session = Depends(database.get_db)
 ):
+    group = db.query(models.StudyGroup).filter(models.StudyGroup.id == group_id).first()
+    if not group:
+        raise HTTPException(404, "Group not found")
+
+    # 2. STRICT SECURITY: Only members can chat
+    if user not in group.members:
+        raise HTTPException(403, "You must join the group to send messages.")
+    
     new_msg = models.Message(
         content=msg.content,
         user_id=user.id,
