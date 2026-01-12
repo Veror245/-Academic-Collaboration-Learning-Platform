@@ -23,7 +23,7 @@ class User(Base):
     
     uploads: Mapped[List["Resource"]] = relationship(back_populates="uploader")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user")
-    votes: Mapped[list["Vote"]] = relationship(back_populates="user")
+    ratings: Mapped[list["Rating"]] = relationship(back_populates="user")
     tokens: Mapped[List["Token"]] = relationship(back_populates="user")
 
 # Active Login Tokens
@@ -64,7 +64,7 @@ class Resource(Base):
     uploader: Mapped["User"] = relationship(back_populates="uploads")
     room: Mapped["Room"] = relationship(back_populates="resources")
     comments: Mapped[list["Comment"]] = relationship(back_populates="resource", cascade="all, delete-orphan")
-    votes: Mapped[list["Vote"]] = relationship(back_populates="resource", cascade="all, delete-orphan")
+    ratings: Mapped[list["Rating"]] = relationship(back_populates="resource", cascade="all, delete-orphan")
 
 # Comments 
 class Comment(Base):
@@ -81,16 +81,17 @@ class Comment(Base):
     user: Mapped["User"] = relationship(back_populates="comments")
     resource: Mapped["Resource"] = relationship(back_populates="comments")
 
-class Vote(Base):
-    __tablename__ = "votes"
+class Rating(Base):
+    __tablename__ = "ratings"
 
     # Composite Primary Key (User + Resource)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     resource_id: Mapped[int] = mapped_column(ForeignKey("resources.id"), primary_key=True)
     
     # 1 for Upvote, -1 for Downvote
-    value: Mapped[int] = mapped_column(Integer)
+    value: Mapped[int] = mapped_column(Integer, default=0)
+    stars: Mapped[int] = mapped_column(Integer, default=0)
 
     # Relationships
-    user: Mapped["User"] = relationship(back_populates="votes")
-    resource: Mapped["Resource"] = relationship(back_populates="votes")
+    user: Mapped["User"] = relationship(back_populates="ratings")
+    resource: Mapped["Resource"] = relationship(back_populates="ratings")
