@@ -24,6 +24,7 @@
             --neon-purple: #bc13fe;
             --neon-green: #00ff9d;
             --neon-red: #ff0055;
+            --neon-gold: #ffcc00; /* New Rating Color */
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
 
@@ -85,19 +86,13 @@
         }
 
         @keyframes float {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(50px, 30px);
-            }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 30px); }
         }
 
         /* --- 3. LAYOUT --- */
         .library-container {
             max-width: 1300px;
-            /* Slightly wider to fit inline nav */
             margin: 0 auto;
             padding: 40px 20px;
             position: relative;
@@ -110,7 +105,6 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: nowrap;
-            /* Forces single line */
             gap: 20px;
             margin-bottom: 40px;
             border-bottom: 1px solid var(--glass-border);
@@ -118,11 +112,7 @@
             width: 100%;
         }
 
-        /* Logo Section */
-        .header-content {
-            flex-shrink: 0;
-            /* Prevents shrinking */
-        }
+        .header-content { flex-shrink: 0; }
 
         .header-content h1 {
             font-family: var(--font-heading);
@@ -148,7 +138,6 @@
             margin: 0;
         }
 
-        /* Navigation Bar (Centered) */
         .main-nav {
             flex-grow: 1;
             display: flex;
@@ -205,31 +194,9 @@
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
         }
 
-        .nav-link.active i {
-            color: var(--neon-purple);
-        }
+        .nav-link.active i { color: var(--neon-purple); }
 
-        /* Logout Button Specifics */
-        .logout-link {
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            margin-left: 5px;
-        }
-
-        .logout-link:hover {
-            background: rgba(255, 0, 85, 0.1) !important;
-            color: var(--neon-red) !important;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4) !important;
-        }
-
-        .logout-link:hover i {
-            color: var(--neon-red) !important;
-        }
-
-        /* Upload Button Wrapper */
-        .upload-action-link {
-            text-decoration: none;
-            flex-shrink: 0;
-        }
+        .upload-action-link { text-decoration: none; flex-shrink: 0; }
 
         .upload-btn {
             background: rgba(0, 243, 255, 0.1);
@@ -269,10 +236,7 @@
             scrollbar-color: var(--neon-cyan) transparent;
         }
 
-        .filter-bar::-webkit-scrollbar {
-            height: 4px;
-        }
-
+        .filter-bar::-webkit-scrollbar { height: 4px; }
         .filter-bar::-webkit-scrollbar-thumb {
             background: var(--glass-border);
             border-radius: 4px;
@@ -394,50 +358,80 @@
             gap: 12px;
         }
 
-        .vote-box {
+        /* --- PREMIUM RATING STYLES (REPLACES VOTE BOX) --- */
+        .rating-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 6px 12px;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
-        .vote-btn {
+        .rating-container:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stars {
+            display: flex;
+            gap: 4px;
+            position: relative;
+        }
+
+        .star-btn {
             background: none;
             border: none;
-            color: var(--text-secondary);
             cursor: pointer;
-            transition: 0.3s ease;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.2); /* Empty state: dim grey */
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 2px;
+            position: relative;
         }
 
-        .vote-btn:hover {
-            color: #fff;
+        /* Hover Animation (Pop) */
+        .star-btn:hover { transform: scale(1.3); }
+
+        /* Click Animation */
+        .star-btn:active { transform: scale(0.9); }
+
+        /* FILLED STATE (Gold & Glowing) */
+        .star-btn.filled {
+            color: var(--neon-gold);
+            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.6));
         }
 
-        .vote-btn.active.up {
-            color: var(--neon-green);
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--neon-green));
+        /* HOVER PREVIEW STATE */
+        .star-btn.preview-filled {
+            color: var(--neon-gold);
+            opacity: 0.7;
         }
 
-        .vote-btn.active.down {
-            color: var(--neon-red);
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--neon-red));
-        }
-
-        .vote-count {
+        .average-rating {
             font-family: var(--font-heading);
             font-weight: 700;
+            font-size: 1rem;
             color: #fff;
-            min-width: 20px;
+            min-width: 40px;
             text-align: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            padding-left: 12px;
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .average-rating span {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-top: 2px;
+            font-family: var(--font-body);
         }
 
         .comment-btn {
@@ -470,9 +464,7 @@
             gap: 5px;
         }
 
-        .download-link:hover {
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
+        .download-link:hover { text-shadow: 0 0 10px var(--neon-cyan); }
 
         /* --- 7. MODALS --- */
         .modal-overlay {
@@ -516,8 +508,7 @@
             font-weight: 600;
         }
 
-        .form-control,
-        select {
+        .form-control, select {
             width: 100%;
             padding: 12px;
             background: rgba(255, 255, 255, 0.05);
@@ -567,34 +558,18 @@
             box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
         }
 
-        .btn-confirm:hover {
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
-        }
+        .btn-confirm:hover { box-shadow: 0 0 25px rgba(0, 243, 255, 0.5); }
 
         /* --- RESPONSIVE HEADER --- */
         @media (max-width: 1200px) {
             .library-header {
                 flex-wrap: wrap;
-                /* Allow wrapping on small screens */
                 justify-content: center;
                 gap: 1.5rem;
             }
-
-            .header-content {
-                width: 100%;
-                text-align: center;
-                order: 1;
-            }
-
-            .upload-action-link {
-                order: 2;
-            }
-
-            .main-nav {
-                width: 100%;
-                order: 3;
-                overflow-x: auto;
-            }
+            .header-content { width: 100%; text-align: center; order: 1; }
+            .upload-action-link { order: 2; }
+            .main-nav { width: 100%; order: 3; overflow-x: auto; }
         }
     </style>
 </head>
@@ -615,27 +590,10 @@
 
             <nav class="main-nav">
                 <ul class="nav-list">
-                    <li>
-                        <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
-                            <i class="fas fa-satellite-dish"></i> Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
-                            <i class="fas fa-brain"></i> Upload Notes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/quiz/quiz.html" class="nav-link">
-                            <i class="fas fa-layer-group"></i> Neural Quiz
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
-                            <i class="fas fa-fingerprint"></i> User Data
-                        </a>
-                    </li>
-                   
+                    <li><a href="/Frontend/Features/FeaturesPage.html" class="nav-link"><i class="fas fa-satellite-dish"></i> Home</a></li>
+                    <li><a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link"><i class="fas fa-brain"></i> Upload Notes</a></li>
+                    <li><a href="/Frontend/quiz/quiz.html" class="nav-link"><i class="fas fa-layer-group"></i> Neural Quiz</a></li>
+                    <li><a href="/Frontend/User_Profile/UserProfile.html" class="nav-link"><i class="fas fa-fingerprint"></i> User Data</a></li>
                 </ul>
             </nav>
 
@@ -645,6 +603,7 @@
                 </button>
             </a>
         </header>
+
         <nav class="filter-bar">
             <button class="filter-btn active" onclick="loadRoom('all', this)">All</button>
             <button class="filter-btn" onclick="loadRoom('cs', this)">Computer Science</button>
@@ -667,8 +626,7 @@
             <form onsubmit="handleUpload(event)">
                 <div class="form-group">
                     <label>Title</label>
-                    <input type="text" id="noteTitle" class="form-control" placeholder="Enter resource title..."
-                        required>
+                    <input type="text" id="noteTitle" class="form-control" placeholder="Enter resource title..." required>
                 </div>
                 <div class="form-group">
                     <label>Subject Stream</label>
@@ -704,17 +662,7 @@
             loadRoom('all', document.querySelector('.filter-btn'));
         });
 
-        // 1. LOGOUT LOGIC
-        document.getElementById('logout-btn').addEventListener('click', function (e) {
-            e.preventDefault();
-            if (confirm("Are you sure you want to disconnect?")) {
-                localStorage.removeItem('token');
-                sessionStorage.clear();
-                window.location.href = '../Login/login.html';
-            }
-        });
-
-        // 2. LOAD NOTES
+        // 1. LOAD NOTES
         async function loadRoom(slug, btnElement) {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -762,7 +710,7 @@
             }
         }
 
-        // 3. RENDER NOTES
+        // 2. RENDER NOTES (Updated for Rating)
         function renderNotes(notes) {
             const grid = document.getElementById('notesGrid');
             grid.innerHTML = '';
@@ -776,8 +724,25 @@
                 const card = document.createElement('div');
                 card.className = 'note-card';
                 const fileUrl = `${API_BASE}/${note.file_path}`;
-                const upActive = note.user_vote === 1 ? 'active up' : '';
-                const downActive = note.user_vote === -1 ? 'active down' : '';
+                
+                // Defaults if backend doesn't return them yet
+                const userRating = note.user_rating || 0; 
+                const avgRating = note.average_rating ? parseFloat(note.average_rating).toFixed(1) : "0.0";
+
+                // Generate 5 stars with ID specific logic for hover effects
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    const isFilled = i <= userRating ? 'filled' : '';
+                    starsHtml += `
+                        <button class="star-btn ${isFilled}" 
+                            id="star-${note.id}-${i}"
+                            onclick="handleRating(${note.id}, ${i})"
+                            onmouseenter="previewRating(${note.id}, ${i})"
+                            onmouseleave="resetRating(${note.id}, ${userRating})">
+                            <i class="fas fa-star"></i>
+                        </button>
+                    `;
+                }
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -794,15 +759,15 @@
 
                     <div class="card-footer">
                         <div class="interaction-group">
-                            <div class="vote-box">
-                                <button class="vote-btn ${upActive}" id="upbtn-${note.id}" onclick="handleVote(${note.id}, 1)">
-                                    <i class="fas fa-arrow-up"></i>
-                                </button>
-                                <span class="vote-count" id="score-${note.id}">${note.score}</span>
-                                <button class="vote-btn ${downActive}" id="downbtn-${note.id}" onclick="handleVote(${note.id}, -1)">
-                                    <i class="fas fa-arrow-down"></i>
-                                </button>
+                            <div class="rating-container" id="rating-box-${note.id}">
+                                <div class="stars" id="stars-container-${note.id}">
+                                    ${starsHtml}
+                                </div>
+                                <div class="average-rating" id="avg-display-${note.id}">
+                                    ${avgRating} <span>/ 5.0</span>
+                                </div>
                             </div>
+
                             <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.file_path.replace(/'/g, "\\'")}')">
                                 <i class="far fa-comment-dots"></i> Discuss
                             </button>
@@ -816,7 +781,75 @@
             });
         }
 
-        // 4. UPLOAD HANDLING
+        // 3. RATING HOVER EFFECTS
+        function previewRating(noteId, starValue) {
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${noteId}-${i}`);
+                if (i <= starValue) {
+                    star.classList.add('preview-filled'); 
+                    star.classList.remove('filled'); 
+                } else {
+                    star.classList.remove('preview-filled');
+                    star.classList.remove('filled');
+                }
+            }
+        }
+
+        function resetRating(noteId, actualRating) {
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${noteId}-${i}`);
+                star.classList.remove('preview-filled'); 
+                
+                if (i <= actualRating) star.classList.add('filled');
+                else star.classList.remove('filled');
+            }
+        }
+
+        // 4. HANDLE RATING (API Call)
+        async function handleRating(resourceId, ratingValue) {
+            const token = localStorage.getItem('token');
+            if (!token) return alert("Please login to rate resources");
+
+            try {
+                // Ensure your backend endpoint is /student/rate and accepts POST
+                const res = await fetch(`${API_BASE}/student/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ resource_id: resourceId, rating: ratingValue })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    
+                    // Update Average Display
+                    const newAvg = data.new_average ? parseFloat(data.new_average).toFixed(1) : "?.?";
+                    document.getElementById(`avg-display-${resourceId}`).innerHTML = `${newAvg} <span>/ 5.0</span>`;
+
+                    // Update stars visual and the logic for mouseleave (to "stick" the new rating)
+                    for (let i = 1; i <= 5; i++) {
+                        const star = document.getElementById(`star-${resourceId}-${i}`);
+                        
+                        // IMPORTANT: Update the onmouseleave attribute to remember the NEW rating
+                        star.setAttribute('onmouseleave', `resetRating(${resourceId}, ${ratingValue})`);
+                        
+                        star.classList.remove('preview-filled');
+                        if (i <= ratingValue) star.classList.add('filled');
+                        else star.classList.remove('filled');
+                    }
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "Could not rate"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection error");
+            }
+        }
+
+        // 5. UPLOAD HANDLING
         async function handleUpload(e) {
             e.preventDefault();
             const token = localStorage.getItem('token');
@@ -847,39 +880,6 @@
             }
         }
 
-        // 5. VOTING
-        async function handleVote(resourceId, type) {
-            const token = localStorage.getItem('token');
-            if (!token) return alert("Please login to vote");
-
-            try {
-                const res = await fetch(`${API_BASE}/student/vote`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ resource_id: resourceId, vote_type: type })
-                });
-
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById(`score-${resourceId}`).innerText = data.new_score;
-
-                    const upBtn = document.getElementById(`upbtn-${resourceId}`);
-                    const downBtn = document.getElementById(`downbtn-${resourceId}`);
-
-                    upBtn.className = 'vote-btn';
-                    downBtn.className = 'vote-btn';
-
-                    if (type === 1) upBtn.classList.add('active', 'up');
-                    else if (type === -1) downBtn.classList.add('active', 'down');
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
         // 6. UTILS
         function goToComments(id, title, filePath) {
             const cleanTitle = encodeURIComponent(title);
@@ -891,5 +891,4 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
-
 </html>
