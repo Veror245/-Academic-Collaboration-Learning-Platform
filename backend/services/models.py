@@ -35,6 +35,8 @@ class User(Base):
     ratings: Mapped[list["Rating"]] = relationship(back_populates="user")
     tokens: Mapped[List["Token"]] = relationship(back_populates="user")
     joined_groups: Mapped[List["StudyGroup"]] = relationship(secondary=group_members, back_populates="members")
+    
+    last_login: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
 # Active Login Tokens
 class Token(Base):

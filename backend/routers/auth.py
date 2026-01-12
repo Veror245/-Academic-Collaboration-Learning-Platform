@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from backend.services import database, crud, auth, models, schemas
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -20,10 +21,12 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(database.get_d
         email=user_data.email,
         password_hash=hashed_pwd,
         full_name=user_data.full_name,
-        role=user_data.role
+        role=user_data.role,
+        last_login=datetime.now(timezone.utc) 
     )
     
     # Save and Return
+    # Note: Ensure crud.create_user adds and commits this user
     created_user = crud.create_user(db, new_user)
     return created_user
 
@@ -32,6 +35,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     user = crud.get_user_by_email(db, email=form_data.username)
     if not user or not auth.verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    user.last_login = datetime.now(timezone.utc)
+    db.commit() # Save the new time to DB
     
     access_token = auth.create_token(user)
     
