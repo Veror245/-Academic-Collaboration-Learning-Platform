@@ -51,6 +51,7 @@
             display: flex;
             flex-direction: column;
             backdrop-filter: blur(20px);
+            z-index: 20;
         }
 
         .sidebar-header {
@@ -70,9 +71,6 @@
             color: transparent;
         }
 
-        
-
-        /* Live Indicator Pulse */
         .live-indicator {
             width: 10px;
             height: 10px;
@@ -83,20 +81,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         .group-list {
@@ -157,17 +144,99 @@
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
         }
 
-        /* --- MAIN CONTENT --- */
+        /* --- MAIN CONTENT & HEADER --- */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05), transparent 60%);
             position: relative;
+            overflow: hidden;
         }
 
+        /* Dashboard Header Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(5, 5, 5, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .header-content h1 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: #fff;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: var(--glass-surface);
+        }
+
+        .hud-user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        
+        .hud-user-card:hover {
+            border-color: var(--neon-cyan);
+        }
+
+        .hud-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--glass-surface);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-cyan);
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Chat Specific Header */
         .chat-header {
-            padding: 20px 30px;
+            padding: 15px 30px;
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
@@ -178,6 +247,7 @@
         .chat-title {
             font-size: 1.2rem;
             font-family: var(--font-heading);
+            color: #fff;
         }
 
         .chat-actions button {
@@ -189,19 +259,21 @@
             cursor: pointer;
             transition: 0.3s;
             margin-left: 10px;
+            font-size: 0.85rem;
         }
 
         .chat-actions button:hover {
             border-color: var(--neon-purple);
             color: #fff;
         }
-
+        
         .btn-delete:hover {
             border-color: var(--neon-red) !important;
             color: var(--neon-red) !important;
             background: rgba(255, 0, 85, 0.1) !important;
         }
 
+        /* Chat Body */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -219,17 +291,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .msg-left {
             align-self: flex-start;
@@ -282,6 +344,7 @@
             justify-content: center;
             text-align: center;
             backdrop-filter: blur(5px);
+            margin-top: auto; /* Pushes to bottom if flex container */
         }
 
         .chat-input {
@@ -294,9 +357,7 @@
             outline: none;
         }
 
-        .chat-input:focus {
-            border-color: var(--neon-cyan);
-        }
+        .chat-input:focus { border-color: var(--neon-cyan); }
 
         .send-btn {
             width: 50px;
@@ -309,9 +370,7 @@
             transition: 0.3s;
         }
 
-        .send-btn:hover {
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
-        }
+        .send-btn:hover { box-shadow: 0 0 15px rgba(188, 19, 254, 0.4); }
 
         /* --- MODAL & DRAWER --- */
         .modal {
@@ -366,7 +425,9 @@
             border-left: 1px solid var(--glass-border);
             transition: 0.3s;
             padding: 20px;
-            z-index: 10;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
         }
 
         .resources-drawer.open {
@@ -393,101 +454,75 @@
         </div>
         <button class="create-btn" onclick="openModal('createModal')"><i class="fas fa-plus"></i> New Protocol</button>
         <button class="create-btn" style="margin-top:0; border-color: #333; background: transparent; color: #aaa;"
-            onclick="window.location.href='../Features/FeaturesPage.html'"><i class="fas fa-arrow-left"></i> Return
-            Home</button>
+            onclick="window.location.href='../Features/FeaturesPage.html'"><i class="fas fa-arrow-left"></i> Return Home</button>
     </aside>
 
     <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="brand-title">UniMind<span class="text-gradient">AI</span></h1>
+            </div>
+        
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link"><i class="fas fa-satellite-dish"></i> Upload</a></li>
+                    <li><a href="/Frontend/quiz/quiz.html" class="nav-link"><i class="fas fa-brain"></i> Quiz</a></li>
+                    <li><a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link"><i class="fas fa-layer-group"></i> Matrix</a></li>
+                    <li><a href="/Frontend/StudyGroups/StudyGroups.html" class="nav-link" style="color:var(--neon-cyan)"><i class="fas fa-comments"></i> Chat</a></li>
+                </ul>
+            </nav>
+        
+            <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
+                <div class="hud-avatar"><i class="fas fa-user-astronaut"></i></div>
+                <div class="hud-info">
+                    <span class="user-name" id="user-name">User</span>
+                </div>
+            </a>
+        </header>
+
         <div id="noGroupSelected" class="empty-state">
             <i class="fas fa-satellite-dish" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
             <h2>Select a Neural Cluster</h2>
             <p>Initiate connection to begin data exchange.</p>
         </div>
 
-        <div id="chatInterface" style="display: none; height: 100%; flex-direction: column;">
-        <header class="dashboard-header">
-            <div class="header-content">
-                <h1 class="brand-title" style="font-size: 2rem;">UniMind<span class="text-gradient">AI</span></h1>
-                <p class="brand-subtitle" style="font-size: .8rem; color: rgba(255, 255, 255, 0.468);">System Online.</p>
+        <div id="chatInterface" style="display: none; height: 100%; flex: 1; flex-direction: column; overflow: hidden; position: relative;">
+            
+            <div class="chat-header">
+                <div>
+                    <div class="chat-title" id="activeGroupName">Select Group</div>
+                    <div style="font-size: 0.8rem;" id="activeGroupStatus"></div>
+                </div>
+                <div class="chat-actions">
+                    <button onclick="toggleResources()"><i class="fas fa-database"></i> Files</button>
+                    <button id="deleteGroupBtn" class="btn-delete" onclick="deleteCurrentGroup()" style="display: none;"><i class="fas fa-trash"></i> Delete</button>
+                </div>
             </div>
-        
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li>
-                        <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
-                            <i class="fas fa-satellite-dish"></i> Upload Notes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/quiz/quiz.html" class="nav-link">
-                            <i class="fas fa-brain"></i> Neural Quiz
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/Study_Room/StudyRoom.html" class="nav-link">
-                            <i class="fas fa-layer-group"></i> Study Matrix
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
-                            <i class="fas fa-fingerprint"></i> User Data
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/StudyGroups/StudyGroups.html" class="nav-link">
-                            <i class="fas fa-comments"></i> Chatroom
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" id="logout-btn" class="nav-link logout-link">
-                            <i class="fas fa-power-off"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        
-            <a href="/Frontend/User_Profile/UserProfile.html" class="hud-user-card">
-                <div class="hud-avatar">
-                    <i class="fas fa-user-astronaut"></i>
-                </div>
-                <div class="hud-info">
-                    <div class="hud-top">
-                        <span class="user-name" id="user-name">Alex</span>
-                        <span class="status-indicator"></span>
-                    </div>
-                </div>
-            </a>
-        </header>
 
             <div class="chat-messages" id="messageContainer"></div>
 
             <div id="inputArea" class="chat-input-area">
-                <input type="text" id="msgInput" class="chat-input" placeholder="Transmit data..."
-                    onkeypress="handleEnter(event)">
+                <input type="text" id="msgInput" class="chat-input" placeholder="Transmit data..." onkeypress="handleEnter(event)">
                 <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
 
             <div id="joinOverlay" class="join-overlay" style="display: none;">
                 <h3 style="color: #fff; margin-bottom: 10px;">Read-Only Mode</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">You must join this neural cluster to
-                    transmit data.</p>
-                <button onclick="joinCurrentGroup()" class="create-btn"
-                    style="margin: 0; border-color: var(--neon-purple); color: #fff; background: rgba(188, 19, 254, 0.1);">Initialize
-                    Uplink (Join)</button>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">You must join this neural cluster to transmit data.</p>
+                <button onclick="joinCurrentGroup()" class="create-btn" style="margin: 0; border-color: var(--neon-purple); color: #fff; background: rgba(188, 19, 254, 0.1);">Initialize Uplink (Join)</button>
             </div>
         </div>
 
         <div class="resources-drawer" id="resourceDrawer">
-            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <i class="fas fa-database"></i> Shared Data
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between;">
+                <span><i class="fas fa-database"></i> Shared Data</span>
+                <i class="fas fa-times" style="cursor: pointer;" onclick="toggleResources()"></i>
             </h3>
             <div id="resourceUploadArea" style="margin-bottom: 20px;">
                 <input type="file" id="groupFileInput" style="display: none;" onchange="uploadGroupFile()">
-                <button onclick="document.getElementById('groupFileInput').click()" class="create-btn"
-                    style="margin: 0; width: 100%; text-align: center;"><i class="fas fa-upload"></i> Upload
-                    File</button>
+                <button onclick="document.getElementById('groupFileInput').click()" class="create-btn" style="margin: 0; width: 100%; text-align: center;"><i class="fas fa-upload"></i> Upload File</button>
             </div>
-            <div id="groupResourceList" style="overflow-y: auto; height: calc(100% - 100px);"></div>
+            <div id="groupResourceList" style="overflow-y: auto; flex: 1;"></div>
         </div>
     </main>
 
@@ -499,8 +534,7 @@
             <label style="color: #aaa; font-size: 0.8rem;">DESCRIPTION</label>
             <input type="text" id="newGroupDesc" placeholder="Brief objective...">
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeModal('createModal')" class="create-btn"
-                    style="flex:1; background: transparent; border-color: #555; color: #fff;">Abort</button>
+                <button onclick="closeModal('createModal')" class="create-btn" style="flex:1; background: transparent; border-color: #555; color: #fff;">Abort</button>
                 <button onclick="createGroup()" class="create-btn" style="flex:1; margin:0;">Deploy</button>
             </div>
         </div>
@@ -532,7 +566,10 @@
                 const res = await fetch(`${API_BASE}/student/me`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
-                if (res.ok) currentUser = await res.json();
+                if (res.ok) {
+                    currentUser = await res.json();
+                    document.getElementById('user-name').innerText = currentUser.full_name;
+                }
             } catch (e) { console.error("User fetch error", e); }
         }
 
@@ -558,6 +595,7 @@
                         </div>
                     `;
 
+                    // If this group is currently selected, update its status UI (in case membership changed)
                     if (currentGroupId === g.id) {
                         updateMembershipUI(g.is_member, g.name, g.creator_id);
                     }
@@ -592,7 +630,7 @@
         function selectGroup(id, name, creatorId, isMember) {
             if (currentGroupId !== id) {
                 currentGroupId = id;
-                document.getElementById('messageContainer').innerHTML = '';
+                document.getElementById('messageContainer').innerHTML = ''; // Clear chat
             }
 
             document.getElementById('noGroupSelected').style.display = 'none';
@@ -605,6 +643,7 @@
         }
 
         function updateMembershipUI(isMember, name, creatorId) {
+            // Update Chat Header Info
             document.getElementById('activeGroupName').innerText = name;
 
             // --- PERMISSION CHECK FOR DELETE BUTTON ---
@@ -620,14 +659,12 @@
                 document.getElementById('inputArea').style.display = 'flex';
                 document.getElementById('joinOverlay').style.display = 'none';
                 document.getElementById('resourceUploadArea').style.display = 'block';
-                document.getElementById('activeGroupStatus').innerText = "● Uplink Established";
-                document.getElementById('activeGroupStatus').style.color = "var(--neon-green)";
+                document.getElementById('activeGroupStatus').innerHTML = '<span style="color:var(--neon-green)">● Uplink Established</span>';
             } else {
                 document.getElementById('inputArea').style.display = 'none';
                 document.getElementById('joinOverlay').style.display = 'flex';
                 document.getElementById('resourceUploadArea').style.display = 'none';
-                document.getElementById('activeGroupStatus').innerText = "○ Read-Only / Join Required";
-                document.getElementById('activeGroupStatus').style.color = "var(--text-secondary)";
+                document.getElementById('activeGroupStatus').innerHTML = '<span style="color:var(--text-secondary)">○ Read-Only / Join Required</span>';
             }
         }
 
@@ -658,7 +695,7 @@
                 });
                 const data = await res.json();
                 alert(data.msg);
-                loadGroups();
+                loadGroups(); // Reload to update UI
             } catch (e) { console.error(e); }
         }
 
@@ -685,6 +722,7 @@
                     </div>`;
             }).join('');
 
+            // Only update if content changed (to prevent scroll jumping on auto-refresh)
             if (container.innerHTML !== currentHTML) {
                 const wasAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
                 container.innerHTML = currentHTML;
@@ -715,6 +753,7 @@
         async function loadGroupResources() {
             if (!currentGroupId) return;
             const list = document.getElementById('groupResourceList');
+            // Show loading only if empty
             if (list.innerHTML === "") list.innerHTML = '<div style="color:#666; text-align:center;">Loading...</div>';
 
             try {
@@ -722,13 +761,13 @@
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const resources = await res.json();
-                list.innerHTML = resources.length ? "" : '<div style="color:#666; text-align:center;">No Data</div>';
+                list.innerHTML = resources.length ? "" : '<div style="color:#666; text-align:center; padding-top:20px;">No Data Shared</div>';
                 resources.forEach(r => {
                     const div = document.createElement('div');
                     div.style.cssText = "padding: 10px; border-bottom: 1px solid #333; margin-bottom: 5px;";
                     div.innerHTML = `<div style="font-size:0.9rem; color:#fff;">${r.title}</div>
                         <div style="font-size:0.7rem; color:var(--text-secondary);">By ${r.uploader}</div>
-                        <a href="${API_BASE}/static/uploads/${r.filename}" target="_blank" style="color:var(--neon-cyan); font-size:0.8rem;"><i class="fas fa-download"></i> Download</a>`;
+                        <a href="${API_BASE}/static/uploads/${r.filename}" target="_blank" style="color:var(--neon-cyan); font-size:0.8rem; text-decoration:none;"><i class="fas fa-download"></i> Download</a>`;
                     list.appendChild(div);
                 });
             } catch (e) { console.error(e); }
