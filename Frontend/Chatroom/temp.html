@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Chat - UniMind</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- COPYING CORE THEME --- */
+    :root {
+      --bg-dark: #050505;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #bc13fe;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* No body scroll, internal scroll only */
+    }
+
+    /* --- LAYOUT --- */
+    .chat-container {
+      display: flex;
+      height: calc(100vh - 70px);
+      /* Subtract header height */
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    /* --- SIDEBAR (Group List) --- */
+    .sidebar {
+      width: 350px;
+      background: rgba(0, 0, 0, 0.2);
+      border-right: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 10px;
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: white;
+      outline: none;
+    }
+
+    .group-list {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding: 10px;
+    }
+
+    .group-item {
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid transparent;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .group-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .group-item.active {
+      background: rgba(0, 243, 255, 0.05);
+      border-color: rgba(0, 243, 255, 0.3);
+    }
+
+    .group-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(188, 19, 254, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-purple);
+    }
+
+    .group-info h4 {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .group-info p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* --- CHAT AREA --- */
+    .chat-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background-image: radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.02), transparent 40%);
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-title h2 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .online-count {
+      font-size: 0.8rem;
+      color: var(--neon-cyan);
+      background: rgba(0, 243, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* MESSAGES */
+    .messages-box {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 70%;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .message.sent {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .message.received {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .msg-bubble {
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .sent .msg-bubble {
+      background: linear-gradient(135deg, rgba(188, 19, 254, 0.2), rgba(124, 58, 237, 0.2));
+      border: 1px solid rgba(188, 19, 254, 0.3);
+      color: #fff;
+      border-bottom-right-radius: 2px;
+    }
+
+    .received .msg-bubble {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      color: #e2e8f0;
+      border-bottom-left-radius: 2px;
+    }
+
+    .msg-info {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 5px;
+      display: flex;
+      gap: 10px;
+    }
+
+    /* INPUT AREA */
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      gap: 10px;
+    }
+
+    .msg-input {
+      flex-grow: 1;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: white;
+      outline: none;
+      font-family: var(--font-body);
+    }
+
+    .msg-input:focus {
+      border-color: var(--neon-cyan);
+    }
+
+    .send-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      border: none;
+      color: black;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+
+    /* Navigation Header (Simplified) */
+    .nav-header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      color: var(--neon-cyan);
+    }
+
+    /* Welcome Placeholder */
+    .no-chat-selected {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .no-chat-selected i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--glass-border);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="nav-header">
+    <h2 style="font-family: var(--font-heading);">UniMind <span style="color:var(--neon-cyan)">Chat</span></h2>
+    <nav>
+      <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">Home</a>
+      <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">Notes</a>
+    </nav>
+  </header>
+
+  <div class="chat-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <input type="text" class="search-bar" id="searchRooms" placeholder="Search groups..." onkeyup="filterRooms()">
+      </div>
+      <div class="group-list" id="groupList">
+        <p style="padding:20px; text-align:center; color:#666;">Loading groups...</p>
+      </div>
+    </aside>
+
+    <main class="chat-area">
+      <div class="chat-header" id="chatHeader" style="display:none;">
+        <div class="chat-title">
+          <h2 id="roomTitle">Select a Room</h2>
+          <p id="roomMeta" style="font-size:0.8rem; color:#888;">PDF Group</p>
+        </div>
+        <div class="online-count"><i class="fas fa-circle" style="font-size:8px; margin-right:5px;"></i> Live</div>
+      </div>
+
+      <div class="messages-box" id="messagesBox">
+        <div class="no-chat-selected" id="welcomeScreen">
+          <i class="fas fa-comments"></i>
+          <h3>Select a PDF Group to start chatting</h3>
+          <p>Discuss notes, ask questions, and collaborate.</p>
+        </div>
+      </div>
+
+      <div class="input-area" id="inputArea" style="display:none;">
+        <input type="text" class="msg-input" id="messageInput" placeholder="Type your message..."
+          onkeypress="handleEnter(event)">
+        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    let currentWs = null;
+    let currentUser = null;
+    let currentRoomId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchGroups();
+      // Get current user details (simulated or fetched from profile endpoint)
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Ideally fetch /me endpoint to get username
+        currentUser = "Me"; // Placeholder
+      }
+    });
+
+    // 1. FETCH GROUPS (PDFs)
+    async function fetchGroups() {
+      const token = localStorage.getItem('token');
+      if (!token) return window.location.href = "../Login/login.html";
+
+      try {
+        // Reuse existing endpoint or create new /groups endpoint
+        // Assuming we fetch all resources to list them as groups
+        // For "All" just fetching from one stream for demo, or loop all
+        const response = await fetch(`${API_BASE}/student/room/all/resources`, { // You might need a specific endpoint for ALL resources
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        // Note: If you don't have an endpoint for ALL, fetch CS/ECE etc and combine
+        // For now, let's assume this returns a list
+        let groups = [];
+        if (response.ok) groups = await response.json();
+
+        renderGroups(groups);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderGroups(groups) {
+      const list = document.getElementById('groupList');
+      list.innerHTML = '';
+
+      if (groups.length === 0) {
+        list.innerHTML = '<p style="padding:20px; color:#666;">No groups found.</p>';
+        return;
+      }
+
+      groups.forEach(g => {
+        const item = document.createElement('div');
+        item.className = 'group-item';
+        item.onclick = () => joinRoom(g.id, g.title);
+        item.innerHTML = `
+                    <div class="group-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="group-info">
+                        <h4>${g.title}</h4>
+                        <p>ID: ${g.id} • ${g.uploader || 'User'}</p>
+                    </div>
+                `;
+        list.appendChild(item);
+      });
+    }
+
+    // 2. JOIN ROOM (WebSocket)
+    function joinRoom(roomId, title) {
+      if (currentWs) currentWs.close();
+      currentRoomId = roomId;
+
+      // UI Updates
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('chatHeader').style.display = 'flex';
+      document.getElementById('inputArea').style.display = 'flex';
+      document.getElementById('roomTitle').innerText = title;
+      document.getElementById('messagesBox').innerHTML = ''; // Clear old messages
+
+      // Highlight Sidebar
+      document.querySelectorAll('.group-item').forEach(el => el.classList.remove('active'));
+      // (Optional: add active class to clicked element)
+
+      // Connect WS
+      const token = localStorage.getItem('token');
+      const wsUrl = `ws://127.0.0.1:8000/ws/chat/${roomId}?token=${token}`;
+
+      currentWs = new WebSocket(wsUrl);
+
+      currentWs.onopen = () => {
+        addSystemMessage("Connected to chat room.");
+      };
+
+      currentWs.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        addMessageToUI(data.user, data.message, data.user === currentUser);
+      };
+
+      currentWs.onclose = () => {
+        addSystemMessage("Disconnected from server.");
+      };
+    }
+
+    // 3. SEND MESSAGE
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (!text || !currentWs) return;
+
+      // Send to Backend
+      currentWs.send(JSON.stringify({ message: text }));
+
+      // Optimistic UI Update (or wait for echo depending on backend logic)
+      // Assuming backend echoes:
+      // addMessageToUI("Me", text, true); 
+
+      input.value = '';
+    }
+
+    function handleEnter(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    // 4. UI HELPERS
+    function addMessageToUI(user, text, isMe) {
+      const box = document.getElementById('messagesBox');
+      const div = document.createElement('div');
+      div.className = `message ${isMe ? 'sent' : 'received'}`;
+
+      div.innerHTML = `
+                <div class="msg-bubble">${text}</div>
+                <div class="msg-info">
+                    <span>${isMe ? 'You' : user}</span>
+                    <span>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+            `;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight; // Auto scroll
+    }
+
+    function addSystemMessage(text) {
+      const box = document.getElementById('messagesBox');
+      const div = document.createElement('div');
+      div.style.textAlign = 'center';
+      div.style.fontSize = '0.8rem';
+      div.style.color = '#666';
+      div.style.margin = '10px 0';
+      div.innerText = text;
+      box.appendChild(div);
+    }
+
+    function filterRooms() {
+      const term = document.getElementById('searchRooms').value.toLowerCase();
+      const items = document.querySelectorAll('.group-item');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(term) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+
+</html>
