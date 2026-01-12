@@ -182,3 +182,27 @@ def get_group_resources(
         }
         for r in resources
     ]
+
+@router.delete("/{group_id}")
+def delete_group(
+    group_id: int,
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    # 1. Fetch the Group
+    group = db.query(models.StudyGroup).filter(models.StudyGroup.id == group_id).first()
+    
+    if not group:
+        raise HTTPException(404, "Group not found")
+        
+    # 2. SECURITY CHECK: Is the current user the Host?
+    if group.creator_id != user.id:
+        raise HTTPException(403, detail="Only the Host can delete this group.")
+        
+    # 3. Delete the group
+    # Note: Because we set cascade="all, delete-orphan" on messages, 
+    # all chat history will vanish automatically.
+    db.delete(group)
+    db.commit()
+    
+    return {"msg": f"Group '{group.name}' has been deleted."}
