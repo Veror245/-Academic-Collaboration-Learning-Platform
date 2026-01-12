@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniMind | Admin Dashbaord</title>
+    <title>UniMind | Admin Command Center</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="/Frontend/assets/logo.png">
     <style>
         /* --- 1. THEME VARIABLES --- */
@@ -147,17 +148,11 @@
             animation: slideInUp 0.5s ease forwards;
         }
 
-        .nav-links li:nth-child(1) {
-            animation-delay: 0.4s;
-        }
-
-        .nav-links li:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-
-        .nav-links li:nth-child(3) {
-            animation-delay: 0.6s;
-        }
+        .nav-links li:nth-child(1) { animation-delay: 0.4s; }
+        .nav-links li:nth-child(2) { animation-delay: 0.5s; }
+        .nav-links li:nth-child(3) { animation-delay: 0.6s; }
+        .nav-links li:nth-child(4) { animation-delay: 0.7s; }
+        .nav-links li:nth-child(5) { animation-delay: 0.8s; }
 
         .nav-links a {
             color: var(--text-secondary);
@@ -285,7 +280,7 @@
         /* --- STATS GRID --- */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive Grid */
             gap: 2rem;
             margin-bottom: 3rem;
             scroll-margin-top: 100px;
@@ -334,6 +329,29 @@
             color: #fff;
             line-height: 1;
         }
+
+        /* --- NEW: ANALYTICS STYLES --- */
+        .analytics-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        .champion-card {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(5, 5, 5, 0.4) 100%);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            text-align: center;
+        }
+        .champion-card h2 { color: #fbbf24; }
+        .champion-icon { font-size: 4rem; margin: 1.5rem 0; text-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+        .champion-title { font-size: 1.2rem; font-weight: bold; color: #fff; margin-bottom: 5px; }
+        .champion-rating { font-size: 1.8rem; font-weight: bold; color: #fbbf24; }
 
         /* --- PANEL SECTIONS --- */
         .panel-section {
@@ -605,218 +623,45 @@
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes slideInLeft {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse-avatar {
-            0% {
-                box-shadow: 0 0 0 0 rgba(188, 19, 254, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(188, 19, 254, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(188, 19, 254, 0);
-            }
-        }
+        @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-avatar { 0% { box-shadow: 0 0 0 0 rgba(188, 19, 254, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(188, 19, 254, 0); } 100% { box-shadow: 0 0 0 0 rgba(188, 19, 254, 0); } }
 
         /* --- RESPONSIVE MEDIA QUERIES --- */
-
         @media (max-width: 1024px) {
-            .sidebar {
-                width: 80px;
-                padding: 1.5rem 0.5rem;
-                align-items: center;
-            }
-
-            .logo span,
-            .nav-links span,
-            .user-info {
-                display: none;
-            }
-
-            .logo {
-                margin-bottom: 2rem;
-                font-size: 0;
-            }
-
-            .logo::before {
-                content: 'A';
-                font-family: var(--font-heading);
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--neon-cyan);
-            }
-
-            .nav-links a {
-                justify-content: center;
-                padding: 12px;
-            }
-
-            .user-profile {
-                justify-content: center;
-                border-top: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
-                padding: 2rem;
-            }
+            .analytics-container { grid-template-columns: 1fr; }
+            .sidebar { width: 80px; padding: 1.5rem 0.5rem; align-items: center; }
+            .logo span, .nav-links span, .user-info { display: none; }
+            .logo { margin-bottom: 2rem; font-size: 0; }
+            .logo::before { content: 'A'; font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--neon-cyan); }
+            .nav-links a { justify-content: center; padding: 12px; }
+            .user-profile { justify-content: center; border-top: none; }
+            .main-content { margin-left: 80px; width: calc(100% - 80px); padding: 2rem; }
         }
 
-        /* Mobile View (< 768px) */
         @media (max-width: 768px) {
-            .dashboard-wrapper {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                width: 260px;
-                align-items: flex-start;
-                padding: 2rem;
-                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .logo span,
-            .nav-links span,
-            .user-info {
-                display: block;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-                margin-bottom: 3rem;
-            }
-
-            .logo::before {
-                content: none;
-            }
-
-            .nav-links a {
-                justify-content: flex-start;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 1.5rem;
-            }
-
-            .top-bar {
-                margin-bottom: 2rem;
-            }
-
-            .top-bar h1 {
-                font-size: 1.5rem;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .btn-logout span {
-                display: none;
-            }
-
-            .btn-logout {
-                padding: 8px 12px;
-            }
-
-            .panel-section {
-                padding: 1rem;
-            }
-
-            /* --- MOBILE TABLE LOGIC (HIDE COLUMNS) --- */
-            .hide-mobile {
-                display: none;
-            }
-
-            .show-mobile-only {
-                display: inline-block;
-            }
-
-            /* Adjust table layout for mobile */
-            .data-table th,
-            .data-table td {
-                padding: 1rem 0.5rem;
-                font-size: 0.85rem;
-            }
-
-            /* Sidebar overlay */
-            .sidebar-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                backdrop-filter: blur(5px);
-                z-index: 99;
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-
-            .sidebar-overlay.active {
-                display: block;
-                opacity: 1;
-            }
+            .dashboard-wrapper { flex-direction: column; }
+            .sidebar { transform: translateX(-100%); width: 260px; align-items: flex-start; padding: 2rem; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5); }
+            .sidebar.active { transform: translateX(0); }
+            .logo span, .nav-links span, .user-info { display: block; }
+            .logo { font-size: 1.5rem; margin-bottom: 3rem; }
+            .logo::before { content: none; }
+            .nav-links a { justify-content: flex-start; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .top-bar { margin-bottom: 2rem; }
+            .top-bar h1 { font-size: 1.5rem; }
+            .menu-toggle { display: block; }
+            .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .btn-logout span { display: none; }
+            .btn-logout { padding: 8px 12px; }
+            .panel-section { padding: 1rem; }
+            .hide-mobile { display: none; }
+            .show-mobile-only { display: inline-block; }
+            .data-table th, .data-table td { padding: 1rem 0.5rem; font-size: 0.85rem; }
+            .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 99; opacity: 0; transition: opacity 0.3s; }
+            .sidebar-overlay.active { display: block; opacity: 1; }
         }
     </style>
 </head>
@@ -849,6 +694,12 @@
                 <li id="nav-overview" class="active">
                     <a href="#overview"><i class="fas fa-chart-line"></i> <span>Overview</span></a>
                 </li>
+                <li id="nav-analytics">
+                    <a href="#analytics-section"><i class="fas fa-chart-pie"></i> <span>Analytics</span></a>
+                </li>
+                <li id="nav-groups">
+                    <a href="#study-groups"><i class="fas fa-users"></i> <span>Groups</span></a>
+                </li>
                 <li id="nav-content">
                     <a href="#content-moderation"><i class="fas fa-layer-group"></i> <span>Uploads</span></a>
                 </li>
@@ -879,12 +730,67 @@
 
             <section class="stats-grid" id="overview">
                 <div class="stat-card">
+                    <h3>Active Users (24h)</h3>
+                    <p class="count" id="active-users-count">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Engagement Score</h3>
+                    <p class="count" id="engagement-count">0</p>
+                </div>
+                <div class="stat-card">
                     <h3>Total Archives</h3>
                     <p class="count" id="total-count">0</p>
                 </div>
                 <div class="stat-card">
-                    <h3>Pending Transmissions</h3>
+                    <h3>Pending Logs</h3>
                     <p class="count" id="comment-count">0</p>
+                </div>
+            </section>
+
+            <section id="analytics-section" class="analytics-container">
+                <div class="panel-section">
+                    <div class="section-header">
+                        <h2>System Traffic (Uploads/Week)</h2>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel-section champion-card">
+                    <div class="section-header" style="justify-content:center; border-bottom:none;">
+                        <h2>Highest Rated Resource</h2>
+                    </div>
+                    <div class="champion-icon">👑</div>
+                    <div id="champ-data">
+                        <div class="champion-title" id="champ-title">Loading...</div>
+                        <div style="color: #cbd5e1; margin-bottom:10px;">by <span id="champ-user">...</span></div>
+                        <div class="champion-rating">⭐ <span id="champ-rating">0.0</span> / 5.0</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="study-groups" class="panel-section">
+                <div class="section-header">
+                    <h2>Active Study Protocols</h2>
+                    <button onclick="fetchGroups()" class="Refresh_button">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Group Name</th>
+                                <th class="hide-mobile">Description</th>
+                                <th>Members</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="groups-table-body">
+                            <tr><td colspan="4" style="text-align:center; padding:2rem;">Scanning...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -904,7 +810,7 @@
                             </tr>
                         </thead>
                         <tbody id="resource-table-body">
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </section>
@@ -960,7 +866,10 @@
                 return;
             }
 
-            fetchResources();
+            // Load all data
+            fetchDashboardStats(); // New Analytics
+            fetchGroups();         // New Groups
+            fetchResources();      // Existing Resources
             setupNavigationHandlers();
         });
 
@@ -993,7 +902,130 @@
             sections.forEach(section => observer.observe(section));
         }
 
-        // --- FETCH RESOURCES ---
+        // --- NEW: FETCH ANALYTICS DASHBOARD ---
+        async function fetchDashboardStats() {
+            const token = localStorage.getItem('access_token');
+            try {
+                const res = await fetch(`${API_BASE}/stats/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if(!res.ok) throw new Error("Failed to load stats");
+                const data = await res.json();
+
+                // 1. Update Metric Cards
+                document.getElementById('active-users-count').innerText = data.metrics.active_users;
+                document.getElementById('engagement-count').innerText = data.metrics.engagement;
+                // Note: total-count also updated by fetchResources, but we can set here too
+                
+                // 2. Update Champion Resource
+                if (data.popular_resource) {
+                    document.getElementById('champ-title').innerText = data.popular_resource.title;
+                    document.getElementById('champ-user').innerText = data.popular_resource.uploader;
+                    document.getElementById('champ-rating').innerText = data.popular_resource.rating;
+                } else {
+                    document.getElementById('champ-data').innerHTML = "<p>No ratings available yet.</p>";
+                }
+
+                // 3. Render Chart
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.chart.labels,
+                        datasets: [{
+                            label: 'Uploads',
+                            data: data.chart.data,
+                            borderColor: '#00f3ff',
+                            backgroundColor: 'rgba(0, 243, 255, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#94a3b8', stepSize: 1 } 
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8' } 
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error("Analytics Error:", err);
+            }
+        }
+
+        // --- NEW: FETCH STUDY GROUPS ---
+        async function fetchGroups() {
+            const token = localStorage.getItem('access_token');
+            const tbody = document.getElementById('groups-table-body');
+            
+            try {
+                const res = await fetch(`${API_BASE}/groups/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if(res.ok) {
+                    const groups = await res.json();
+                    if(groups.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No active groups.</td></tr>';
+                        return;
+                    }
+                    
+                    tbody.innerHTML = groups.map(g => `
+                        <tr>
+                            <td style="font-weight: 500; color: #fff;">${g.name}</td>
+                            <td class="hide-mobile" style="color: var(--text-secondary); max-width:200px; overflow:hidden; text-overflow:ellipsis;">${g.description}</td>
+                            <td style="color: var(--neon-cyan);">${g.member_count} Users</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteGroup(${g.id})">
+                                    <i class="fas fa-trash"></i> Dismantle
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error("Groups Error:", err);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--neon-red);">Connection Error</td></tr>';
+            }
+        }
+
+        async function deleteGroup(groupId) {
+            if (!confirm("Dismantle this study protocol? All chats will be lost.")) return;
+            const token = localStorage.getItem('access_token');
+            
+            // Note: In backend we restricted delete to Host, but we should add Admin override in backend
+            // For now, assuming Admin has rights or using same endpoint if logic permits
+            try {
+                const res = await fetch(`${API_BASE}/groups/${groupId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    alert("Group Dismantled.");
+                    fetchGroups();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + err.detail);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // --- FETCH RESOURCES (Existing Logic) ---
         async function fetchResources() {
             const token = localStorage.getItem('access_token');
             const tableBody = document.getElementById('resource-table-body');
@@ -1049,7 +1081,7 @@
                 `).join('');
         }
 
-        // --- FETCH COMMENTS ---
+        // --- FETCH COMMENTS (Existing Logic) ---
         async function loadAllComments() {
             const tbody = document.getElementById('comments-table-body');
             allCommentsData = [];
@@ -1112,7 +1144,6 @@
             modal.classList.remove('active');
         }
 
-        // Close on click outside
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closePopup();
         });
