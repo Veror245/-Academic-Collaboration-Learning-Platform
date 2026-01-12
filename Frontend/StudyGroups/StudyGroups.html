@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Groups - UniMind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-dark: #050505;
+            --glass-surface: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff0055;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --neon-green: #00ff9d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Live Indicator Pulse */
+        .live-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .group-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .group-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .group-item:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .group-item.active {
+            border-color: var(--neon-purple);
+            background: rgba(188, 19, 254, 0.1);
+            box-shadow: inset 0 0 20px rgba(188, 19, 254, 0.05);
+        }
+
+        .group-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .group-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .create-btn {
+            margin: 20px;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+            border: 1px solid var(--neon-cyan);
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            transition: 0.3s;
+        }
+
+        .create-btn:hover {
+            padding-left: 20px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05), transparent 60%);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-title {
+            font-size: 1.2rem;
+            font-family: var(--font-heading);
+        }
+
+        .chat-actions button {
+            background: none;
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 10px;
+        }
+
+        .chat-actions button:hover {
+            border-color: var(--neon-purple);
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            border-color: var(--neon-red) !important;
+            color: var(--neon-red) !important;
+            background: rgba(255, 0, 85, 0.1) !important;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-left {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg-right {
+            align-self: flex-end;
+            background: rgba(188, 19, 254, 0.15);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-user {
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .msg-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .msg-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 15px;
+        }
+
+        .join-overlay {
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: var(--neon-purple);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .send-btn:hover {
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+        }
+
+        /* --- MODAL & DRAWER --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            border: 1px solid var(--neon-cyan);
+            padding: 30px;
+            width: 400px;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .resources-drawer {
+            position: absolute;
+            right: -320px;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: #080808;
+            border-left: 1px solid var(--glass-border);
+            transition: 0.3s;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .resources-drawer.open {
+            right: 0;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <h2>Neural Groups</h2>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">COLLABORATIVE CLUSTERS</p>
+            </div>
+            <div class="live-indicator" title="Live Connection"></div>
+        </div>
+        <div class="group-list" id="groupList">
+            <div style="text-align: center; padding-top: 20px; color: var(--text-secondary);">
+                <i class="fas fa-circle-notch fa-spin"></i> Initializing...
+            </div>
+        </div>
+        <button class="create-btn" onclick="openModal('createModal')"><i class="fas fa-plus"></i> New Protocol</button>
+        <button class="create-btn" style="margin-top:0; border-color: #333; background: transparent; color: #aaa;"
+            onclick="window.location.href='../Features/FeaturesPage.html'"><i class="fas fa-arrow-left"></i> Return
+            Home</button>
+    </aside>
+
+    <main class="main-content">
+        <div id="noGroupSelected" class="empty-state">
+            <i class="fas fa-satellite-dish" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+            <h2>Select a Neural Cluster</h2>
+            <p>Initiate connection to begin data exchange.</p>
+        </div>
+
+        <div id="chatInterface" style="display: none; height: 100%; flex-direction: column;">
+            <div class="chat-header">
+                <div>
+                    <h3 class="chat-title" id="activeGroupName">Unknown Protocol</h3>
+                    <span style="font-size: 0.8rem; color: var(--neon-green);" id="activeGroupStatus">● Secure
+                        Connection</span>
+                </div>
+                <div class="chat-actions">
+                    <button onclick="toggleResources()" title="Shared Files"><i class="fas fa-folder-open"></i>
+                        Files</button>
+                    <button id="deleteGroupBtn" onclick="deleteCurrentGroup()" class="btn-delete" style="display:none;"
+                        title="Delete Group">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="messageContainer"></div>
+
+            <div id="inputArea" class="chat-input-area">
+                <input type="text" id="msgInput" class="chat-input" placeholder="Transmit data..."
+                    onkeypress="handleEnter(event)">
+                <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+
+            <div id="joinOverlay" class="join-overlay" style="display: none;">
+                <h3 style="color: #fff; margin-bottom: 10px;">Read-Only Mode</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">You must join this neural cluster to
+                    transmit data.</p>
+                <button onclick="joinCurrentGroup()" class="create-btn"
+                    style="margin: 0; border-color: var(--neon-purple); color: #fff; background: rgba(188, 19, 254, 0.1);">Initialize
+                    Uplink (Join)</button>
+            </div>
+        </div>
+
+        <div class="resources-drawer" id="resourceDrawer">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <i class="fas fa-database"></i> Shared Data
+            </h3>
+            <div id="resourceUploadArea" style="margin-bottom: 20px;">
+                <input type="file" id="groupFileInput" style="display: none;" onchange="uploadGroupFile()">
+                <button onclick="document.getElementById('groupFileInput').click()" class="create-btn"
+                    style="margin: 0; width: 100%; text-align: center;"><i class="fas fa-upload"></i> Upload
+                    File</button>
+            </div>
+            <div id="groupResourceList" style="overflow-y: auto; height: calc(100% - 100px);"></div>
+        </div>
+    </main>
+
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: #fff; margin-bottom: 15px;">Initialize New Protocol</h3>
+            <label style="color: #aaa; font-size: 0.8rem;">PROTOCOL NAME</label>
+            <input type="text" id="newGroupName" placeholder="e.g. Quantum Physics Study">
+            <label style="color: #aaa; font-size: 0.8rem;">DESCRIPTION</label>
+            <input type="text" id="newGroupDesc" placeholder="Brief objective...">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeModal('createModal')" class="create-btn"
+                    style="flex:1; background: transparent; border-color: #555; color: #fff;">Abort</button>
+                <button onclick="createGroup()" class="create-btn" style="flex:1; margin:0;">Deploy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000";
+        let currentGroupId = null;
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) window.location.href = "../Login/login.html";
+
+            await fetchUserProfile(); // Fetch user first so we know their ID
+            loadGroups();
+
+            // Auto-Refresh
+            setInterval(() => {
+                loadGroups(false);
+                if (currentGroupId) {
+                    loadMessages();
+                }
+            }, 3000);
+        });
+
+        async function fetchUserProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/student/me`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                if (res.ok) currentUser = await res.json();
+            } catch (e) { console.error("User fetch error", e); }
+        }
+
+        async function loadGroups(isInitial = true) {
+            try {
+                const res = await fetch(`${API_BASE}/groups/all`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const groups = await res.json();
+                const list = document.getElementById('groupList');
+
+                let htmlContent = '';
+                groups.forEach(g => {
+                    const activeClass = (currentGroupId === g.id) ? 'active' : '';
+                    // Pass creator_id to selectGroup to check ownership
+                    htmlContent += `
+                        <div class="group-item ${activeClass}" onclick="selectGroup(${g.id}, '${g.name.replace(/'/g, "\\'")}', ${g.creator_id}, ${g.is_member})">
+                            <span class="group-name">${g.name}</span>
+                            <div class="group-meta">
+                                <span>${g.description || "No description"}</span>
+                                <span><i class="fas fa-user"></i> ${g.member_count}</span>
+                            </div>
+                        </div>
+                    `;
+
+                    if (currentGroupId === g.id) {
+                        updateMembershipUI(g.is_member, g.name, g.creator_id);
+                    }
+                });
+
+                list.innerHTML = htmlContent;
+
+            } catch (e) {
+                if (isInitial) console.error(e);
+            }
+        }
+
+        async function createGroup() {
+            const name = document.getElementById('newGroupName').value;
+            const desc = document.getElementById('newGroupDesc').value;
+            if (!name) return alert("Name required");
+            try {
+                const res = await fetch(`${API_BASE}/groups/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name: name, description: desc })
+                });
+                if (res.ok) { closeModal('createModal'); loadGroups(); }
+                else { const err = await res.json(); alert(err.detail); }
+            } catch (e) { alert("Error creating group"); }
+        }
+
+        // --- SELECTION LOGIC ---
+        function selectGroup(id, name, creatorId, isMember) {
+            if (currentGroupId !== id) {
+                currentGroupId = id;
+                document.getElementById('messageContainer').innerHTML = '';
+            }
+
+            document.getElementById('noGroupSelected').style.display = 'none';
+            document.getElementById('chatInterface').style.display = 'flex';
+
+            updateMembershipUI(isMember, name, creatorId);
+
+            loadMessages();
+            loadGroupResources();
+        }
+
+        function updateMembershipUI(isMember, name, creatorId) {
+            document.getElementById('activeGroupName').innerText = name;
+
+            // --- PERMISSION CHECK FOR DELETE BUTTON ---
+            const delBtn = document.getElementById('deleteGroupBtn');
+            if (currentUser && currentUser.id === creatorId) {
+                delBtn.style.display = 'block';
+            } else {
+                delBtn.style.display = 'none';
+            }
+
+            // --- JOIN/CHAT UI ---
+            if (isMember) {
+                document.getElementById('inputArea').style.display = 'flex';
+                document.getElementById('joinOverlay').style.display = 'none';
+                document.getElementById('resourceUploadArea').style.display = 'block';
+                document.getElementById('activeGroupStatus').innerText = "● Uplink Established";
+                document.getElementById('activeGroupStatus').style.color = "var(--neon-green)";
+            } else {
+                document.getElementById('inputArea').style.display = 'none';
+                document.getElementById('joinOverlay').style.display = 'flex';
+                document.getElementById('resourceUploadArea').style.display = 'none';
+                document.getElementById('activeGroupStatus').innerText = "○ Read-Only / Join Required";
+                document.getElementById('activeGroupStatus').style.color = "var(--text-secondary)";
+            }
+        }
+
+        async function deleteCurrentGroup() {
+            if (!currentGroupId) return;
+            if (!confirm("Are you sure you want to delete this group? All data will be lost.")) return;
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                if (res.ok) {
+                    alert("Group deleted.");
+                    currentGroupId = null;
+                    document.getElementById('noGroupSelected').style.display = 'flex';
+                    document.getElementById('chatInterface').style.display = 'none';
+                    loadGroups();
+                } else { const err = await res.json(); alert(err.detail); }
+            } catch (e) { alert("Connection Error"); }
+        }
+
+        async function joinCurrentGroup() {
+            if (!currentGroupId) return;
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}/join`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                alert(data.msg);
+                loadGroups();
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadMessages() {
+            if (!currentGroupId) return;
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}/messages`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const msgs = await res.json();
+                renderMessages(msgs);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderMessages(msgs) {
+            const container = document.getElementById('messageContainer');
+            const currentHTML = msgs.map(m => {
+                const isMe = currentUser && m.user_name === currentUser.full_name;
+                const alignClass = isMe ? 'msg-right' : 'msg-left';
+                return `<div class="message ${alignClass}">
+                        <div class="msg-user">${m.user_name}</div>
+                        <div class="msg-content">${m.content}</div>
+                        <div class="msg-time">${new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>`;
+            }).join('');
+
+            if (container.innerHTML !== currentHTML) {
+                const wasAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+                container.innerHTML = currentHTML;
+                if (wasAtBottom) container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('msgInput');
+            const content = input.value;
+            if (!content || !currentGroupId) return;
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+                if (res.ok) { input.value = ""; loadMessages(); }
+                else { const err = await res.json(); alert(err.detail); }
+            } catch (e) { console.error(e); }
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+
+        async function loadGroupResources() {
+            if (!currentGroupId) return;
+            const list = document.getElementById('groupResourceList');
+            if (list.innerHTML === "") list.innerHTML = '<div style="color:#666; text-align:center;">Loading...</div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}/resources`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const resources = await res.json();
+                list.innerHTML = resources.length ? "" : '<div style="color:#666; text-align:center;">No Data</div>';
+                resources.forEach(r => {
+                    const div = document.createElement('div');
+                    div.style.cssText = "padding: 10px; border-bottom: 1px solid #333; margin-bottom: 5px;";
+                    div.innerHTML = `<div style="font-size:0.9rem; color:#fff;">${r.title}</div>
+                        <div style="font-size:0.7rem; color:var(--text-secondary);">By ${r.uploader}</div>
+                        <a href="${API_BASE}/static/uploads/${r.filename}" target="_blank" style="color:var(--neon-cyan); font-size:0.8rem;"><i class="fas fa-download"></i> Download</a>`;
+                    list.appendChild(div);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function uploadGroupFile() {
+            const input = document.getElementById('groupFileInput');
+            const file = input.files[0];
+            if (!file || !currentGroupId) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('title', file.name);
+            try {
+                const res = await fetch(`${API_BASE}/groups/${currentGroupId}/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    body: formData
+                });
+                if (res.ok) { alert("Upload Complete"); loadGroupResources(); } else { alert("Upload Failed"); }
+            } catch (e) { console.error(e); }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function toggleResources() { document.getElementById('resourceDrawer').classList.toggle('open'); }
+    </script>
+</body>
+
+</html>
