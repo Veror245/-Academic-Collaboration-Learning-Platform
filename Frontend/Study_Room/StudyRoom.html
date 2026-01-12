@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap"
         rel="stylesheet">
-
+    <link rel="icon" href="/Frontend/assets/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -19,11 +19,13 @@
         :root {
             --bg-dark: #050505;
             --glass-surface: rgba(255, 255, 255, 0.03);
+            --glass-surface-hover: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.08);
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
             --neon-green: #00ff9d;
             --neon-red: #ff0055;
+            --neon-gold: #ffcc00;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
 
@@ -44,6 +46,9 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.05), transparent 25%);
         }
 
         /* --- 2. BACKGROUND FX --- */
@@ -55,31 +60,32 @@
             height: 100%;
             pointer-events: none;
             z-index: -1;
-            opacity: 0.05;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .blob {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(100px);
             z-index: -2;
-            opacity: 0.4;
-            animation: float 10s infinite alternate ease-in-out;
+            opacity: 0.3;
+            animation: float 15s infinite alternate ease-in-out;
         }
 
         .blob-1 {
-            width: 500px;
-            height: 500px;
+            width: 600px;
+            height: 600px;
             background: radial-gradient(circle, var(--neon-purple), transparent 70%);
-            top: -10%;
+            top: -20%;
             left: -10%;
         }
 
         .blob-2 {
-            width: 400px;
-            height: 400px;
+            width: 500px;
+            height: 500px;
             background: radial-gradient(circle, var(--neon-cyan), transparent 70%);
-            bottom: -10%;
+            bottom: -20%;
             right: -10%;
             animation-delay: -5s;
         }
@@ -90,52 +96,44 @@
             }
 
             100% {
-                transform: translate(50px, 30px);
+                transform: translate(30px, 50px);
             }
         }
 
         /* --- 3. LAYOUT --- */
         .library-container {
-            max-width: 1300px;
-            /* Slightly wider to fit inline nav */
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 40px 30px;
             position: relative;
             z-index: 1;
         }
 
-        /* --- 4. HEADER (INLINE LAYOUT) --- */
+        /* --- 4. HEADER --- */
         .library-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: nowrap;
-            /* Forces single line */
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 20px;
-            width: 100%;
-        }
-
-        /* Logo Section */
-        .header-content {
-            flex-shrink: 0;
-            /* Prevents shrinking */
+            padding-bottom: 25px;
+            flex-wrap: wrap;
         }
 
         .header-content h1 {
             font-family: var(--font-heading);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #fff;
-            white-space: nowrap;
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
         }
 
         .text-gradient {
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -143,152 +141,104 @@
 
         .header-content p {
             color: var(--text-secondary);
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin: 0;
-        }
-
-        /* Navigation Bar (Centered) */
-        .main-nav {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            min-width: 0;
-            padding: 0 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            text-transform: uppercase;
         }
 
         .nav-list {
             display: flex;
             list-style: none;
-            padding: 0.5rem 0.75rem;
-            gap: 0.5rem;
-            background: var(--glass-surface);
+            padding: 6px;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
             border-radius: 100px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            margin: 0;
-            flex-wrap: nowrap;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         .nav-link {
             text-decoration: none;
             color: var(--text-secondary);
             font-family: var(--font-body);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1rem;
+            gap: 0.6rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 50px;
             transition: all 0.3s ease;
-            white-space: nowrap;
         }
 
         .nav-link:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
-        }
-
-        .nav-link:hover i {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-cyan);
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, rgba(188, 19, 254, 0.2), rgba(124, 58, 237, 0.2));
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            border: 1px solid rgba(188, 19, 254, 0.3);
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .nav-link.active i {
             color: var(--neon-purple);
         }
 
-        /* Logout Button Specifics */
-        .logout-link {
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            margin-left: 5px;
-        }
-
-        .logout-link:hover {
-            background: rgba(255, 0, 85, 0.1) !important;
-            color: var(--neon-red) !important;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4) !important;
-        }
-
-        .logout-link:hover i {
-            color: var(--neon-red) !important;
-        }
-
-        /* Upload Button Wrapper */
-        .upload-action-link {
-            text-decoration: none;
-            flex-shrink: 0;
-        }
-
         .upload-btn {
-            background: rgba(0, 243, 255, 0.1);
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(0, 243, 255, 0));
             color: var(--neon-cyan);
             border: 1px solid var(--neon-cyan);
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 50px;
             font-family: var(--font-heading);
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 10px;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
-            white-space: nowrap;
         }
 
         .upload-btn:hover {
             background: var(--neon-cyan);
             color: #000;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
-            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px) scale(1.02);
         }
 
         /* --- 5. FILTER BAR --- */
         .filter-bar {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 40px;
             overflow-x: auto;
             padding-bottom: 15px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-cyan) transparent;
-        }
-
-        .filter-bar::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .filter-bar::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 4px;
+            mask-image: linear-gradient(to right, black 90%, transparent 100%);
         }
 
         .filter-btn {
-            background: var(--glass-surface);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--glass-border);
             color: var(--text-secondary);
-            padding: 10px 24px;
-            border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             white-space: nowrap;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             backdrop-filter: blur(10px);
         }
 
@@ -296,87 +246,114 @@
             border-color: rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
+            transform: translateY(-2px);
         }
 
         .filter-btn.active {
-            background: rgba(188, 19, 254, 0.15);
+            background: rgba(188, 19, 254, 0.1);
             color: var(--neon-purple);
             border-color: var(--neon-purple);
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.15);
         }
 
         /* --- 6. GRID & CARDS --- */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        /* Animation for cards appearing */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .note-card {
-            background: var(--glass-surface);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 24px;
             display: flex;
             flex-direction: column;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(16px);
-            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
         .note-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(-8px);
+            border-color: rgba(0, 243, 255, 0.3);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6),
+                0 0 20px rgba(0, 243, 255, 0.05);
+            /* Cyberpunk glow */
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
         }
 
         .card-header {
             display: flex;
             align-items: flex-start;
-            gap: 15px;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
         .card-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.05);
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--neon-cyan);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1);
         }
 
         .card-info h3 {
             font-family: var(--font-heading);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             color: #fff;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
         .uploader-name {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             font-family: monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .ai-summary {
             font-size: 0.85rem;
-            color: #d1d5db;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 2px solid var(--neon-purple);
-            font-family: monospace;
+            color: #e2e8f0;
+            background: rgba(0, 0, 0, 0.4);
+            /* Darker "Terminal" background */
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            /* Tech look */
+            font-family: 'JetBrains Mono', monospace;
+            /* Monospace for tech feel */
             line-height: 1.6;
+            flex-grow: 1;
+            /* Pushes footer down */
         }
 
         .card-footer {
@@ -385,7 +362,7 @@
             justify-content: space-between;
             align-items: center;
             padding-top: 15px;
-            border-top: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .interaction-group {
@@ -394,84 +371,122 @@
             gap: 12px;
         }
 
-        .vote-box {
+        /* --- PREMIUM RATING STYLES --- */
+        .rating-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
             padding: 6px 12px;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
-        .vote-btn {
+        .rating-container:hover {
+            border-color: rgba(255, 204, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .stars {
+            display: flex;
+            gap: 3px;
+        }
+
+        .star-btn {
             background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.15);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s;
+            padding: 1px;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.3);
+        }
+
+        .star-btn:active {
+            transform: scale(0.95);
+        }
+
+        .star-btn.filled {
+            color: var(--neon-gold);
+            filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5));
+        }
+
+        .star-btn.preview-filled {
+            color: var(--neon-gold);
+            opacity: 0.6;
+        }
+
+        .average-rating {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            margin-left: 5px;
+            padding-left: 10px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .average-rating span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .comment-btn {
+            background: transparent;
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: 0.3s ease;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            /* Icon only style mostly */
+            padding: 8px;
+            border-radius: 8px;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .vote-btn:hover {
-            color: #fff;
-        }
-
-        .vote-btn.active.up {
-            color: var(--neon-green);
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--neon-green));
-        }
-
-        .vote-btn.active.down {
-            color: var(--neon-red);
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--neon-red));
-        }
-
-        .vote-count {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            color: #fff;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        .comment-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.3s;
-        }
-
         .comment-btn:hover {
             color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+            background: rgba(0, 243, 255, 0.1);
         }
 
+        /* Access Button Style */
         .download-link {
             text-decoration: none;
             color: var(--neon-cyan);
-            font-size: 0.85rem;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+
+            /* Ghost Button Look */
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(0, 243, 255, 0.05);
         }
 
         .download-link:hover {
-            text-shadow: 0 0 10px var(--neon-cyan);
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
         }
 
         /* --- 7. MODALS --- */
@@ -482,34 +497,48 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
 
         .modal {
-            background: rgba(10, 10, 10, 0.9);
-            border: 1px solid var(--neon-cyan);
+            background: #0a0a0a;
+            border: 1px solid var(--glass-border);
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
+            padding: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Modal glow accent */
+        .modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
         }
 
         .modal h2 {
             font-family: var(--font-heading);
             color: #fff;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            text-align: center;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--neon-cyan);
+            color: var(--text-secondary);
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -519,81 +548,91 @@
         .form-control,
         select {
             width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             border-radius: 10px;
             outline: none;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-family: var(--font-body);
+            transition: 0.3s;
         }
 
         .form-control:focus {
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+            background: rgba(0, 243, 255, 0.02);
+            box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.1);
         }
 
         .modal-actions {
             display: flex;
             gap: 15px;
-            justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel,
+        .btn-confirm {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            font-family: var(--font-body);
         }
 
         .btn-cancel {
             background: transparent;
             color: var(--text-secondary);
-            border: 1px solid var(--glass-border);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-cancel:hover {
             border-color: #fff;
             color: #fff;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .btn-confirm {
             background: var(--neon-cyan);
             color: #000;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 243, 255, 0.2);
         }
 
         .btn-confirm:hover {
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 243, 255, 0.4);
+            transform: translateY(-1px);
         }
 
-        /* --- RESPONSIVE HEADER --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 1200px) {
             .library-header {
-                flex-wrap: wrap;
-                /* Allow wrapping on small screens */
                 justify-content: center;
-                gap: 1.5rem;
+                text-align: center;
             }
 
             .header-content {
                 width: 100%;
-                text-align: center;
                 order: 1;
+            }
+
+            .nav-list {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
             }
 
             .upload-action-link {
                 order: 2;
+                margin: 10px 0;
             }
 
             .main-nav {
                 width: 100%;
                 order: 3;
-                overflow-x: auto;
             }
         }
     </style>
@@ -610,41 +649,29 @@
         <header class="library-header">
             <div class="header-content">
                 <h1>Study<span class="text-gradient">Rooms</span></h1>
-                <p id="room-description">Uploaded Documents</p>
+                <p id="room-description"> // Neural Resource Database</p>
             </div>
 
             <nav class="main-nav">
                 <ul class="nav-list">
-                    <li>
-                        <a href="/Frontend/Features/FeaturesPage.html" class="nav-link">
-                            <i class="fas fa-satellite-dish"></i> Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link">
-                            <i class="fas fa-brain"></i> Upload Notes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/quiz/quiz.html" class="nav-link">
-                            <i class="fas fa-layer-group"></i> Neural Quiz
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Frontend/User_Profile/UserProfile.html" class="nav-link">
-                            <i class="fas fa-fingerprint"></i> User Data
-                        </a>
-                    </li>
-                   
+                    <li><a href="/Frontend/Features/FeaturesPage.html" class="nav-link"><i
+                                class="fas fa-satellite-dish"></i> Home</a></li>
+                    <li><a href="/Frontend/UploadNotes/UploadNotes.html" class="nav-link"><i class="fas fa-brain"></i>
+                            Upload Notes</a></li>
+                    <li><a href="/Frontend/quiz/quiz.html" class="nav-link"><i class="fas fa-layer-group"></i> Neural
+                            Quiz</a></li>
+                    <li><a href="/Frontend/User_Profile/UserProfile.html" class="nav-link"><i
+                                class="fas fa-fingerprint"></i> User Data</a></li>
                 </ul>
             </nav>
 
             <a href="javascript:void(0)" onclick="openModal('uploadModal')" class="upload-action-link">
                 <button class="upload-btn">
-                    <i class="fas fa-satellite-dish"></i> Upload Data
+                    <i class="fas fa-upload"></i> Upload Data
                 </button>
             </a>
         </header>
+
         <nav class="filter-bar">
             <button class="filter-btn active" onclick="loadRoom('all', this)">All</button>
             <button class="filter-btn" onclick="loadRoom('cs', this)">Computer Science</button>
@@ -656,7 +683,8 @@
         </nav>
 
         <section class="notes-grid" id="notesGrid">
-            <p style="color: var(--text-secondary); font-family: monospace;">Initializing Scan...</p>
+            <p style="color: var(--text-secondary); font-family: monospace; animation: pulse 1.5s infinite;">
+                Initializing Scan...</p>
         </section>
 
     </main>
@@ -704,17 +732,7 @@
             loadRoom('all', document.querySelector('.filter-btn'));
         });
 
-        // 1. LOGOUT LOGIC
-        document.getElementById('logout-btn').addEventListener('click', function (e) {
-            e.preventDefault();
-            if (confirm("Are you sure you want to disconnect?")) {
-                localStorage.removeItem('token');
-                sessionStorage.clear();
-                window.location.href = '../Login/login.html';
-            }
-        });
-
-        // 2. LOAD NOTES
+        // 1. LOAD NOTES
         async function loadRoom(slug, btnElement) {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -729,7 +747,7 @@
             }
 
             const grid = document.getElementById('notesGrid');
-            grid.innerHTML = '<p style="color:#64748b;">Scanning neural pathways...</p>';
+            grid.innerHTML = '<p style="color:#64748b; font-family:monospace;">Scanning neural pathways...</p>';
 
             try {
                 let notes = [];
@@ -762,7 +780,7 @@
             }
         }
 
-        // 3. RENDER NOTES
+        // 2. RENDER NOTES (With Animation Delay)
         function renderNotes(notes) {
             const grid = document.getElementById('notesGrid');
             grid.innerHTML = '';
@@ -772,12 +790,28 @@
                 return;
             }
 
-            notes.forEach(note => {
+            notes.forEach((note, index) => {
                 const card = document.createElement('div');
                 card.className = 'note-card';
+                card.style.animationDelay = `${index * 0.05}s`; // Staggered animation
+
                 const fileUrl = `${API_BASE}/${note.file_path}`;
-                const upActive = note.user_vote === 1 ? 'active up' : '';
-                const downActive = note.user_vote === -1 ? 'active down' : '';
+                const userRating = note.user_rating || 0;
+                const avgRating = note.average_rating ? parseFloat(note.average_rating).toFixed(1) : "0.0";
+
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    const isFilled = i <= userRating ? 'filled' : '';
+                    starsHtml += `
+                        <button class="star-btn ${isFilled}" 
+                            id="star-${note.id}-${i}"
+                            onclick="handleRating(${note.id}, ${i})"
+                            onmouseenter="previewRating(${note.id}, ${i})"
+                            onmouseleave="resetRating(${note.id}, ${userRating})">
+                            <i class="fas fa-star"></i>
+                        </button>
+                    `;
+                }
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -789,26 +823,26 @@
                     </div>
                     
                     <div class="ai-summary">
-                        <i class="fas fa-microchip" style="margin-right:5px;"></i> ${note.ai_summary || "Analyzing content..."}
+                        <i class="fas fa-microchip" style="margin-right:5px; color:var(--neon-purple);"></i> ${note.ai_summary || "Analyzing content..."}
                     </div>
 
                     <div class="card-footer">
                         <div class="interaction-group">
-                            <div class="vote-box">
-                                <button class="vote-btn ${upActive}" id="upbtn-${note.id}" onclick="handleVote(${note.id}, 1)">
-                                    <i class="fas fa-arrow-up"></i>
-                                </button>
-                                <span class="vote-count" id="score-${note.id}">${note.score}</span>
-                                <button class="vote-btn ${downActive}" id="downbtn-${note.id}" onclick="handleVote(${note.id}, -1)">
-                                    <i class="fas fa-arrow-down"></i>
-                                </button>
+                            <div class="rating-container" id="rating-box-${note.id}">
+                                <div class="stars" id="stars-container-${note.id}">
+                                    ${starsHtml}
+                                </div>
+                                <div class="average-rating" id="avg-display-${note.id}">
+                                    ${avgRating} <span>/5.0</span>
+                                </div>
                             </div>
-                            <button class="comment-btn" onclick="goToComments(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.file_path.replace(/'/g, "\\'")}')">
-                                <i class="far fa-comment-dots"></i> Discuss
+
+                            <button class="comment-btn" title="Discuss" onclick="goToComments(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.file_path.replace(/'/g, "\\'")}')">
+                                <i class="far fa-comment-dots"></i>
                             </button>
                         </div>
                         <a href="${fileUrl}" target="_blank" class="download-link">
-                            <i class="fas fa-external-link-alt"></i> Access
+                            Access <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 `;
@@ -816,7 +850,69 @@
             });
         }
 
-        // 4. UPLOAD HANDLING
+        // 3. RATING HOVER EFFECTS
+        function previewRating(noteId, starValue) {
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${noteId}-${i}`);
+                if (i <= starValue) {
+                    star.classList.add('preview-filled');
+                    star.classList.remove('filled');
+                } else {
+                    star.classList.remove('preview-filled');
+                    star.classList.remove('filled');
+                }
+            }
+        }
+
+        function resetRating(noteId, actualRating) {
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${noteId}-${i}`);
+                star.classList.remove('preview-filled');
+
+                if (i <= actualRating) star.classList.add('filled');
+                else star.classList.remove('filled');
+            }
+        }
+
+        // 4. HANDLE RATING
+        async function handleRating(resourceId, ratingValue) {
+            const token = localStorage.getItem('token');
+            if (!token) return alert("Please login to rate resources");
+
+            try {
+                const res = await fetch(`${API_BASE}/student/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ resource_id: resourceId, rating: ratingValue })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    const newAvg = data.new_average ? parseFloat(data.new_average).toFixed(1) : "?.?";
+                    document.getElementById(`avg-display-${resourceId}`).innerHTML = `${newAvg} <span>/5.0</span>`;
+
+                    for (let i = 1; i <= 5; i++) {
+                        const star = document.getElementById(`star-${resourceId}-${i}`);
+                        star.setAttribute('onmouseleave', `resetRating(${resourceId}, ${ratingValue})`);
+                        star.classList.remove('preview-filled');
+                        if (i <= ratingValue) star.classList.add('filled');
+                        else star.classList.remove('filled');
+                    }
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "Could not rate"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection error");
+            }
+        }
+
+        // 5. UPLOAD HANDLING
         async function handleUpload(e) {
             e.preventDefault();
             const token = localStorage.getItem('token');
@@ -844,39 +940,6 @@
                 }
             } catch (err) {
                 alert("Upload failed.");
-            }
-        }
-
-        // 5. VOTING
-        async function handleVote(resourceId, type) {
-            const token = localStorage.getItem('token');
-            if (!token) return alert("Please login to vote");
-
-            try {
-                const res = await fetch(`${API_BASE}/student/vote`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ resource_id: resourceId, vote_type: type })
-                });
-
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById(`score-${resourceId}`).innerText = data.new_score;
-
-                    const upBtn = document.getElementById(`upbtn-${resourceId}`);
-                    const downBtn = document.getElementById(`downbtn-${resourceId}`);
-
-                    upBtn.className = 'vote-btn';
-                    downBtn.className = 'vote-btn';
-
-                    if (type === 1) upBtn.classList.add('active', 'up');
-                    else if (type === -1) downBtn.classList.add('active', 'down');
-                }
-            } catch (err) {
-                console.error(err);
             }
         }
 
