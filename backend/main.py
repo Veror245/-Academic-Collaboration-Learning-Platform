@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.services.database import engine, SessionLocal, get_db
 from backend.services.models import Base, Room
-from backend.routers import auth, admin, student
+from backend.routers import auth, admin, student, groups
 from backend.services import models, database
 from fastapi.staticfiles import StaticFiles
 import os
@@ -52,6 +52,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(student.router)
+app.include_router(groups.router)
 
 @app.get("/")
 def read_root():

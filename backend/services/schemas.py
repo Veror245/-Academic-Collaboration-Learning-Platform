@@ -52,3 +52,16 @@ class UserProfileResponse(BaseModel):
 class RatingCreate(BaseModel):
     resource_id: int
     stars: int  # 1 to 5
+
+class GroupCreate(BaseModel):
+    name: str
+    description: str
+
+class MessageCreate(BaseModel):
+    content: str
+
+class MessageResponse(BaseModel):
+    id: int
+    user_name: str
+    content: str
+    timestamp: datetime
