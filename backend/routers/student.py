@@ -8,8 +8,8 @@ from sqlalchemy import func
 from backend.services import database, models, auth
 from backend.services import ai_services
 from pydantic import BaseModel 
-from backend.services.models import Comment, Vote
-from backend.services.schemas import ChatRequest, CommentCreate, UserProfileResponse, VoteCreate
+from backend.services.models import Comment, Rating
+from backend.services.schemas import ChatRequest, CommentCreate, UserProfileResponse, VoteCreate, RatingCreate
 
 
 
@@ -82,7 +82,7 @@ def upload_resource(
 @router.get("/room/{room_slug}/resources")
 def get_room_resources(
     room_slug: str, 
-    user: models.User = Depends(auth.get_current_user), # <--- ADDED: To check their personal vote
+    user: models.User = Depends(auth.get_current_user), 
     db: Session = Depends(database.get_db)
 ):
     # A. Find Room
@@ -100,22 +100,26 @@ def get_room_resources(
         .all()
     )
     
-    # C. Format the output + Add Vote Data
+    # C. Format the output + Add RATING Data
     final_output = []
     
     for resource, full_name in results:
-        # 1. Calculate Total Score (Sum of all votes)
-        total_score = db.query(func.sum(models.Vote.value))\
-            .filter(models.Vote.resource_id == resource.id)\
-            .scalar() or 0  # Default to 0 if no votes exist
+        # 1. Calculate Average Rating (Avg of 1-5 stars)
+        avg_stars = db.query(func.avg(models.Rating.stars))\
+            .filter(models.Rating.resource_id == resource.id)\
+            .scalar()
             
-        # 2. Check if the CURRENT user has voted
-        existing_vote = db.query(models.Vote).filter(
-            models.Vote.resource_id == resource.id,
-            models.Vote.user_id == user.id
+        # Handle "None" if no one has rated it yet
+        final_average = round(avg_stars, 1) if avg_stars else 0.0
+
+        # 2. Check if the CURRENT user has rated this file
+        existing_rating = db.query(models.Rating).filter(
+            models.Rating.resource_id == resource.id,
+            models.Rating.user_id == user.id
         ).first()
         
-        current_user_vote = existing_vote.value if existing_vote else 0
+        # Get their stars (e.g., 5) or 0 if they haven't rated
+        current_user_stars = existing_rating.stars if existing_rating else 0
 
         final_output.append({
             "id": resource.id,
@@ -125,9 +129,9 @@ def get_room_resources(
             "ai_summary": resource.ai_summary,
             "uploader": full_name,
             "created_at": resource.created_at,
-            # --- NEW FIELDS ---
-            "score": total_score,        # Send total votes to frontend
-            "user_vote": current_user_vote # Send 1 (up), -1 (down), or 0 (none)
+            # --- REPLACED FIELDS ---
+            "average_rating": final_average,    # Send e.g. 4.2 to frontend
+            "user_rating": current_user_stars   # Send e.g. 5 to frontend (for coloring stars)
         })
 
     return final_output
@@ -202,45 +206,6 @@ def get_comments(resource_id: int, db: Session = Depends(database.get_db)):
         for c, user_name in results
     ]
 
-@router.post("/vote")
-def vote_resource(
-    vote_data: VoteCreate,
-    user: models.User = Depends(auth.get_current_user),
-    db: Session = Depends(database.get_db)
-):
-    # 1. Check if user already voted on this file
-    existing_vote = db.query(models.Vote).filter(
-        models.Vote.user_id == user.id,
-        models.Vote.resource_id == vote_data.resource_id
-    ).first()
-
-    if existing_vote:
-        # 2. Logic: If clicking the SAME button -> Remove Vote (Toggle Off)
-        if existing_vote.value == vote_data.vote_type:
-            db.delete(existing_vote)
-            msg = "Vote removed"
-        else:
-            # 3. Logic: If clicking DIFFERENT button -> Switch Vote (Up to Down)
-            existing_vote.value = vote_data.vote_type
-            msg = "Vote updated"
-    else:
-        # 4. Logic: New Vote
-        new_vote = models.Vote(
-            user_id=user.id,
-            resource_id=vote_data.resource_id,
-            value=vote_data.vote_type
-        )
-        db.add(new_vote)
-        msg = "Vote added"
-
-    db.commit()
-    
-    # 5. Return the new Total Score instantly (for UI updates)
-    total_score = db.query(func.sum(models.Vote.value)).filter(
-        models.Vote.resource_id == vote_data.resource_id
-    ).scalar() or 0
-    
-    return {"msg": msg, "new_score": total_score}
 
 @router.get("/me", response_model=UserProfileResponse)
 def get_my_profile(
@@ -252,14 +217,14 @@ def get_my_profile(
         models.Resource.uploader_id == user.id
     ).order_by(models.Resource.created_at.desc()).all()
     
-    # 2. Calculate "Karma" (Total upvotes received on MY notes)
-    # We loop through uploads and sum the votes for each.
+    # 2. Calculate "Karma" (Total STARS received on MY notes)
     total_karma = 0
     for resource in my_uploads:
-        # Get sum of votes for this specific resource
-        score = db.query(func.sum(models.Vote.value)).filter(
-            models.Vote.resource_id == resource.id
-        ).scalar() # .scalar() returns the single number (or None)
+        # Get sum of STARS for this specific resource
+        # FIX: Changed from models.Vote.value to models.Rating.stars
+        score = db.query(func.sum(models.Rating.stars)).filter(
+            models.Rating.resource_id == resource.id
+        ).scalar() 
         
         if score:
             total_karma += score
@@ -269,14 +234,63 @@ def get_my_profile(
         "id": user.id,
         "full_name": user.full_name,
         "email": user.email,
-        "role": getattr(user, "role", "student"), # Fallback if 'role' column doesn't exist yet
+        "role": getattr(user, "role", "student"),
         "karma_score": total_karma,
         "uploads": [
             {
                 "id": res.id,
-                "filename": res.title,
+                "filename": res.title, # Ensure your Pydantic model expects 'filename', or change this to 'title'
                 "created_at": res.created_at
             }
             for res in my_uploads
         ]
+    }
+
+
+@router.post("/rate")
+def rate_resource(
+    rate_data: RatingCreate,
+    user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    if not (1 <= rate_data.stars <= 5): # <--- FIX: Use .stars from schema
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
+
+    # 1. Check if interaction row exists
+    existing_interaction = db.query(models.Rating).filter(
+        models.Rating.user_id == user.id,
+        models.Rating.resource_id == rate_data.resource_id
+    ).first()
+
+    if existing_interaction:
+        # Update existing row
+        existing_interaction.stars = rate_data.stars # <--- FIX: Use .stars
+    else:
+        # Create new row
+        new_interaction = models.Rating(
+            user_id=user.id,
+            resource_id=rate_data.resource_id,
+            stars=rate_data.stars, # <--- FIX: Use .stars
+            value=0 
+        )
+        db.add(new_interaction)
+
+    db.commit()
+
+    # 2. Calculate New Average Rating
+    stats = db.query(
+        func.avg(models.Rating.stars), # <--- FIX: Use .stars
+        func.count(models.Rating.stars)
+    ).filter(
+        models.Rating.resource_id == rate_data.resource_id,
+        models.Rating.stars > 0 
+    ).first()
+
+    new_average = float(stats[0]) if stats[0] else 0.0 # type: ignore
+    total_ratings = stats[1] if stats[1] else 0 # type: ignore
+
+    return {
+        "msg": "Rating updated", 
+        "new_average": round(new_average, 1),
+        "total_ratings": total_ratings
     }

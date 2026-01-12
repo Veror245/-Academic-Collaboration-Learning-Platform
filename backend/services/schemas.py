@@ -48,3 +48,7 @@ class UserProfileResponse(BaseModel):
     role: str
     karma_score: int # Total upvotes received
     uploads: List[MyUploadResponse]
+
+class RatingCreate(BaseModel):
+    resource_id: int
+    stars: int  # 1 to 5
