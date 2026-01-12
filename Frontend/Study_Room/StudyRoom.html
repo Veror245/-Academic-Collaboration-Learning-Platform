@@ -726,6 +726,7 @@
     </div>
 
     <script>
+        // Ensure this matches your Uvicorn running port
         const API_BASE = "http://127.0.0.1:8000";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -736,6 +737,7 @@
         async function loadRoom(slug, btnElement) {
             const token = localStorage.getItem('token');
             if (!token) {
+                // Adjust this path if your folder structure is different
                 window.location.href = "../Login/login.html";
                 return;
             }
@@ -818,7 +820,7 @@
                         <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
                         <div class="card-info">
                             <h3>${note.title}</h3>
-                            <div class="uploader-name">ID: ${note.uploader}</div>
+                            <div class="uploader-name">Uploaded by: ${note.uploader}</div>
                         </div>
                     </div>
                     
@@ -874,7 +876,7 @@
             }
         }
 
-        // 4. HANDLE RATING
+        // 4. HANDLE RATING (Updated for Schema Mismatch)
         async function handleRating(resourceId, ratingValue) {
             const token = localStorage.getItem('token');
             if (!token) return alert("Please login to rate resources");
@@ -886,7 +888,8 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ resource_id: resourceId, rating: ratingValue })
+                    // FIX APPLIED HERE: Sending 'stars' instead of 'rating' to match backend schema
+                    body: JSON.stringify({ resource_id: resourceId, stars: ratingValue })
                 });
 
                 if (res.ok) {
@@ -947,6 +950,7 @@
         function goToComments(id, title, filePath) {
             const cleanTitle = encodeURIComponent(title);
             const cleanPath = encodeURIComponent(filePath);
+            // Adjust this path if your folder structure is different
             window.location.href = `/Frontend/comments/comments.html?id=${id}&title=${cleanTitle}&path=${cleanPath}`;
         }
 
